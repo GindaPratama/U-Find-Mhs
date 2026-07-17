@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - U-Find</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="brand-section">
+            <!-- Pastikan kamu punya gambar logo unikom di folder img -->
+            <img src="assets/img/logo-unikom.png" alt="Logo UNIKOM" class="logo">
+            <h1>U-Find</h1>
+            <p>TRUST UR HEART, TRUST U-Find</p>
+        </div>
+
+        <!-- Bagian Kanan: Form Login -->
+        <div class="form-section">
+            <div class="login-card">
+                <div class="user-icon">
+                    <i class="fa-regular fa-circle-user"></i>
+                </div>
+                
+                <form action="beranda.html" method="POST">
+                    <div class="input-group">
+                        <label for="nim">NIM</label>
+                        <input type="text" id="nim" name="nim" placeholder="Masukkan NIM" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Masukkan Password" required>
+                            <i class="fa-regular fa-eye" id="togglePassword"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">Login</button>
+
+                    <div class="action-buttons">
+                        <a href="#" class="btn-secondary">Lupa Password</a>
+                        <a href="register.html" class="btn-secondary">Buat Akun</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script kecil untuk membuat ikon mata berfungsi (Show/Hide Password) -->
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>
