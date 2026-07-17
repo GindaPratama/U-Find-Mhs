@@ -1,0 +1,138 @@
+/* --- Pengaturan Dasar --- */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #dce7f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Navbar (Konsisten dengan halaman lain) --- */
+.navbar {
+  background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+  border-bottom: 2px solid #1a4fa3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  color: white;
+}
+
+.nav-logo {
+  width: 35px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-icon {
+  font-size: 2.2rem;
+}
+
+/* --- Konten Utama --- */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.form-container {
+  background: #d0e4fb;
+  width: 100%;
+  max-width: 900px;
+  border: 2px solid #1a4fa3;
+  border-radius: 12px;
+  padding: 30px;
+  height: fit-content;
+}
+
+/* --- Header Form --- */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.close-btn {
+  color: #000;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+/* --- Grup Input --- */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #7a94b5;
+  border-radius: 5px;
+  outline: none;
+}
+
+/* --- Baris Bawah (Tanggal, Upload, Submit) --- */
+.row-group {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.row-group .input-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.upload-btn {
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #7a94b5;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submit-btn {
+  background: #001242;
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #1a4fa3;
+}

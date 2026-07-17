@@ -1,179 +1,175 @@
-/* Mengambil font Poppins dari Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap");
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
-    /* Warna latar belakang biru sangat pucat di luar kotak putih */
-    background-color: #dce7f5; 
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  background-color: #dce7f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-wrapper {
-    width: 100%;
-    /* Menghapus max-width agar bisa full layar */
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- BAGIAN NAVBAR --- */
 .navbar {
-    background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
-    /* Menghapus border dan border-radius agar menempel penuh */
-    border-bottom: 2px solid #1a4fa3;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 25px;
-    color: white;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
-    width: 100%;
+  background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+  border-bottom: 2px solid #1a4fa3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  width: 100%;
 }
 
 .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .nav-logo {
-    width: 35px;
-    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+  width: 35px;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .nav-title {
-    font-weight: 700;
-    font-size: 1rem;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .username {
-    font-weight: 400;
-    font-size: 0.95rem;
+  font-weight: 400;
+  font-size: 0.95rem;
 }
 
 .profile-icon {
-    font-size: 2.2rem;
-    color: white;
+  font-size: 2.2rem;
+  color: white;
 }
 
-/* --- BAGIAN KONTEN UTAMA --- */
 .main-content {
-    flex: 1;
-    display: flex;
-    padding: 20px; /* Memindahkan padding dari body ke sini */
+  flex: 1;
+  display: flex;
+  padding: 20px;
 }
 
 .dashboard-card {
-    background: linear-gradient(135deg, #ffffff 0%, #eaf1fa 100%);
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid #7a94b5;
-    box-shadow: 4px 4px 15px rgba(0,0,0,0.1);
-    padding: 40px 50px;
-    display: flex;
-    flex-direction: column;
-    gap: 60px; /* Jarak antara teks welcome dan jejeran tombol */
+  background: linear-gradient(135deg, #ffffff 0%, #eaf1fa 100%);
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #7a94b5;
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
 }
 
 /* --- TEKS WELCOME & LOGO --- */
 .welcome-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .welcome-text h1 {
-    font-size: 2.4rem;
-    color: #24418a;
-    font-weight: 800;
-    margin-bottom: 15px;
+  font-size: 2.4rem;
+  color: #24418a;
+  font-weight: 800;
+  margin-bottom: 15px;
 }
 
 .welcome-text p {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #111;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
 }
 
 .welcome-logo {
-    width: 160px;
-    filter: drop-shadow(0px 5px 8px rgba(0,0,0,0.3));
+  width: 160px;
+  filter: drop-shadow(0px 5px 8px rgba(0, 0, 0, 0.3));
 }
 
 /* --- MENU TOMBOL (KARTU) --- */
 .action-menu {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .menu-card {
-    flex: 1;
-    background-color: #d0e4fb; /* Biru luar yang lebih terang */
-    border: 1px solid #9dbce0;
-    border-radius: 8px;
-    padding: 12px;
-    text-decoration: none;
-    color: black;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 160px; /* Menjaga agar bentuknya agak mengotak */
+  flex: 1;
+  background-color: #d0e4fb; /* Biru luar yang lebih terang */
+  border: 1px solid #9dbce0;
+  border-radius: 8px;
+  padding: 12px;
+  text-decoration: none;
+  color: black;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px';
 }
 
 .menu-card:hover {
-    transform: translateY(-5px); /* Efek terangkat saat disentuh kursor */
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.15);
+  transform: translateY(-5px); /* Efek terangkat saat disentuh kursor */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .menu-inner {
-    background-color: #a4ccff; /* Biru dalam yang sedikit lebih gelap */
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 15px;
-    line-height: 1.4;
+  background-color: #a4ccff; /* Biru dalam yang sedikit lebih gelap */
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 15px;
+  line-height: 1.4;
 }
 
 /* --- TAMPILAN RESPONSIF (UNTUK HP) --- */
 @media (max-width: 768px) {
-    .welcome-section {
-        flex-direction: column-reverse;
-        text-align: center;
-        gap: 30px;
-    }
-    .welcome-text h1 {
-        font-size: 1.8rem;
-    }
-    .dashboard-card {
-        padding: 30px;
-    }
-    .action-menu {
-        flex-wrap: wrap; /* Mengizinkan tombol turun ke bawah jika layar sempit */
-    }
-    .menu-card {
-        min-width: 45%; /* Menjadi 2 kolom di layar HP */
-    }
+  .welcome-section {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 30px;
+  }
+  .welcome-text h1 {
+    font-size: 1.8rem;
+  }
+  .dashboard-card {
+    padding: 30px;
+  }
+  .action-menu {
+    flex-wrap: wrap; /* Mengizinkan tombol turun ke bawah jika layar sempit */
+  }
+  .menu-card {
+    min-width: 45%;
+  }
 }
