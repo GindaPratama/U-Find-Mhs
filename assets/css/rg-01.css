@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.register-container {
+    display: flex;
+    width: 80%;
+    max-width: 900px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.brand-section {
+    flex: 1;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand-section .logo {
+    width: 150px;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4)); 
+}
+
+.brand-section h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-section p {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.register-card {
+    background-color: #eaf1fa; 
+    width: 100%;
+    max-width: 380px;
+    padding: 30px 25px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: -12px 12px 0px #1c2b59; 
+    border: 1px solid #1a4fa3;
+}
+
+.user-icon {
+    font-size: 1.8rem;
+    color: #1c2b59;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #b3c2d6;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #1a4fa3;
+}
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 35px; 
+}
+
+.password-wrapper i {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #555;
+    font-size: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-secondary,
+.btn-primary {
+    flex: 1;
+    background-color: #000a2d; 
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px; 
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-secondary:hover,
+.btn-primary:hover {
+    background-color: #1a4fa3;
+}
+
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column;
+        gap: 50px;
+    }
+    .register-card {
+        box-shadow: -8px 8px 0px #1c2b59; 
+    }
+}

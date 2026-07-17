@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.reset-container {
+    display: flex;
+    width: 80%;
+    max-width: 900px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.brand-section {
+    flex: 1;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand-section .logo {
+    width: 150px;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4)); 
+}
+
+.brand-section h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-section p {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.reset-card {
+    background-color: #eaf1fa; 
+    width: 100%;
+    max-width: 380px;
+    padding: 40px 25px 50px 25px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: -12px 12px 0px #1c2b59; 
+    border: 1px solid #1a4fa3;
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+}
+
+.user-icon {
+    font-size: 1.8rem;
+    color: #1c2b59;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #b3c2d6;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #1a4fa3;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.btn-secondary,
+.btn-primary {
+    flex: 1;
+    background-color: #000a2d; 
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px; 
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-secondary:hover,
+.btn-primary:hover {
+    background-color: #1a4fa3;
+}
+
+@media (max-width: 768px) {
+    .reset-container {
+        flex-direction: column;
+        gap: 50px;
+    }
+    .reset-card {
+        box-shadow: -8px 8px 0px #1c2b59; 
+        min-height: 320px;
+    }
+}
