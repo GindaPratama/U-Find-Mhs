@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #dce7f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar tetap sama dengan dbms-01 */
+.navbar {
+  background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+  border-bottom: 2px solid #1a4fa3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.nav-logo {
+  width: 35px;
+}
+.nav-title {
+  font-weight: 700;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.profile-icon {
+  font-size: 2.2rem;
+}
+
+/* Konten Utama */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.profile-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid #7a94b5;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 2px solid #eaf1fa;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.profile-header i {
+  font-size: 3rem;
+  color: #1a4fa3;
+}
+.name-top {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.role-top {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.info-group {
+  margin-bottom: 15px;
+  background: #eaf1fa;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+.info-group label {
+  font-weight: 700;
+  display: block;
+  font-size: 0.9rem;
+}
+.info-group p {
+  font-size: 0.95rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  gap: 20px;
+}
+.action-buttons a {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.btn-keluar {
+  background-color: #001242;
+}
+.btn-kembali {
+  background-color: #001242;
+}
