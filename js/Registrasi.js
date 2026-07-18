@@ -19,7 +19,42 @@ if (togglePassword && password) {
 }
 
 // ==========================================
-// 2. LOGIKA DATABASE SUPABASE (Auth + Profil otomatis via trigger)
+// 2. LOGIKA MODAL SUKSES (pengganti alert bawaan)
+// ==========================================
+const successModal = document.getElementById("successModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalMessage = document.getElementById("modalMessage");
+const modalOkBtn = document.getElementById("modalOkBtn");
+
+/**
+ * Tampilkan modal sukses. redirectAfterClose menentukan apakah
+ * user diarahkan ke index.html setelah klik tombol "Mengerti".
+ */
+function showSuccessModal(title, message, redirectAfterClose = true) {
+  if (!successModal) {
+    // Fallback kalau modal tidak ditemukan di HTML
+    alert(`${title}\n${message}`);
+    if (redirectAfterClose) window.location.href = "../index.html";
+    return;
+  }
+
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
+  successModal.classList.add("open");
+
+  const handleClose = () => {
+    successModal.classList.remove("open");
+    modalOkBtn.removeEventListener("click", handleClose);
+    if (redirectAfterClose) {
+      window.location.href = "../index.html";
+    }
+  };
+
+  modalOkBtn.addEventListener("click", handleClose);
+}
+
+// ==========================================
+// 3. LOGIKA DATABASE SUPABASE (Auth + Profil otomatis via trigger)
 // ==========================================
 const SUPABASE_URL = "https://fctpmyobagajyhgnptbj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_YVSLcfVELiN_hbLy_VdFZQ_QAIcBJ2V";
@@ -75,10 +110,9 @@ if (registerForm) {
 
     try {
       // Daftarkan akun ke Supabase Auth. Data profil (NIM, nama, no HP)
-      // dititipkan lewat "options.data" sebagai metadata — nanti dibaca
-      // otomatis oleh trigger database untuk membuat baris di tabel
-      // Mahasiswa, TANPA perlu insert manual dari sisi client.
-      // Pola ini aman walau "Confirm email" aktif (session belum ada).
+      // dititipkan lewat "options.data" sebagai metadata, lalu otomatis
+      // dibaca oleh trigger database untuk membuat baris di tabel
+      // Mahasiswa — tanpa insert manual dari client.
       const { data: signUpData, error: signUpError } =
         await supabaseClient.auth.signUp({
           email: emailVal,
@@ -95,8 +129,6 @@ if (registerForm) {
       if (signUpError) {
         console.error("Gagal mendaftar akun:", signUpError);
 
-        // Pesan Supabase untuk NIM duplikat akan muncul lewat trigger
-        // sebagai error constraint unique, tangkap biar pesannya jelas
         if (
           signUpError.message &&
           signUpError.message.toLowerCase().includes("nim")
@@ -104,6 +136,11 @@ if (registerForm) {
           alert(
             "NIM ini sudah terdaftar. Silakan login atau gunakan NIM lain.",
           );
+        } else if (
+          signUpError.message &&
+          signUpError.message.toLowerCase().includes("already registered")
+        ) {
+          alert("Email ini sudah terdaftar. Silakan login.");
         } else {
           alert("Pendaftaran gagal: " + signUpError.message);
         }
@@ -117,16 +154,24 @@ if (registerForm) {
         return;
       }
 
+      registerForm.reset();
+
+      // "Confirm email" aktif -> signUp tidak langsung menghasilkan
+      // session, user WAJIB klik link di email dulu sebelum bisa login.
       if (!signUpData.session) {
-        alert(
-          "Pendaftaran berhasil! Silakan cek email kamu untuk konfirmasi akun sebelum login.",
+        showSuccessModal(
+          "Terima kasih sudah melakukan registrasi akun",
+          "Silahkan cek email Anda untuk melakukan aktivasi akun.",
+          true,
         );
       } else {
-        alert("Pendaftaran berhasil! Data telah masuk ke database U-Find.");
+        // Fallback kalau suatu saat "Confirm email" dimatikan lagi
+        showSuccessModal(
+          "Pendaftaran berhasil!",
+          "Silakan login menggunakan akun yang baru saja Anda daftarkan.",
+          true,
+        );
       }
-
-      registerForm.reset();
-      window.location.href = "../index.html";
     } catch (err) {
       console.error("Terjadi kesalahan tak terduga:", err);
       alert("Terjadi kesalahan tak terduga. Coba lagi nanti.");
