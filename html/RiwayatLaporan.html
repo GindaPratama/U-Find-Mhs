@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Laporan - U-Find</title>
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/RiwayatLaporan.css" />
+    <!-- Menggunakan FontAwesome untuk Icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <!-- Navbar (disamakan dengan halaman lain) -->
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="Dashboard.html">
+            <img
+              src="../assets/img/logo_unikom.png"
+              alt="Logo UNIKOM"
+              class="nav-logo"
+            />
+          </a>
+          <span class="nav-title">U-Find</span>
+        </div>
+        <div class="nav-right">
+          <span class="username">Pengguna</span>
+          <a href="Profile.html" style="color: white; text-decoration: none">
+            <i class="fa-solid fa-circle-user profile-icon"></i>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Container (Kotak Putih) -->
+      <main class="main-container">
+        <!-- Header Halaman -->
+        <div class="page-header">
+          <a href="Dashboard.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left-long"></i>
+          </a>
+          <h1>Riwayat Laporan Anda</h1>
+        </div>
+
+        <!-- Laporan Kehilangan -->
+        <section class="riwayat-section">
+          <div class="section-title">Laporan Kehilangan</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-no">No</th>
+                  <th>Waktu</th>
+                  <th>Nama Barang</th>
+                  <th>Gambar Barang</th>
+                  <th>Ciri Barang</th>
+                  <th>Lokasi Kejadian</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-no">1</td>
+                  <td>8.30 WIB<br />22/06/2026</td>
+                  <td>Powerbank</td>
+                  <td>
+                    <div class="thumb">
+                      <i
+                        class="fa-solid fa-battery-full"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </td>
+                  <td>
+                    Powerbank warna hitam dan sedikit rusak bagian pinggir
+                  </td>
+                  <td>Ruangan R5304 Gedung Miracle</td>
+                  <td>
+                    <span class="status status-rejected"
+                      >Laporan Ditolak !, Gambar dengan ciri barang tidak
+                      sesuai</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-no">2</td>
+                  <td>10.30 WIB<br />18/06/2026</td>
+                  <td>Dompet</td>
+                  <td>
+                    <div class="thumb">
+                      <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+                    </div>
+                  </td>
+                  <td>Dompet hitam dengan corak batik abu - abu</td>
+                  <td>Basement B2</td>
+                  <td>
+                    <div class="status-row">
+                      <span class="status status-searching">Sedang Dicari</span>
+                      <button
+                        type="button"
+                        class="delete-btn"
+                        title="Hapus Laporan"
+                      >
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Laporan Temuan -->
+        <section class="riwayat-section">
+          <div class="section-title">Laporan Temuan</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-no">No</th>
+                  <th>Waktu</th>
+                  <th>Nama Barang</th>
+                  <th>Gambar Barang</th>
+                  <th>Ciri Barang</th>
+                  <th>Lokasi Kejadian</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-no">1</td>
+                  <td>14.20 WIB<br />29/06/2026</td>
+                  <td>Earphone</td>
+                  <td>
+                    <div class="thumb">
+                      <i class="fa-solid fa-headphones" aria-hidden="true"></i>
+                    </div>
+                  </td>
+                  <td>
+                    Earphone berwarna putih dengan sedikit lecet di bagian depan
+                  </td>
+                  <td>Kantin UNIKOM, ditemukan di bawah meja makan</td>
+                  <td>
+                    <span class="status status-pending">Menunggu Validasi</span>
+                  </td>
+                </tr>
+                <tr class="row-empty">
+                  <td class="col-no">&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

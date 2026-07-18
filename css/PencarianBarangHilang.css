@@ -1,0 +1,344 @@
+/* Mengatur font dan reset margin */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #dce7f5;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAVBAR (disamakan dengan Dashboard, Profile, dsb.) */
+.navbar {
+  background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+  border-bottom: 2px solid #1a4fa3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-logo {
+  width: 35px;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.nav-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.username {
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.profile-icon {
+  font-size: 2.2rem;
+  color: white;
+}
+
+/* MAIN CONTAINER (Kotak Putih) */
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  min-height: 600px;
+  overflow: hidden; /* Agar watermark tidak keluar kotak */
+}
+
+/* Watermark Background Tengah */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background-image: url("../assets/img/logo_unikom.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.08; /* Membuatnya tembus pandang */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* TOP CONTROLS (Back & Search) */
+.top-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 25px;
+  z-index: 1;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  background-color: #e2ebf5;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #d1ddf0;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 20px;
+  padding-right: 40px;
+  border: 2px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* TOGGLE BUTTONS */
+.toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  z-index: 1;
+  position: relative;
+}
+
+.toggle-btn {
+  padding: 10px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.toggle-btn.active {
+  background-color: #a8cbf1;
+  color: #061941;
+}
+
+.toggle-btn.inactive {
+  background-color: #d1d5db;
+  color: #6b7280;
+}
+
+.toggle-btn.inactive:hover {
+  background-color: #bcc2cc;
+}
+
+/* CARD GRID */
+.card-grid {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  z-index: 1;
+  position: relative;
+  margin-bottom: 40px;
+}
+
+/* STYLE CARD */
+.card {
+  background-color: #a8cbf1; /* Biru muda */
+  width: 300px;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-container {
+  background-color: white;
+  border-radius: 8px;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.card-img-container img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: cover;
+}
+
+.placeholder-icon {
+  font-size: 2.8rem;
+  color: #a8cbf1;
+}
+
+/* Teks Detail di dalam Card */
+.card-info {
+  flex-grow: 1;
+  margin-bottom: 15px;
+  background-color: transparent;
+  padding: 0 5px;
+}
+
+.card-info table {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #000;
+  border-collapse: collapse;
+}
+
+.card-info td {
+  vertical-align: top;
+  padding-bottom: 3px;
+}
+
+.label {
+  width: 40%;
+  font-weight: 600;
+}
+
+.colon {
+  width: 5%;
+  font-weight: 600;
+}
+
+.value {
+  width: 55%;
+  font-weight: 600;
+}
+
+.detail-btn {
+  background-color: #061941;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 60%;
+  margin: 0 auto;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.detail-btn {
+  background-color: #061941;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 60%;
+  margin: 0 auto;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+  position: relative;
+  margin-top: 20px;
+}
+
+.page-num,
+.page-arrow {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-num {
+  background-color: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-num.active {
+  background-color: #63a4ff;
+  color: white;
+}
+
+.page-arrow {
+  background-color: #f1f5f9;
+  color: #333;
+}

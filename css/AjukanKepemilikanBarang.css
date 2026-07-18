@@ -1,4 +1,3 @@
-/* --- Pengaturan Dasar --- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
 * {
@@ -22,7 +21,7 @@ body {
   flex-direction: column;
 }
 
-/* --- Navbar (Konsisten dengan halaman lain) --- */
+/* Navbar (disamakan dengan halaman lain) */
 .navbar {
   background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
   border-bottom: 2px solid #1a4fa3;
@@ -67,7 +66,7 @@ body {
   color: white;
 }
 
-/* --- Konten Utama --- */
+/* Konten Utama */
 .main-content {
   flex: 1;
   padding: 40px;
@@ -85,21 +84,31 @@ body {
   height: fit-content;
 }
 
-/* --- Header Form --- */
+/* Header Form */
 .form-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
   margin-bottom: 25px;
 }
 
+.form-header h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #061941;
+  text-align: center;
+}
+
 .close-btn {
+  position: absolute;
+  right: 0;
   color: #000;
   font-size: 1.5rem;
   text-decoration: none;
 }
 
-/* --- Grup Input --- */
+/* Grup Input */
 .input-group {
   margin-bottom: 20px;
 }
@@ -110,48 +119,69 @@ body {
   margin-bottom: 8px;
 }
 
-.input-group input {
+/* Area Upload Foto */
+.upload-area {
+  background: #fff;
+  border: 1px solid #7a94b5;
+  border-radius: 5px;
+  padding: 20px;
+  min-height: 150px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.upload-placeholder {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.upload-icon {
+  font-size: 1.4rem;
+  color: #333;
+}
+
+/* Dropdown Laporan Kehilangan */
+.input-group select {
   width: 100%;
   padding: 15px;
   border: 1px solid #7a94b5;
   border-radius: 5px;
   outline: none;
-}
-  
-.row-group {
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
-}
-
-.row-group .input-group {
-  flex: 1;
-  margin-bottom: 0;
-}
-
-.upload-btn {
-  padding: 15px;
   background: #fff;
-  border: 1px solid #7a94b5;
-  border-radius: 5px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: #333;
   cursor: pointer;
-  width: 100%;
+}
+
+/* Tombol Aksi */
+.action-buttons {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-.submit-btn {
-  background: #001242;
+.btn-secondary,
+.btn-primary {
+  flex: 1;
+  background-color: #001242;
   color: white;
-  padding: 15px 40px;
-  border: none;
-  border-radius: 5px;
+  text-decoration: none;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 700;
+  border: none;
   cursor: pointer;
   transition: background 0.3s;
 }
 
-.submit-btn:hover {
-  background: #1a4fa3;
+.btn-secondary:hover,
+.btn-primary:hover {
+  background-color: #1a4fa3;
 }

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Barang Hilang - U-Find</title>
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/DetailBarangHilang.css" />
+    <!-- Menggunakan FontAwesome untuk Icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <!-- Navbar (disamakan dengan halaman lain) -->
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="Dashboard.html">
+            <img
+              src="../assets/img/logo_unikom.png"
+              alt="Logo UNIKOM"
+              class="nav-logo"
+            />
+          </a>
+          <span class="nav-title">U-Find</span>
+        </div>
+        <div class="nav-right">
+          <span class="username">Pengguna</span>
+          <a href="Profile.html" style="color: white; text-decoration: none">
+            <i class="fa-solid fa-circle-user profile-icon"></i>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Container (Kotak Putih) -->
+      <main class="main-container">
+        <!-- Watermark Background -->
+        <div class="watermark"></div>
+
+        <!-- Top Controls -->
+        <div class="top-controls">
+          <a href="PencarianBarangHilang.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left-long"></i>
+          </a>
+        </div>
+
+        <!-- Detail Content -->
+        <div class="detail-content">
+          <!-- Kolom Foto -->
+          <div class="photo-card">
+            <p class="photo-label">Gambar Barang</p>
+            <div class="photo-frame">
+              <i
+                class="fa-solid fa-hat-cowboy placeholder-icon-lg"
+                aria-hidden="true"
+              ></i>
+            </div>
+          </div>
+
+          <!-- Kolom Info -->
+          <div class="info-card">
+            <p class="info-title">SEDANG DICARI!!</p>
+            <table>
+              <tr>
+                <td class="label">ID</td>
+                <td class="colon">:</td>
+                <td class="value">LH-002</td>
+              </tr>
+              <tr>
+                <td class="label">Nama Barang</td>
+                <td class="colon">:</td>
+                <td class="value">Topi</td>
+              </tr>
+              <tr>
+                <td class="label">Lokasi</td>
+                <td class="colon">:</td>
+                <td class="value">Kantin Unikom</td>
+              </tr>
+              <tr>
+                <td class="label">Tanggal</td>
+                <td class="colon">:</td>
+                <td class="value">21/06/2026</td>
+              </tr>
+              <tr>
+                <td class="label">Ciri khusus</td>
+                <td class="colon">:</td>
+                <td class="value">Warna hitam, tulisan BALENCIAGA</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pertanyaan Penemuan -->
+        <div class="claim-question">
+          <p class="claim-question-title">Apakah Anda Menemukan Barang Ini?</p>
+          <p class="claim-question-text">
+            Jika ya, silakan laporkan penemuan Anda di pos Satpam agar dapat
+            dikembalikan ke pemiliknya
+          </p>
+        </div>
+
+        <!-- Tombol Lapor Penemuan -->
+        <button type="button" class="claim-btn">
+          Laporkan Penemuan Barang
+        </button>
+      </main>
+    </div>
+  </body>
+</html>

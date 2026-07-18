@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lapor Barang Temuan - U-Find</title>
+    <link rel="stylesheet" href="../css/LaporBarangTemuan.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="../index.html">
+            <img
+              src="../assets/img/logo_unikom.png"
+              alt="Logo UNIKOM"
+              class="nav-logo"
+            />
+          </a>
+          <span class="nav-title">U-Find</span>
+        </div>
+        <div class="nav-right">
+          <span class="username">Pengguna</span>
+          <i class="fa-solid fa-circle-user profile-icon"></i>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Makasih ya udah jadi orang baik</h2>
+            <a href="Dashboard.html" class="close-btn"
+              ><i class="fa-solid fa-xmark"></i
+            ></a>
+          </div>
+
+          <form>
+            <div class="input-group">
+              <label>Nama Barang</label>
+              <input type="text" placeholder="Masukan Nama Barang Temuan" />
+            </div>
+            <div class="input-group">
+              <label>Rincian Barang</label>
+              <input type="text" placeholder="Masukan Rincian Barang Temuan" />
+            </div>
+            <div class="input-group">
+              <label>Lokasi Kejadian</label>
+              <input
+                type="text"
+                placeholder="Masukan Lokasi Kejadian Barang Temuan"
+              />
+            </div>
+
+            <div class="row-group">
+              <div class="input-group">
+                <label>Tanggal</label>
+                <input type="date" />
+              </div>
+              <div class="input-group">
+                <label>Upload Foto</label>
+                <button type="button" class="upload-btn">
+                  Pilih Foto Barang <i class="fa-solid fa-upload"></i>
+                </button>
+              </div>
+              <button type="submit" class="submit-btn">Laporkan</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

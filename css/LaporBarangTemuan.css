@@ -1,4 +1,4 @@
-/* --- Pengaturan Dasar --- */
+/* --- Menggunakan struktur CSS yang sama dengan LaporKehilangan.css agar konsisten --- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
 * {
@@ -14,7 +14,6 @@ body {
   display: flex;
   flex-direction: column;
 }
-
 .dashboard-wrapper {
   width: 100%;
   flex: 1;
@@ -22,7 +21,7 @@ body {
   flex-direction: column;
 }
 
-/* --- Navbar (Konsisten dengan halaman lain) --- */
+/* Navbar */
 .navbar {
   background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
   border-bottom: 2px solid #1a4fa3;
@@ -34,47 +33,40 @@ body {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   width: 100%;
 }
-
 .nav-left {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .nav-logo {
   width: 35px;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
 }
-
 .nav-title {
   font-weight: 700;
   font-size: 1rem;
 }
-
 .nav-right {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .username {
   font-weight: 400;
   font-size: 0.95rem;
 }
-
 .profile-icon {
   font-size: 2.2rem;
   color: white;
 }
 
-/* --- Konten Utama --- */
+/* Konten Utama */
 .main-content {
   flex: 1;
   padding: 40px;
   display: flex;
   justify-content: center;
 }
-
 .form-container {
   background: #d0e4fb;
   width: 100%;
@@ -85,31 +77,26 @@ body {
   height: fit-content;
 }
 
-/* --- Header Form --- */
+/* Header & Form */
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
 }
-
 .close-btn {
   color: #000;
   font-size: 1.5rem;
   text-decoration: none;
 }
-
-/* --- Grup Input --- */
 .input-group {
   margin-bottom: 20px;
 }
-
 .input-group label {
   display: block;
   font-weight: 700;
   margin-bottom: 8px;
 }
-
 .input-group input {
   width: 100%;
   padding: 15px;
@@ -117,18 +104,19 @@ body {
   border-radius: 5px;
   outline: none;
 }
-  
+
+/* Row Group */
 .row-group {
   display: flex;
   gap: 20px;
   align-items: flex-end;
 }
-
 .row-group .input-group {
   flex: 1;
   margin-bottom: 0;
 }
 
+/* Tombol */
 .upload-btn {
   padding: 15px;
   background: #fff;
@@ -140,7 +128,6 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
 .submit-btn {
   background: #001242;
   color: white;
@@ -151,7 +138,6 @@ body {
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .submit-btn:hover {
   background: #1a4fa3;
 }

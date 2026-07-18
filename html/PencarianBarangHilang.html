@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>U-Find - Sistem Informasi Barang Hilang</title>
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/PencarianBarangTemuan.css" />
+    <!-- Menggunakan FontAwesome untuk Icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <!-- Navbar (disamakan dengan halaman lain) -->
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="Dashboard.html">
+            <img
+              src="../assets/img/logo_unikom.png"
+              alt="Logo UNIKOM"
+              class="nav-logo"
+            />
+          </a>
+          <span class="nav-title">U-Find</span>
+        </div>
+        <div class="nav-right">
+          <span class="username">Pengguna</span>
+          <a href="Profile.html" style="color: white; text-decoration: none">
+            <i class="fa-solid fa-circle-user profile-icon"></i>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Container (Kotak Putih) -->
+      <main class="main-container">
+        <!-- Watermark Background -->
+        <div class="watermark"></div>
+
+        <!-- Top Controls -->
+        <div class="top-controls">
+          <a href="Dashboard.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left-long"></i>
+          </a>
+          <div class="search-wrapper">
+            <input
+              type="text"
+              placeholder="Cari Barang Hilang"
+              class="search-input"
+            />
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          </div>
+        </div>
+
+        <!-- Toggle Buttons -->
+        <div class="toggle-buttons">
+          <a href="PencarianBarangTemuan.html" class="toggle-btn inactive"
+            >Barang Temuan</a
+          >
+          <a href="PencarianBarangHilang.html" class="toggle-btn active"
+            >Barang Hilang</a
+          >
+        </div>
+
+        <!-- Card Grid -->
+        <div class="card-grid">
+          <!-- Card 1 -->
+          <div class="card">
+            <div class="card-img-container">
+              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
+              <i
+                class="fa-solid fa-mobile-screen placeholder-icon"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div class="card-info">
+              <table>
+                <tr>
+                  <td class="label">ID</td>
+                  <td class="colon">:</td>
+                  <td class="value">LH-001</td>
+                </tr>
+                <tr>
+                  <td class="label">Nama Barang</td>
+                  <td class="colon">:</td>
+                  <td class="value">Handphone</td>
+                </tr>
+                <tr>
+                  <td class="label">Lokasi</td>
+                  <td class="colon">:</td>
+                  <td class="value">Kantin Fasilkom</td>
+                </tr>
+                <tr>
+                  <td class="label">Tanggal</td>
+                  <td class="colon">:</td>
+                  <td class="value">24/06/2026</td>
+                </tr>
+              </table>
+            </div>
+            <a href="DetailBarangHilang.html" class="detail-btn">Cek Detail</a>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card">
+            <div class="card-img-container">
+              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
+              <i
+                class="fa-solid fa-book placeholder-icon"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div class="card-info">
+              <table>
+                <tr>
+                  <td class="label">ID</td>
+                  <td class="colon">:</td>
+                  <td class="value">LH-002</td>
+                </tr>
+                <tr>
+                  <td class="label">Nama Barang</td>
+                  <td class="colon">:</td>
+                  <td class="value">Buku Catatan</td>
+                </tr>
+                <tr>
+                  <td class="label">Lokasi</td>
+                  <td class="colon">:</td>
+                  <td class="value">Ruangan 4102</td>
+                </tr>
+                <tr>
+                  <td class="label">Tanggal</td>
+                  <td class="colon">:</td>
+                  <td class="value">22/06/2026</td>
+                </tr>
+              </table>
+            </div>
+            <a href="DetailBarangHilang.html" class="detail-btn">Cek Detail</a>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card">
+            <div class="card-img-container">
+              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
+              <i
+                class="fa-solid fa-key placeholder-icon"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div class="card-info">
+              <table>
+                <tr>
+                  <td class="label">ID</td>
+                  <td class="colon">:</td>
+                  <td class="value">LH-003</td>
+                </tr>
+                <tr>
+                  <td class="label">Nama Barang</td>
+                  <td class="colon">:</td>
+                  <td class="value">Kunci Motor</td>
+                </tr>
+                <tr>
+                  <td class="label">Lokasi</td>
+                  <td class="colon">:</td>
+                  <td class="value">Parkiran Gedung Miracle</td>
+                </tr>
+                <tr>
+                  <td class="label">Tanggal</td>
+                  <td class="colon">:</td>
+                  <td class="value">26/06/2026</td>
+                </tr>
+              </table>
+            </div>
+            <a href="DetailBarangHilang.html" class="detail-btn">Cek Detail</a>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="page-arrow">
+            <i class="fa-solid fa-angle-left"></i>
+          </button>
+          <button class="page-num active">1</button>
+          <button class="page-num">2</button>
+          <button class="page-num">3</button>
+          <button class="page-num">4</button>
+          <button class="page-num">5</button>
+          <button class="page-num">6</button>
+          <button class="page-num">7</button>
+          <button class="page-arrow">
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

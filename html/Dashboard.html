@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Mahasiswa - U-Find</title>
-    <link rel="icon" href="/assets/img/favicon.ico?v=2" type="image/x-icon" />
-    <link rel="stylesheet" href="/css/Dashboard.css" />
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/Dashboard.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -17,7 +17,7 @@
         <div class="nav-left">
           <a href="../index.html">
             <img
-              src="/assets/img/logo_unikom.png"
+              src="../assets/img/logo_unikom.png"
               alt="Logo UNIKOM"
               class="nav-logo"
             />
@@ -25,13 +25,28 @@
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <a
-            href="/html/Profile.html"
-            style="color: white; text-decoration: none"
-          >
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-          </a>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Profil Saya</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -43,31 +58,52 @@
               <p>TRUST UR HEART, TRUST U-Find</p>
             </div>
             <img
-              src="/assets/img/logo_unikom.png"
+              src="../assets/img/logo_unikom.png"
               alt="Logo UNIKOM Besar"
               class="welcome-logo"
             />
           </div>
 
           <div class="action-menu">
-            <a href="/html/LaporKehilanganBarang.html" class="menu-card">
+            <a href="LaporKehilanganBarang.html" class="menu-card">
               <div class="menu-inner">Lapor<br />Kehilangan<br />Barang</div>
             </a>
 
-            <a href="/html/LaporBarangTemuan.html" class="menu-card">
+            <a href="LaporBarangTemuan.html" class="menu-card">
               <div class="menu-inner">Lapor Barang<br />Temuan</div>
             </a>
 
-            <a href="/html/CariBarang.html" class="menu-card">
+            <a href="PencarianBarangTemuan.html" class="menu-card">
               <div class="menu-inner">Cari Barang<br />Kamu Disini!</div>
             </a>
 
-            <a href="/html/RiwayatLaporan.html" class="menu-card">
+            <a href="RiwayatLaporan.html" class="menu-card">
               <div class="menu-inner">Riwayat<br />Laporan Anda</div>
             </a>
           </div>
         </div>
       </main>
     </div>
+
+    <script>
+      const profileTrigger = document.getElementById("profileTrigger");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      profileTrigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle("open");
+        profileTrigger.classList.toggle("open");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          !profileDropdown.contains(e.target) &&
+          !profileTrigger.contains(e.target)
+        ) {
+          profileDropdown.classList.remove("open");
+          profileTrigger.classList.remove("open");
+        }
+      });
+    </script>
   </body>
 </html>

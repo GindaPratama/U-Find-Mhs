@@ -1,0 +1,269 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #dce7f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAVBAR (disamakan dengan halaman lain) */
+.navbar {
+  background: linear-gradient(90deg, #001242 0%, #062b7a 50%, #1a4fa3 100%);
+  border-bottom: 2px solid #1a4fa3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-logo {
+  width: 35px;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.nav-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.username {
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.profile-icon {
+  font-size: 2.2rem;
+  color: white;
+}
+
+/* MAIN CONTAINER (Kotak Putih) */
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  min-height: 600px;
+  overflow: hidden;
+}
+
+/* Watermark Background Tengah */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background-image: url("../assets/img/logo_unikom.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* TOP CONTROLS (Tombol Kembali) */
+.top-controls {
+  position: relative;
+  margin-bottom: 25px;
+  z-index: 1;
+}
+
+.back-btn {
+  background-color: #e2ebf5;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #d1ddf0;
+}
+
+/* DETAIL CONTENT (Foto + Info) */
+.detail-content {
+  display: flex;
+  gap: 25px;
+  z-index: 1;
+  position: relative;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Kolom Foto */
+.photo-card {
+  background-color: #a8cbf1;
+  border-radius: 12px;
+  padding: 15px;
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.photo-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #061941;
+  margin-bottom: 10px;
+}
+
+.photo-frame {
+  background-color: white;
+  border-radius: 8px;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.photo-frame img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: cover;
+}
+
+.placeholder-icon-lg {
+  font-size: 4rem;
+  color: #a8cbf1;
+}
+
+/* Kolom Info */
+.info-card {
+  background-color: #cfe0f7;
+  border-radius: 12px;
+  padding: 20px 25px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.info-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #061941;
+  margin-bottom: 15px;
+  letter-spacing: 0.5px;
+}
+
+.info-card table {
+  width: 100%;
+  font-size: 0.95rem;
+  color: #000;
+  border-collapse: collapse;
+}
+
+.info-card td {
+  vertical-align: top;
+  padding-bottom: 10px;
+}
+
+.label {
+  width: 30%;
+  font-weight: 600;
+}
+
+.colon {
+  width: 5%;
+  font-weight: 600;
+}
+
+.value {
+  width: 65%;
+  font-weight: 600;
+}
+
+/* Pertanyaan Penemuan */
+.claim-question {
+  border: 1px solid #d5dde8;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  z-index: 1;
+  position: relative;
+  background-color: #ffffff;
+}
+
+.claim-question-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.claim-question-text {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Tombol Lapor Penemuan */
+.claim-btn {
+  background-color: #001242;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 20px;
+  width: 100%;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  z-index: 1;
+  position: relative;
+}
+
+.claim-btn:hover {
+  background-color: #1a4fa3;
+}
+
+/* RESPONSIF */
+@media (max-width: 600px) {
+  .detail-content {
+    flex-direction: column;
+  }
+  .photo-card {
+    width: 100%;
+  }
+}
