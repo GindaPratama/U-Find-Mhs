@@ -6,7 +6,6 @@ const password = document.querySelector("#password");
 
 if (togglePassword && password) {
   togglePassword.addEventListener("click", function () {
-    // Ubah tipe input
     if (password.type === "password") {
       password.type = "text";
       this.classList.remove("fa-eye");
@@ -20,17 +19,11 @@ if (togglePassword && password) {
 }
 
 // ==========================================
-// 2. LOGIKA DATABASE SUPABASE
+// 2. LOGIKA DATABASE SUPABASE (Auth + Profil)
 // ==========================================
 const SUPABASE_URL = "https://fctpmyobagajyhgnptbj.supabase.co";
-// PERHATIAN: Masukkan Anon Key kamu di bawah ini agar data bisa masuk
-// (Project Settings > API > Project API keys > anon public)
 const SUPABASE_ANON_KEY = "sb_publishable_YVSLcfVELiN_hbLy_VdFZQ_QAIcBJ2V";
 
-// PENTING: gunakan window.supabase (library dari CDN) untuk membuat client,
-// lalu simpan ke nama variabel BERBEDA (supabaseClient), bukan "supabase" —
-// sebelumnya kode menimpa nama "supabase" dengan dirinya sendiri sehingga
-// selalu gagal (ReferenceError) dan data tidak pernah terkirim.
 let supabaseClient = null;
 
 try {
@@ -49,7 +42,7 @@ const submitBtn = registerForm
 
 if (registerForm) {
   registerForm.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Mencegah halaman refresh otomatis
+    event.preventDefault();
 
     if (!supabaseClient) {
       alert(
@@ -69,7 +62,11 @@ if (registerForm) {
       return;
     }
 
-    // Nonaktifkan tombol saat proses berjalan agar tidak double-submit
+    if (passwordVal.length < 6) {
+      alert("Password minimal 6 karakter.");
+      return;
+    }
+
     const originalBtnText = submitBtn ? submitBtn.textContent : "";
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -77,52 +74,78 @@ if (registerForm) {
     }
 
     try {
-      // Cek apakah NIM atau Email sudah terdaftar sebelumnya
-      const { data: existing, error: checkError } = await supabaseClient
+      // Cek dulu apakah NIM sudah dipakai (Email sudah otomatis dicek unik oleh Auth)
+      const { data: existingNim, error: checkError } = await supabaseClient
         .from("Mahasiswa")
-        .select("NIM, Email")
-        .or(`NIM.eq.${nimVal},Email.eq.${emailVal}`);
+        .select("NIM")
+        .eq("NIM", nimVal)
+        .maybeSingle();
 
       if (checkError) {
-        console.error("Gagal memeriksa data:", checkError);
+        console.error("Gagal memeriksa NIM:", checkError);
         alert("Terjadi kesalahan saat memeriksa data: " + checkError.message);
         return;
       }
 
-      if (existing && existing.length > 0) {
-        const nimTaken = existing.some((row) => row.NIM === nimVal);
+      if (existingNim) {
+        alert("NIM ini sudah terdaftar. Silakan login atau gunakan NIM lain.");
+        return;
+      }
+
+      // Langkah 1: Daftarkan akun ke Supabase Auth (password otomatis di-hash)
+      const { data: signUpData, error: signUpError } =
+        await supabaseClient.auth.signUp({
+          email: emailVal,
+          password: passwordVal,
+        });
+
+      if (signUpError) {
+        console.error("Gagal mendaftar akun:", signUpError);
+        alert("Pendaftaran gagal: " + signUpError.message);
+        return;
+      }
+
+      const newUser = signUpData.user;
+      if (!newUser) {
         alert(
-          nimTaken
-            ? "NIM ini sudah terdaftar. Silakan login atau gunakan NIM lain."
-            : "Email ini sudah terdaftar. Silakan login atau gunakan email lain.",
+          "Pendaftaran diproses, tapi tidak mendapat data user. Coba lagi.",
         );
         return;
       }
 
-      // Mengirim data ke tabel "Mahasiswa" di Supabase
-      const { data, error } = await supabaseClient.from("Mahasiswa").insert([
-        {
-          NIM: nimVal,
-          Nama_Lengkap: namaVal,
-          Email: emailVal,
-          No_Hp: noHpVal,
-          Password: passwordVal,
-        },
-      ]);
+      // Langkah 2: Simpan data profil tambahan ke tabel Mahasiswa,
+      // dihubungkan lewat user_id ke akun Auth yang baru dibuat.
+      const { error: insertError } = await supabaseClient
+        .from("Mahasiswa")
+        .insert([
+          {
+            user_id: newUser.id,
+            NIM: nimVal,
+            Nama_Lengkap: namaVal,
+            Email: emailVal,
+            No_Hp: noHpVal,
+          },
+        ]);
 
-      // Pengecekan status pendaftaran
-      if (error) {
-        console.error("Gagal menyimpan data:", error);
-        alert("Pendaftaran gagal: " + error.message);
+      if (insertError) {
+        console.error("Gagal menyimpan profil:", insertError);
+        alert(
+          "Akun berhasil dibuat, tapi gagal menyimpan data profil: " +
+            insertError.message,
+        );
         return;
       }
 
-      alert("Pendaftaran berhasil! Data telah masuk ke database U-Find.");
+      // Jika project mengaktifkan "Confirm email", session belum ada di sini
+      if (!signUpData.session) {
+        alert(
+          "Pendaftaran berhasil! Silakan cek email kamu untuk konfirmasi akun sebelum login.",
+        );
+      } else {
+        alert("Pendaftaran berhasil! Data telah masuk ke database U-Find.");
+      }
 
-      // Kosongkan form setelah berhasil daftar
       registerForm.reset();
-
-      // Mengarahkan otomatis ke halaman login (index.html)
       window.location.href = "../index.html";
     } catch (err) {
       console.error("Terjadi kesalahan tak terduga:", err);
