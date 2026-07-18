@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lapor Kehilangan Barang - U-Find</title>
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
     <link rel="stylesheet" href="../css/LaporKehilanganBarang.css" />
     <link
       rel="stylesheet"
@@ -25,8 +26,28 @@
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <i class="fa-solid fa-circle-user profile-icon"></i>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Profil Saya</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -34,45 +55,149 @@
       <main class="main-content">
         <div class="form-container">
           <div class="form-header">
-            <h2>Semoga cepet ketemu ya!</h2>
-            <a href="Dashboard.html" class="close-btn"
-              ><i class="fa-solid fa-xmark"></i
-            ></a>
+            <div class="form-header-text">
+              <span class="form-eyebrow">Lapor Kehilangan</span>
+              <h1>Semoga cepat ketemu ya!</h1>
+              <p>
+                Isi detail barangmu selengkap mungkin supaya lebih mudah
+                dikenali kalau ada yang menemukannya.
+              </p>
+            </div>
+            <a href="Dashboard.html" class="close-btn" aria-label="Tutup">
+              <i class="fa-solid fa-xmark"></i>
+            </a>
           </div>
 
-          <form>
-            <div class="input-group">
-              <label>Nama Barang</label>
-              <input type="text" placeholder="Masukan Nama Barang Hilang" />
-            </div>
-            <div class="input-group">
-              <label>Ciri Barang</label>
-              <input type="text" placeholder="Masukan Ciri Barang Hilang" />
-            </div>
-            <div class="input-group">
-              <label>Lokasi Kejadian</label>
-              <input
-                type="text"
-                placeholder="Masukan Lokasi Kejadian Barang Hilang"
-              />
+          <form id="laporForm" novalidate>
+            <div class="form-grid">
+              <div class="form-main">
+                <div class="input-group">
+                  <label for="namaBarang">Nama Barang</label>
+                  <input
+                    type="text"
+                    id="namaBarang"
+                    name="namaBarang"
+                    placeholder="cth. Dompet Kulit Coklat"
+                    required
+                  />
+                  <span class="error-text" data-error-for="namaBarang"></span>
+                </div>
+
+                <div class="input-group">
+                  <label for="ciriBarang">Ciri Barang</label>
+                  <textarea
+                    id="ciriBarang"
+                    name="ciriBarang"
+                    rows="3"
+                    placeholder="cth. Ada gantungan kunci UNIKOM, terdapat KTM dan kartu ATM di dalamnya"
+                    required
+                  ></textarea>
+                  <span class="error-text" data-error-for="ciriBarang"></span>
+                </div>
+
+                <div class="input-group">
+                  <label for="lokasiKejadian">Lokasi Kejadian</label>
+                  <input
+                    type="text"
+                    id="lokasiKejadian"
+                    name="lokasiKejadian"
+                    placeholder="cth. Kantin Gedung Rektorat Lantai 1"
+                    required
+                  />
+                  <span
+                    class="error-text"
+                    data-error-for="lokasiKejadian"
+                  ></span>
+                </div>
+
+                <div class="input-group">
+                  <label for="tanggalKejadian">Tanggal Kehilangan</label>
+                  <input
+                    type="date"
+                    id="tanggalKejadian"
+                    name="tanggalKejadian"
+                    required
+                  />
+                  <span
+                    class="error-text"
+                    data-error-for="tanggalKejadian"
+                  ></span>
+                </div>
+              </div>
+
+              <div class="form-side">
+                <label class="upload-label">Foto Barang</label>
+
+                <div class="upload-dropzone" id="uploadDropzone">
+                  <input
+                    type="file"
+                    id="fotoBarang"
+                    name="fotoBarang"
+                    accept="image/png, image/jpeg, image/webp"
+                    hidden
+                  />
+
+                  <div class="upload-empty" id="uploadEmpty">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p class="upload-title">Seret foto ke sini</p>
+                    <p class="upload-subtitle">atau</p>
+                    <button
+                      type="button"
+                      class="upload-btn"
+                      id="uploadTriggerBtn"
+                    >
+                      Pilih Foto Barang
+                    </button>
+                    <p class="upload-hint">PNG, JPG, atau WEBP · Maks 5MB</p>
+                  </div>
+
+                  <div class="upload-preview hidden" id="uploadPreview">
+                    <img id="previewImage" src="" alt="Pratinjau foto barang" />
+                    <div class="preview-info">
+                      <span class="preview-filename" id="previewFilename"
+                        >-</span
+                      >
+                      <span class="preview-filesize" id="previewFilesize"
+                        >-</span
+                      >
+                    </div>
+                    <div class="preview-actions">
+                      <button
+                        type="button"
+                        class="preview-change"
+                        id="changePhotoBtn"
+                      >
+                        <i class="fa-solid fa-rotate"></i> Ganti
+                      </button>
+                      <button
+                        type="button"
+                        class="preview-remove"
+                        id="removePhotoBtn"
+                      >
+                        <i class="fa-solid fa-trash"></i> Hapus
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <span class="error-text" data-error-for="fotoBarang"></span>
+              </div>
             </div>
 
-            <div class="row-group">
-              <div class="input-group">
-                <label>Tanggal</label>
-                <input type="date" />
-              </div>
-              <div class="input-group">
-                <label>Upload Foto</label>
-                <button type="button" class="upload-btn">
-                  Pilih Foto Barang <i class="fa-solid fa-upload"></i>
+            <div class="form-footer">
+              <div class="form-status" id="formStatus"></div>
+              <div class="form-actions">
+                <a href="Dashboard.html" class="btn-cancel">Batal</a>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                  <span class="submit-btn-text">Laporkan</span>
+                  <i class="fa-solid fa-paper-plane"></i>
                 </button>
               </div>
-              <button type="submit" class="submit-btn">Laporkan</button>
             </div>
           </form>
         </div>
       </main>
     </div>
+
+    <script src="../js/LaporKehilanganBarang.js"></script>
   </body>
 </html>
