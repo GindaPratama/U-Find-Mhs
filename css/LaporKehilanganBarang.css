@@ -422,11 +422,17 @@ body {
   background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   color: #fff;
   border: none;
-  padding: 10px 18px;
+  padding: 11px 20px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  line-height: 1;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   box-shadow: 0 10px 18px -8px rgba(47, 111, 209, 0.5);
   transition:
     transform 0.15s ease,

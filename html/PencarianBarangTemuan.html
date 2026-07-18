@@ -27,27 +27,46 @@
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <a href="Profile.html" style="color: white; text-decoration: none">
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-          </a>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Profil Saya</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
-      <!-- Main Container (Kotak Putih) -->
+      <!-- Main Container (Kotak Putih, full-bleed) -->
       <main class="main-container">
         <!-- Watermark Background -->
         <div class="watermark"></div>
 
         <!-- Top Controls -->
         <div class="top-controls">
-          <a href="Dashboard.html" class="back-btn">
+          <a href="Dashboard.html" class="back-btn" aria-label="Kembali">
             <i class="fa-solid fa-arrow-left-long"></i>
           </a>
           <div class="search-wrapper">
             <input
               type="text"
-              placeholder="Cari Barang Temuan"
+              id="searchInput"
+              placeholder="Cari Barang Temuan berdasarkan nama atau lokasi"
               class="search-input"
             />
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -64,134 +83,14 @@
           >
         </div>
 
-        <!-- Card Grid -->
-        <div class="card-grid">
-          <!-- Card 1 -->
-          <div class="card">
-            <div class="card-img-container">
-              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
-              <i
-                class="fa-solid fa-wallet placeholder-icon"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div class="card-info">
-              <table>
-                <tr>
-                  <td class="label">ID</td>
-                  <td class="colon">:</td>
-                  <td class="value">LT-001</td>
-                </tr>
-                <tr>
-                  <td class="label">Nama Barang</td>
-                  <td class="colon">:</td>
-                  <td class="value">Dompet</td>
-                </tr>
-                <tr>
-                  <td class="label">Lokasi</td>
-                  <td class="colon">:</td>
-                  <td class="value">Ruangan 5306</td>
-                </tr>
-                <tr>
-                  <td class="label">Tanggal</td>
-                  <td class="colon">:</td>
-                  <td class="value">23/06/2026</td>
-                </tr>
-              </table>
-            </div>
-            <a href="DetailBarangTemuan.html" class="detail-btn">Cek Detail</a>
-          </div>
+        <!-- Card Grid (di-render oleh JS) -->
+        <div class="card-grid" id="cardGrid"></div>
 
-          <!-- Card 2 -->
-          <div class="card">
-            <div class="card-img-container">
-              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
-              <i
-                class="fa-solid fa-clock placeholder-icon"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div class="card-info">
-              <table>
-                <tr>
-                  <td class="label">ID</td>
-                  <td class="colon">:</td>
-                  <td class="value">LT-002</td>
-                </tr>
-                <tr>
-                  <td class="label">Nama Barang</td>
-                  <td class="colon">:</td>
-                  <td class="value">SmartWatch</td>
-                </tr>
-                <tr>
-                  <td class="label">Lokasi</td>
-                  <td class="colon">:</td>
-                  <td class="value">Musholla Perpustakaan</td>
-                </tr>
-                <tr>
-                  <td class="label">Tanggal</td>
-                  <td class="colon">:</td>
-                  <td class="value">21/06/2026</td>
-                </tr>
-              </table>
-            </div>
-            <a href="DetailBarangTemuan.html" class="detail-btn">Cek Detail</a>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="card">
-            <div class="card-img-container">
-              <!-- Ganti dengan foto barang asli bila sudah tersedia -->
-              <i
-                class="fa-solid fa-glasses placeholder-icon"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div class="card-info">
-              <table>
-                <tr>
-                  <td class="label">ID</td>
-                  <td class="colon">:</td>
-                  <td class="value">LT-003</td>
-                </tr>
-                <tr>
-                  <td class="label">Nama Barang</td>
-                  <td class="colon">:</td>
-                  <td class="value">Kacamata</td>
-                </tr>
-                <tr>
-                  <td class="label">Lokasi</td>
-                  <td class="colon">:</td>
-                  <td class="value">Depan Gedung Miracle</td>
-                </tr>
-                <tr>
-                  <td class="label">Tanggal</td>
-                  <td class="colon">:</td>
-                  <td class="value">27/06/2026</td>
-                </tr>
-              </table>
-            </div>
-            <a href="DetailBarangTemuan.html" class="detail-btn">Cek Detail</a>
-          </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination">
-          <button class="page-arrow">
-            <i class="fa-solid fa-angle-left"></i>
-          </button>
-          <button class="page-num active">1</button>
-          <button class="page-num">2</button>
-          <button class="page-num">3</button>
-          <button class="page-num">4</button>
-          <button class="page-num">5</button>
-          <button class="page-num">6</button>
-          <button class="page-num">7</button>
-          <button class="page-arrow">
-            <i class="fa-solid fa-angle-right"></i>
-          </button>
-        </div>
+        <!-- Pagination (di-render oleh JS, otomatis sembunyi jika cuma 1 halaman) -->
+        <div class="pagination" id="pagination"></div>
       </main>
     </div>
+
+    <script src="../js/PencarianBarangTemuan.js"></script>
   </body>
 </html>
