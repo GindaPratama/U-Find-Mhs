@@ -87,12 +87,13 @@ if (loginForm) {
     }
 
     try {
-      // 1) Cari Email yang terhubung dengan NIM ini di tabel Mahasiswa
-      const { data: mhsData, error: mhsError } = await supabaseClient
-        .from("Mahasiswa")
-        .select("Email")
-        .eq("NIM", nimVal)
-        .maybeSingle();
+      // 1) Cari Email yang terhubung dengan NIM ini lewat RPC function
+      // get_email_by_nim (bukan query langsung ke tabel Mahasiswa), supaya
+      // tabel Mahasiswa tetap terkunci ketat lewat RLS untuk publik/anon.
+      const { data: emailResult, error: mhsError } = await supabaseClient.rpc(
+        "get_email_by_nim",
+        { p_nim: nimVal },
+      );
 
       if (mhsError) {
         console.error("Gagal cek NIM:", mhsError);
@@ -100,7 +101,7 @@ if (loginForm) {
         return;
       }
 
-      if (!mhsData) {
+      if (!emailResult) {
         // NIM tidak ditemukan -> pesan digeneralisasi demi keamanan
         showWarning("NIM atau Password Salah");
         return;
@@ -109,7 +110,7 @@ if (loginForm) {
       // 2) Login pakai Email hasil pencarian + password yang diinput user
       const { error: signInError } =
         await supabaseClient.auth.signInWithPassword({
-          email: mhsData.Email,
+          email: emailResult,
           password: passwordVal,
         });
 
