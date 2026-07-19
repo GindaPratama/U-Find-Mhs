@@ -62,6 +62,21 @@
       </div>
     </div>
 
+    <!-- Modal Peringatan (NIM/Password salah, dll) -->
+    <div class="modal-overlay" id="warningModal">
+      <div class="modal-box modal-box-warning">
+        <div class="modal-icon-outline">
+          <i class="fa-solid fa-exclamation"></i>
+        </div>
+        <h2 id="warningTitle">Peringatan</h2>
+        <p id="warningMessage">NIM atau Password Salah</p>
+        <button type="button" class="modal-btn-dark" id="warningOkBtn">
+          Ok
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/Login.js"></script>
   </body>
 </html>

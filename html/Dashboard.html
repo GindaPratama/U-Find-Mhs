@@ -85,25 +85,7 @@
       </main>
     </div>
 
-    <script>
-      const profileTrigger = document.getElementById("profileTrigger");
-      const profileDropdown = document.getElementById("profileDropdown");
-
-      profileTrigger.addEventListener("click", (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle("open");
-        profileTrigger.classList.toggle("open");
-      });
-
-      document.addEventListener("click", (e) => {
-        if (
-          !profileDropdown.contains(e.target) &&
-          !profileTrigger.contains(e.target)
-        ) {
-          profileDropdown.classList.remove("open");
-          profileTrigger.classList.remove("open");
-        }
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/Dashboard.js"></script>
   </body>
 </html>

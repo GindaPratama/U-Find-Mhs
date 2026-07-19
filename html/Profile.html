@@ -25,8 +25,28 @@
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <i class="fa-solid fa-circle-user profile-icon"></i>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Profil Saya</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -35,7 +55,7 @@
           <div class="profile-header">
             <i class="fa-solid fa-circle-user"></i>
             <div>
-              <p class="name-top">Jupri</p>
+              <p class="name-top" id="profileNamaTop">Memuat...</p>
               <p class="role-top">Mahasiswa</p>
             </div>
           </div>
@@ -43,28 +63,31 @@
           <div class="profile-info">
             <div class="info-group">
               <label>Nama</label>
-              <p>Jupri Alparizi</p>
+              <p id="profileNama">-</p>
             </div>
             <div class="info-group">
               <label>NIM</label>
-              <p>10124255</p>
+              <p id="profileNim">-</p>
             </div>
             <div class="info-group">
               <label>Nomer Handphone</label>
-              <p>082874827824</p>
+              <p id="profileNoHp">-</p>
             </div>
             <div class="info-group">
               <label>Email UNIKOM</label>
-              <p>Jupri.10124255@mahasiswa.ac.id</p>
+              <p id="profileEmail">-</p>
             </div>
           </div>
 
           <div class="action-buttons">
-            <a href="../index.html" class="btn-keluar">Keluar</a>
+            <a href="../index.html" class="btn-keluar" id="btnKeluar">Keluar</a>
             <a href="Dashboard.html" class="btn-kembali">Kembali</a>
           </div>
         </div>
       </main>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/Profile.js"></script>
   </body>
 </html>
