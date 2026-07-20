@@ -150,27 +150,22 @@
               class="disabled-input"
             />
           </div>
-
           <div class="input-group">
             <label>Nama Barang</label>
             <input type="text" id="editNama" required />
           </div>
-
           <div class="input-group">
             <label>Ciri Khusus</label>
             <textarea id="editCiri" rows="3" required></textarea>
           </div>
-
           <div class="input-group">
             <label id="labelLokasi">Lokasi</label>
             <input type="text" id="editLokasi" required />
           </div>
-
           <div class="input-group">
             <label id="labelTanggal">Tanggal</label>
             <input type="date" id="editTanggal" required />
           </div>
-
           <div class="input-group">
             <label>Ubah Foto Barang (Opsional)</label>
             <input
@@ -182,7 +177,6 @@
               >*Biarkan kosong jika tidak ingin mengubah foto.</span
             >
           </div>
-
           <div class="form-actions">
             <button type="button" class="btn-cancel" id="cancelEditBtn">
               Batal
@@ -192,6 +186,25 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus (Ditemukan) -->
+    <div id="deleteConfirmModal" class="modal-overlay hidden">
+      <div class="confirm-box">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-question"></i>
+        </div>
+        <h2 class="confirm-title">Konfirmasi</h2>
+        <p class="confirm-text">Apakah barang sudah ditemukan?</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn-confirm-yes" id="btnConfirmYes">
+            Sudah
+          </button>
+          <button type="button" class="btn-confirm-no" id="btnConfirmNo">
+            Belum
+          </button>
+        </div>
       </div>
     </div>
 

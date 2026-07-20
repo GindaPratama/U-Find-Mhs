@@ -1,110 +1,87 @@
-/**
- * DetailBarangHilang.js
- * Logic khusus halaman Detail Barang Hilang — berdiri sendiri, tidak
- * bergantung ke file lain.
- *
- * --- UNTUK DIHUBUNGKAN KE SUPABASE ---
- * Ganti isi getItemById() jadi query ke tabel "barang_hilang", contoh:
- *
- *   const { data, error } = await supabase
- *     .from('barang_hilang')
- *     .select('*')
- *     .eq('id', id)
- *     .single();
- *
- *   return error ? null : data;
- */
-(function () {
-  // Data sementara — nanti akan digantikan oleh tabel "barang_hilang" di Supabase.
-  const SAMPLE_DATA = [
-    {
-      id: "LH-001",
-      nama: "Handphone",
-      icon: "fa-mobile-screen",
-      lokasi: "Kantin Fasilkom",
-      tanggal: "24/06/2026",
-      ciri: "Warna hitam, terdapat retak kecil di pojok layar",
-    },
-    {
-      id: "LH-002",
-      nama: "Topi",
-      icon: "fa-hat-cowboy",
-      lokasi: "Kantin Unikom",
-      tanggal: "21/06/2026",
-      ciri: "Warna hitam, tulisan BALENCIAGA",
-    },
-    {
-      id: "LH-003",
-      nama: "Kunci Motor",
-      icon: "fa-key",
-      lokasi: "Parkiran Gedung Miracle",
-      tanggal: "26/06/2026",
-      ciri: "Kunci motor Honda dengan gantungan karet warna merah",
-    },
-  ];
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Setup Navbar NIM & Logout
+  const usernameLabel = document.getElementById("usernameLabel");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  async function getItemById(id) {
-    // ==== GANTI BLOK DI BAWAH INI DENGAN QUERY SUPABASE ====
-    // const { data, error } = await supabase
-    //   .from('barang_hilang')
-    //   .select('*')
-    //   .eq('id', id)
-    //   .single();
-    // if (error) {
-    //   console.error('Gagal mengambil data barang hilang:', error);
-    //   return null;
-    // }
-    // return data;
-    // ========================================================
-
-    if (!id) return SAMPLE_DATA[0] || null;
-    return SAMPLE_DATA.find((item) => item.id === id) || SAMPLE_DATA[0] || null;
+  if (typeof supabaseClient !== "undefined") {
+    const {
+      data: { session },
+    } = await supabaseClient.auth.getSession();
+    if (session) {
+      supabaseClient
+        .from("Mahasiswa")
+        .select("NIM")
+        .eq("user_id", session.user.id)
+        .maybeSingle()
+        .then(({ data: mhs }) => {
+          if (mhs) usernameLabel.textContent = mhs.NIM;
+        });
+    }
   }
 
-  function renderItem(item) {
-    const photoIcon = document.getElementById("photoIcon");
-    const valId = document.getElementById("valId");
-    const valNama = document.getElementById("valNama");
-    const valLokasi = document.getElementById("valLokasi");
-    const valTanggal = document.getElementById("valTanggal");
-    const valCiri = document.getElementById("valCiri");
+  logoutBtn?.addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = "../index.html";
+  });
 
-    if (photoIcon)
-      photoIcon.className = `fa-solid ${item.icon} placeholder-icon-lg`;
-    if (valId) valId.textContent = item.id;
-    if (valNama) valNama.textContent = item.nama;
-    if (valLokasi) valLokasi.textContent = item.lokasi;
-    if (valTanggal) valTanggal.textContent = item.tanggal;
-    if (valCiri) valCiri.textContent = item.ciri;
+  // 2. Logic Ambil Detail Barang
+  const container = document.getElementById("detailContainer");
+  const params = new URLSearchParams(window.location.search);
+  const idString = params.get("id"); // Format: LH-00X
 
-    document.title = `Detail ${item.nama} - U-Find`;
+  if (!idString) {
+    container.innerHTML = "<p>ID barang tidak ditemukan.</p>";
+    return;
   }
 
-  function renderNotFound() {
-    const container = document.querySelector(".detail-content");
-    if (container) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-          <p>Data barang tidak ditemukan.</p>
+  const numericId = parseInt(idString.split("-")[1], 10);
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("Laporan_Hilang")
+      .select("*")
+      .eq("Id_Laporan", numericId)
+      .single();
+
+    if (error || !data) throw new Error("Data tidak ditemukan");
+
+    renderDetail(data, idString);
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-circle"></i><p>Barang tidak ditemukan.</p></div>`;
+  }
+
+  function renderDetail(item, displayId) {
+    container.innerHTML = `
+      <div class="photo-card">
+        <p class="photo-label">Gambar Barang</p>
+        <div class="photo-frame">
+          ${
+            item.Foto_Barang
+              ? `<img src="${item.Foto_Barang}" alt="${item.Nama_Barang}" />`
+              : `<i class="fa-solid fa-box-open placeholder-icon-lg"></i>`
+          }
         </div>
-      `;
-    }
+      </div>
+      <div class="info-card">
+        <p class="info-title">SEDANG DICARI!!</p>
+        <table>
+          <tr><td class="label">ID</td><td class="colon">:</td><td class="value">${displayId}</td></tr>
+          <tr><td class="label">Nama Barang</td><td class="colon">:</td><td class="value">${item.Nama_Barang}</td></tr>
+          <tr><td class="label">Lokasi</td><td class="colon">:</td><td class="value">${item.Lokasi_Kejadian}</td></tr>
+          <tr><td class="label">Tanggal</td><td class="colon">:</td><td class="value">${item.Tanggal_Kehilangan}</td></tr>
+          <tr><td class="label">Ciri Khusus</td><td class="colon">:</td><td class="value">${item.Ciri_Khusus}</td></tr>
+        </table>
+      </div>
+    `;
+
+    const reportSection = document.createElement("div");
+    reportSection.innerHTML = `
+      <div class="claim-question">
+        <p class="claim-question-title">Apakah Anda Menemukan Barang Ini?</p>
+        <p class="claim-question-text">Jika ya, silakan laporkan penemuan Anda di pos Satpam agar dapat dikembalikan ke pemiliknya.</p>
+      </div>
+      <a href="LaporBarangTemuan.html" class="claim-btn">Laporkan Penemuan Barang</a>
+    `;
+    container.after(reportSection);
   }
-
-  async function init() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    const item = await getItemById(id);
-
-    if (!item) {
-      renderNotFound();
-      return;
-    }
-
-    renderItem(item);
-  }
-
-  init();
-})();
+});

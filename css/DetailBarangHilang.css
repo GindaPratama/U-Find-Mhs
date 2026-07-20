@@ -6,7 +6,6 @@
   --navy-700: #123b7a;
   --blue-accent: #2f6fd1;
   --gold: #e3a53a;
-  --gold-deep: #b9791f;
   --ink: #16213e;
   --ink-soft: #5b6479;
   --border: #e2e7f1;
@@ -46,7 +45,7 @@ body {
   min-height: 100vh;
 }
 
-/* NAVBAR (identik dengan PencarianBarangTemuan) */
+/* NAVBAR */
 .navbar {
   background: linear-gradient(
     100deg,
@@ -206,7 +205,7 @@ body {
   color: #c53030;
 }
 
-/* MAIN CONTAINER (full-bleed, konsisten dengan Pencarian) */
+/* MAIN CONTAINER */
 .main-container {
   flex: 1;
   width: 100%;
@@ -232,7 +231,7 @@ body {
   pointer-events: none;
 }
 
-/* TOP CONTROLS (Tombol Kembali) */
+/* TOP CONTROLS */
 .top-controls {
   position: relative;
   margin-bottom: 24px;
@@ -264,7 +263,7 @@ body {
   color: var(--blue-accent);
 }
 
-/* DETAIL CONTENT (Foto + Info) */
+/* DETAIL CONTENT */
 .detail-content {
   display: flex;
   gap: 24px;
@@ -274,7 +273,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* Kolom Foto */
 .photo-card {
   background-color: #f8faff;
   border: 1px solid var(--border);
@@ -312,13 +310,13 @@ body {
 
 .placeholder-icon-lg {
   font-size: 4rem;
-  color: var(--gold-deep);
-  opacity: 0.6;
+  color: var(--blue-accent);
+  opacity: 0.55;
 }
 
-/* Kolom Info (nuansa gold untuk menandakan status "masih dicari") */
+/* INFO CARD - Dibuat konsisten Biru seperti DetailBarangTemuan */
 .info-card {
-  background: linear-gradient(135deg, var(--navy-900), var(--gold-deep));
+  background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   border-radius: 16px;
   padding: 22px 26px;
   flex: 1;
@@ -344,7 +342,7 @@ body {
   border-radius: 50%;
   background-color: var(--gold);
   display: inline-block;
-  box-shadow: 0 0 0 4px rgba(227, 165, 58, 0.35);
+  box-shadow: 0 0 0 4px rgba(227, 165, 58, 0.3);
 }
 
 .info-card table {
@@ -361,22 +359,20 @@ body {
 .label {
   width: 30%;
   font-weight: 600;
-  color: #f3e2c7;
+  color: #c7d4ef;
 }
-
 .colon {
   width: 5%;
   font-weight: 600;
-  color: #f3e2c7;
+  color: #c7d4ef;
 }
-
 .value {
   width: 65%;
   font-weight: 700;
   color: #ffffff;
 }
 
-/* Pertanyaan Penemuan */
+/* CLAIM SECTION */
 .claim-question {
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -393,13 +389,11 @@ body {
   margin-bottom: 4px;
   color: var(--ink);
 }
-
 .claim-question-text {
   font-size: 0.88rem;
   color: var(--ink-soft);
 }
 
-/* Tombol Lapor Penemuan */
 .claim-btn {
   background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   color: white;
@@ -426,14 +420,10 @@ body {
   box-shadow: 0 18px 30px -10px rgba(47, 111, 209, 0.65);
 }
 
-/* RESPONSIF */
 @media (max-width: 768px) {
   .main-container {
     padding: 24px 18px 32px;
   }
-}
-
-@media (max-width: 600px) {
   .detail-content {
     flex-direction: column;
   }

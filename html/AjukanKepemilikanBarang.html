@@ -6,7 +6,6 @@
     <title>Ajukan Kepemilikan Barang - U-Find</title>
     <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
     <link rel="stylesheet" href="../css/AjukanKepemilikanBarang.css" />
-    <!-- Menggunakan FontAwesome untuk Icon -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -14,7 +13,6 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
-      <!-- Navbar (disamakan dengan halaman lain) -->
       <header class="navbar">
         <div class="nav-left">
           <a href="Dashboard.html">
@@ -26,28 +24,41 @@
           </a>
           <span class="nav-title">U-Find</span>
         </div>
+
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <a href="Profile.html" style="color: white; text-decoration: none">
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-          </a>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username" id="usernameLabel">...</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item"
+                ><i class="fa-regular fa-user"></i> Profil Saya</a
+              >
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+                id="logoutBtn"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
       <main class="main-content">
         <div class="form-container">
           <div class="form-header">
-            <h2>Upload Bukti Kepemilikan Barang Anda!</h2>
-            <a href="DetailBarangTemuan.html" class="close-btn"
-              ><i class="fa-solid fa-xmark"></i
-            ></a>
+            <h2>Upload Bukti Kepemilikan Barang!</h2>
           </div>
-
-          <form>
+          <form id="klaimForm">
             <div class="input-group">
-              <label>Upload Foto</label>
-              <label for="bukti_foto" class="upload-area">
-                <span class="upload-placeholder"
+              <label>Upload Foto Bukti</label>
+              <label for="bukti_foto" class="upload-area" id="uploadDropzone">
+                <span class="upload-placeholder" id="placeholderText"
                   >Masukan Foto Bukti Kepemilikan Barang atau KTM Anda</span
                 >
                 <i class="fa-solid fa-upload upload-icon"></i>
@@ -55,42 +66,41 @@
               <input
                 type="file"
                 id="bukti_foto"
-                name="bukti_foto"
                 accept="image/*"
                 hidden
+                required
               />
             </div>
 
             <div class="input-group">
               <label
-                >Apakah klaim ini berkaitan dengan Laporan Kehilangan Anda
-                sebelumnya?</label
+                >Apakah klaim ini berkaitan dengan Laporan Kehilangan
+                Anda?</label
               >
-              <select name="laporan_kehilangan">
-                <option value="" selected disabled>
-                  -- Pilih Laporan Kehilangan Anda --
-                </option>
-                <option value="LH-001">LH-001 - Handphone</option>
-                <option value="LH-002">LH-002 - Topi</option>
-                <option value="LH-003">LH-003 - Kunci Motor</option>
-                <option value="tidak">
-                  Tidak Ada / Bukan Barang Saya yang Hilang
-                </option>
+              <select id="laporanSelect" name="laporan_kehilangan">
+                <option value="">-- Pilih Laporan Kehilangan Anda --</option>
               </select>
             </div>
 
             <div class="action-buttons">
-              <a href="DetailBarangTemuan.html" class="btn-secondary"
-                >Kembali</a
+              <button
+                type="button"
+                class="btn-secondary"
+                onclick="history.back()"
               >
-              <button type="submit" class="btn-primary">Kirim</button>
+                Kembali
+              </button>
+              <button type="submit" class="btn-primary" id="submitBtn">
+                Kirim Pengajuan
+              </button>
             </div>
           </form>
         </div>
       </main>
     </div>
 
-    <script src="../js/AjukanKepemilikanBarang.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/AjukanKepemilikanBarang.js"></script>
   </body>
 </html>

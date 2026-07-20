@@ -16,10 +16,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelEditBtn = document.getElementById("cancelEditBtn");
   const saveEditBtn = document.getElementById("saveEditBtn");
 
-  // State Global
+  // Modal Konfirmasi Hapus
+  const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+  const btnConfirmYes = document.getElementById("btnConfirmYes");
+  const btnConfirmNo = document.getElementById("btnConfirmNo");
+  let pendingDeleteParams = null;
+
   let userNIM = "";
 
-  // Konfigurasi Status (Berdasarkan nilai Varchar di Database)
   const STATUS_CONFIG = {
     "Menunggu Validasi": {
       label: "Menunggu Validasi",
@@ -37,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Selesai: { label: "Selesai", className: "status-found" },
   };
 
-  // --- 1. INISIALISASI & SESI ---
+  // --- 1. INISIALISASI ---
   async function initUser() {
     const {
       data: { session },
@@ -46,88 +50,58 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = "../index.html";
       return false;
     }
-
-    // Ambil NIM dari tabel Mahasiswa
     const { data: mhsData, error } = await supabaseClient
       .from("Mahasiswa")
       .select("NIM")
       .eq("user_id", session.user.id)
       .maybeSingle();
 
-    if (error || !mhsData) {
-      console.error("Gagal mendapatkan NIM.");
-      return false;
-    }
-
+    if (error || !mhsData) return false;
     userNIM = mhsData.NIM;
     if (usernameLabel) usernameLabel.textContent = userNIM;
     return true;
   }
 
-  // --- 2. DROPDOWN & LOGOUT ---
-  document.getElementById("profileTrigger")?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    document.getElementById("profileDropdown").classList.toggle("open");
-  });
-  document.addEventListener("click", () => {
-    document.getElementById("profileDropdown")?.classList.remove("open");
-  });
+  // --- 2. LOGOUT ---
   document.getElementById("logoutBtn")?.addEventListener("click", async (e) => {
     e.preventDefault();
     await supabaseClient.auth.signOut();
     window.location.href = "../index.html";
   });
 
-  // --- 3. FORMATTER BANTUAN ---
-  function escapeHtml(text) {
-    if (!text) return "-";
-    return String(text).replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  function formatWaktu(isoString) {
-    if (!isoString) return "-";
-    const date = new Date(isoString);
-    return `${String(date.getHours()).padStart(2, "0")}.${String(date.getMinutes()).padStart(2, "0")} WIB<br>${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
-  }
-
-  // --- 4. RENDER TABEL ---
-  function renderStateRow(tbody, message, icon = "fa-inbox") {
-    tbody.innerHTML = `<tr class="state-row"><td colspan="9"><i class="fa-solid ${icon}"></i> ${message}</td></tr>`;
-  }
-
+  // --- 3. RENDER TABEL ---
   function renderRows(tbody, items) {
     if (items.length === 0) {
-      renderStateRow(tbody, "Anda belum memiliki laporan di kategori ini.");
+      tbody.innerHTML = `<tr class="state-row"><td colspan="9">Anda belum memiliki laporan di kategori ini.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = items
       .map((item) => {
-        // Setup Gambar
         const imageHTML = item.foto
           ? `<img src="${item.foto}" alt="Foto" style="width:100%; height:100%; object-fit:cover; border-radius:6px;"/>`
           : `<i class="fa-solid fa-box-open" style="color:var(--blue-accent); font-size:1.5rem;"></i>`;
 
-        // Setup Status
         const st = STATUS_CONFIG[item.status] || {
           label: item.status || "Menunggu",
           className: "status-pending",
         };
         const statusBadge = `<span class="status ${st.className}">${st.label}</span>`;
 
-        // Setup Aksi (Hanya bisa Edit/Hapus jika masih Menunggu Validasi atau Sedang Dicari)
+        // TOMBOL AKSI
         let actionButtons = "-";
         if (
           item.status === "Menunggu Validasi" ||
           item.status === "Sedang Dicari" ||
           item.status === "Tersedia dipos"
         ) {
+          const itemJson = encodeURIComponent(JSON.stringify(item));
           actionButtons = `
           <div class="action-buttons">
-            <button class="btn-edit" onclick="openEditModal('${encodeURIComponent(JSON.stringify(item))}')" title="Edit">
+            <button class="btn-edit" onclick="window.openEditModal('${itemJson}')" title="Edit">
               <i class="fa-solid fa-pen"></i>
             </button>
-            <button class="btn-delete" onclick="deleteReport('${item.table}', '${item.pkColumn}', ${item.rawId})" title="Hapus">
+            <button class="btn-delete" onclick="window.deleteReport('${item.table}', '${item.pkColumn}', ${item.rawId})" title="Hapus">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
@@ -136,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         return `
         <tr>
-          <td class="col-no"><strong>${item.displayId}</strong></td>
+          <td><strong>${item.displayId}</strong></td>
           <td>${formatWaktu(item.created_at)}</td>
           <td>${escapeHtml(item.nama)}</td>
           <td><div style="width:60px; height:60px; background:#fff; border:1px solid #e2e7f1; display:flex; align-items:center; justify-content:center; border-radius:8px; padding:2px;">${imageHTML}</div></td>
@@ -151,127 +125,127 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("");
   }
 
-  // --- 5. TARIK DATA DARI DATABASE ---
+  // --- 4. FETCH DATA ---
   async function loadData() {
     try {
-      // Data Laporan Hilang
-      const { data: dataHilang, error: errHilang } = await supabaseClient
+      // Hilang
+      const { data: h } = await supabaseClient
         .from("Laporan_Hilang")
         .select("*")
         .eq("NIM_Pelapor", userNIM)
         .order("created_at", { ascending: false });
+      if (h)
+        renderRows(
+          kehilanganBody,
+          h.map((r) => ({
+            table: "Laporan_Hilang",
+            pkColumn: "Id_Laporan",
+            rawId: r.Id_Laporan,
+            displayId: "LH-" + String(r.Id_Laporan).padStart(3, "0"),
+            created_at: r.created_at,
+            nama: r.Nama_Barang,
+            foto: r.Foto_Barang,
+            ciri: r.Ciri_Khusus,
+            lokasi: r.Lokasi_Kejadian,
+            tanggal: r.Tanggal_Kehilangan,
+            status: r.status,
+          })),
+        );
 
-      if (!errHilang) {
-        const mappedHilang = dataHilang.map((row) => ({
-          table: "Laporan_Hilang",
-          pkColumn: "Id_Laporan",
-          rawId: row.Id_Laporan,
-          displayId: "LH-" + String(row.Id_Laporan).padStart(3, "0"),
-          created_at: row.created_at,
-          nama: row.Nama_Barang,
-          foto: row.Foto_Barang,
-          ciri: row.Ciri_Khusus,
-          lokasi: row.Lokasi_Kejadian,
-          tanggal: row.Tanggal_Kehilangan,
-          status: row.status,
-        }));
-        renderRows(kehilanganBody, mappedHilang);
-      }
-
-      // Data Laporan Temuan
-      const { data: dataTemuan, error: errTemuan } = await supabaseClient
+      // Temuan
+      const { data: t } = await supabaseClient
         .from("Laporan_Temuan")
         .select("*")
         .eq("NIM_Penemu", userNIM)
         .order("created_at", { ascending: false });
-
-      if (!errTemuan) {
-        const mappedTemuan = dataTemuan.map((row) => ({
-          table: "Laporan_Temuan",
-          pkColumn: "Id_Temuan",
-          rawId: row.Id_Temuan,
-          displayId: "LT-" + String(row.Id_Temuan).padStart(3, "0"),
-          created_at: row.created_at,
-          nama: row.Nama_Barang,
-          foto: row.Foto_Barang,
-          ciri: row.Ciri_Khusus,
-          lokasi: row.Lokasi_Penemuan,
-          tanggal: row.Tanggal_Penemuan,
-          status: row.status,
-        }));
-        renderRows(temuanBody, mappedTemuan);
-      }
-    } catch (error) {
-      console.error("Gagal menarik data:", error);
+      if (t)
+        renderRows(
+          temuanBody,
+          t.map((r) => ({
+            table: "Laporan_Temuan",
+            pkColumn: "Id_Temuan",
+            rawId: r.Id_Temuan,
+            displayId: "LT-" + String(r.Id_Temuan).padStart(3, "0"),
+            created_at: r.created_at,
+            nama: r.Nama_Barang,
+            foto: r.Foto_Barang,
+            ciri: r.Ciri_Khusus,
+            lokasi: r.Lokasi_Penemuan,
+            tanggal: r.Tanggal_Penemuan,
+            status: r.status,
+          })),
+        );
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  // --- 6. FUNGSI HAPUS ---
-  window.deleteReport = async function (table, pkColumn, id) {
-    if (!confirm("Yakin ingin menghapus laporan ini?")) return;
+  // --- 5. HAPUS DATA ---
+  window.deleteReport = (table, pkColumn, id) => {
+    pendingDeleteParams = { table, pkColumn, id };
+    deleteConfirmModal.classList.remove("hidden");
+  };
+
+  btnConfirmNo.addEventListener("click", () => {
+    deleteConfirmModal.classList.add("hidden");
+    pendingDeleteParams = null;
+  });
+
+  btnConfirmYes.addEventListener("click", async () => {
+    if (!pendingDeleteParams) return;
+    const { table, pkColumn, id } = pendingDeleteParams;
+
+    btnConfirmYes.textContent = "Memproses...";
+    btnConfirmYes.disabled = true;
 
     const { error } = await supabaseClient
       .from(table)
       .delete()
       .eq(pkColumn, id);
+
+    btnConfirmYes.textContent = "Sudah";
+    btnConfirmYes.disabled = false;
+    deleteConfirmModal.classList.add("hidden");
+
     if (error) {
-      alert("Gagal menghapus data!");
+      alert("Gagal menghapus: " + error.message);
     } else {
-      loadData(); // Reload data setelah dihapus
+      await loadData(); // Data akan otomatis hilang dari tabel
     }
-  };
+  });
 
-  // --- 7. FUNGSI MODAL EDIT ---
-  window.openEditModal = function (itemString) {
+  // --- 6. EDIT DATA (MODAL) ---
+  window.openEditModal = (itemString) => {
     const item = JSON.parse(decodeURIComponent(itemString));
-
     document.getElementById("editTable").value = item.table;
     document.getElementById("editPkColumn").value = item.pkColumn;
     document.getElementById("editRawId").value = item.rawId;
-    document.getElementById("editOldFoto").value = item.foto || "";
     document.getElementById("editDisplayId").value = item.displayId;
-
     document.getElementById("editNama").value = item.nama;
     document.getElementById("editCiri").value = item.ciri;
     document.getElementById("editLokasi").value = item.lokasi;
     document.getElementById("editTanggal").value = item.tanggal;
 
-    // Ubah label agar relevan
-    document.getElementById("labelLokasi").textContent =
-      item.table === "Laporan_Hilang" ? "Lokasi Kejadian" : "Lokasi Penemuan";
-    document.getElementById("labelTanggal").textContent =
-      item.table === "Laporan_Hilang"
-        ? "Tanggal Kehilangan"
-        : "Tanggal Penemuan";
-
-    document.getElementById("editFoto").value = ""; // Reset input file
-
     editModal.classList.remove("hidden");
   };
 
-  function closeEdit() {
-    editModal.classList.add("hidden");
-  }
+  closeEditModalBtn.addEventListener("click", () =>
+    editModal.classList.add("hidden"),
+  );
+  cancelEditBtn.addEventListener("click", () =>
+    editModal.classList.add("hidden"),
+  );
 
-  closeEditModalBtn.addEventListener("click", closeEdit);
-  cancelEditBtn.addEventListener("click", closeEdit);
-
-  // Proses Simpan Edit
   editForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    saveEditBtn.disabled = true;
-    saveEditBtn.textContent = "Menyimpan...";
-
     const table = document.getElementById("editTable").value;
-    const pkColumn = document.getElementById("editPkColumn").value;
-    const rawId = document.getElementById("editRawId").value;
+    const pk = document.getElementById("editPkColumn").value;
+    const id = document.getElementById("editRawId").value;
 
-    // Siapkan data update (kecuali foto)
     let updateData = {
       Nama_Barang: document.getElementById("editNama").value,
       Ciri_Khusus: document.getElementById("editCiri").value,
     };
-
     if (table === "Laporan_Hilang") {
       updateData.Lokasi_Kejadian = document.getElementById("editLokasi").value;
       updateData.Tanggal_Kehilangan =
@@ -282,47 +256,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("editTanggal").value;
     }
 
-    // Logic Jika User Mengupload Foto Baru
-    const fileInput = document.getElementById("editFoto");
-    if (fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const ext = file.name.split(".").pop();
-      const bucketName =
-        table === "Laporan_Hilang"
-          ? "bukti-barang-hilang"
-          : "bukti-barang-temuan";
-      const filePath = `${userNIM}/${Date.now()}.${ext}`;
-
-      const { error: uploadErr } = await supabaseClient.storage
-        .from(bucketName)
-        .upload(filePath, file);
-      if (!uploadErr) {
-        const { data: publicUrlData } = supabaseClient.storage
-          .from(bucketName)
-          .getPublicUrl(filePath);
-        updateData.Foto_Barang = publicUrlData.publicUrl;
-      }
-    }
-
-    // Update Data ke Supabase
     const { error } = await supabaseClient
       .from(table)
       .update(updateData)
-      .eq(pkColumn, rawId);
-
-    saveEditBtn.disabled = false;
-    saveEditBtn.textContent = "Simpan Perubahan";
-
-    if (error) {
-      alert("Gagal menyimpan perubahan: " + error.message);
+      .eq(pk, id);
+    if (!error) {
+      editModal.classList.add("hidden");
+      loadData();
     } else {
-      closeEdit();
-      loadData(); // Refresh tampilan tabel
+      alert("Gagal update: " + error.message);
     }
   });
 
-  // Eksekusi Awal
-  if (await initUser()) {
-    loadData();
+  // HELPER
+  function escapeHtml(text) {
+    return String(text).replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
+  function formatWaktu(iso) {
+    const d = new Date(iso);
+    return `${String(d.getHours()).padStart(2, "0")}.${String(d.getMinutes()).padStart(2, "0")} WIB<br>${d.toLocaleDateString("id-ID")}`;
+  }
+
+  if (await initUser()) loadData();
 });

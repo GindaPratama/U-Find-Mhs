@@ -1,4 +1,21 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // --- FITUR UPDATE: Tampilkan NIM di Navbar ---
+  const usernameEl = document.querySelector(".username");
+  if (typeof supabaseClient !== "undefined" && usernameEl) {
+    const {
+      data: { session },
+    } = await supabaseClient.auth.getSession();
+    if (session) {
+      const { data: mhsData } = await supabaseClient
+        .from("Mahasiswa")
+        .select("NIM")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (mhsData) usernameEl.textContent = mhsData.NIM;
+    }
+  }
+  // --- END UPDATE ---
+
   // ---------- Konfigurasi ----------
   const MAX_FILE_SIZE_MB = 5;
   const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -6,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const STORAGE_BUCKET = "bukti-barang-temuan";
   const REDIRECT_AFTER_SUCCESS = "Dashboard.html";
 
-  // ---------- Dropdown navbar   ----------
+  // ---------- Dropdown navbar ----------
   (function initNavbarDropdown() {
     const trigger = document.getElementById("profileTrigger");
     const dropdown = document.getElementById("profileDropdown");
@@ -159,19 +176,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       uploadDropzone.classList.add("invalid");
-      showFieldError(
-        "fotoBarang",
-        "Format file tidak didukung. Gunakan PNG, JPG, atau WEBP.",
-      );
+      showFieldError("fotoBarang", "Format file tidak didukung.");
       return;
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
       uploadDropzone.classList.add("invalid");
-      showFieldError(
-        "fotoBarang",
-        `Ukuran file terlalu besar. Maksimal ${MAX_FILE_SIZE_MB}MB.`,
-      );
+      showFieldError("fotoBarang", `Ukuran file maks ${MAX_FILE_SIZE_MB}MB.`);
       return;
     }
 
@@ -192,162 +203,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   uploadTriggerBtn.addEventListener("click", openFilePicker);
-
   changePhotoBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     openFilePicker();
   });
-
   removePhotoBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     resetPhoto();
   });
-
   fotoInput.addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
     handleFile(file);
   });
-
-  ["dragenter", "dragover"].forEach(() => {
-    uploadDropzone.addEventListener("dragenter", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      uploadDropzone.classList.add("dragover");
-    });
-    uploadDropzone.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      uploadDropzone.classList.add("dragover");
-    });
-  });
-
-  ["dragleave", "drop"].forEach((eventName) => {
-    uploadDropzone.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (eventName === "dragleave") {
-        uploadDropzone.classList.remove("dragover");
-      }
-    });
-  });
-
-  uploadDropzone.addEventListener("drop", (e) => {
-    uploadDropzone.classList.remove("dragover");
-    const file = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  });
-
-  // ---------- Validasi Form ----------
-  function validateForm() {
-    let isValid = true;
-    clearAllErrors();
-
-    if (!namaBarang.value.trim()) {
-      showFieldError("namaBarang", "Nama barang wajib diisi.");
-      isValid = false;
-    }
-
-    if (!rincianBarang.value.trim()) {
-      showFieldError("rincianBarang", "Rincian barang wajib diisi.");
-      isValid = false;
-    } else if (rincianBarang.value.trim().length < 10) {
-      showFieldError(
-        "rincianBarang",
-        "Jelaskan rincian barang lebih detail (min. 10 karakter).",
-      );
-      isValid = false;
-    }
-
-    if (!lokasiKejadian.value.trim()) {
-      showFieldError("lokasiKejadian", "Lokasi kejadian wajib diisi.");
-      isValid = false;
-    }
-
-    if (!tanggalKejadian.value) {
-      showFieldError("tanggalKejadian", "Tanggal ditemukan wajib diisi.");
-      isValid = false;
-    } else if (tanggalKejadian.value > tanggalKejadian.max) {
-      showFieldError(
-        "tanggalKejadian",
-        "Tanggal tidak boleh lebih dari hari ini.",
-      );
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  // ---------- Ambil NIM mahasiswa yang sedang login ----------
-  async function getNimMahasiswaLogin() {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser();
-
-    if (userError || !user) {
-      throw new Error("Sesi login tidak ditemukan. Silakan login ulang.");
-    }
-
-    const { data: mhs, error: mhsError } = await supabaseClient
-      .from("Mahasiswa")
-      .select("NIM")
-      .eq("user_id", user.id)
-      .single();
-
-    if (mhsError || !mhs) {
-      throw new Error("Data mahasiswa tidak ditemukan untuk akun ini.");
-    }
-
-    return mhs.NIM;
-  }
-
-  // ---------- Upload foto ke Supabase Storage ----------
-  async function uploadFotoBarang(nim, file) {
-    if (!file) return null;
-
-    const ext = file.name.split(".").pop();
-    const filePath = `${nim}/${Date.now()}.${ext}`;
-
-    const { error: uploadError } = await supabaseClient.storage
-      .from(STORAGE_BUCKET)
-      .upload(filePath, file, { cacheControl: "3600", upsert: false });
-
-    if (uploadError) {
-      throw new Error(`Gagal mengupload foto: ${uploadError.message}`);
-    }
-
-    const { data: publicUrlData } = supabaseClient.storage
-      .from(STORAGE_BUCKET)
-      .getPublicUrl(filePath);
-
-    return publicUrlData.publicUrl;
-  }
-
-  // ---------- Insert laporan ke tabel Laporan_Temuan ----------
-  async function insertLaporanTemuan(nim, fotoUrl) {
-    const { error: insertError } = await supabaseClient
-      .from("Laporan_Temuan")
-      .insert({
-        NIM_Penemu: nim,
-        Nama_Barang: namaBarang.value.trim(),
-        Ciri_Khusus: rincianBarang.value.trim(),
-        Lokasi_Penemuan: lokasiKejadian.value.trim(),
-        Tanggal_Penemuan: tanggalKejadian.value,
-        Foto_Barang: fotoUrl,
-        // status tidak perlu dikirim - default "Menunggu Validasi" dari DB
-      });
-
-    if (insertError) {
-      throw new Error(`Gagal menyimpan laporan: ${insertError.message}`);
-    }
-  }
 
   // ---------- Submit Form ----------
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     setStatus("", "");
 
-    if (!validateForm()) {
+    if (
+      !namaBarang.value.trim() ||
+      !rincianBarang.value.trim() ||
+      !lokasiKejadian.value.trim() ||
+      !tanggalKejadian.value
+    ) {
       setStatus("Periksa kembali data yang kamu isi ya.", "error");
       return;
     }
@@ -356,12 +235,38 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.querySelector(".submit-btn-text").textContent = "Mengirim...";
 
     try {
-      const nim = await getNimMahasiswaLogin();
-      const fotoUrl = await uploadFotoBarang(nim, selectedFile);
-      await insertLaporanTemuan(nim, fotoUrl);
+      const {
+        data: { user },
+      } = await supabaseClient.auth.getUser();
+      const { data: mhs } = await supabaseClient
+        .from("Mahasiswa")
+        .select("NIM")
+        .eq("user_id", user.id)
+        .single();
+      const nim = mhs.NIM;
 
-      // Tampilkan popup sukses. Reset form & redirect BARU terjadi
-      // setelah user klik tombol "Ok" di popup.
+      let fotoUrl = null;
+      if (selectedFile) {
+        const ext = selectedFile.name.split(".").pop();
+        const filePath = `${nim}/${Date.now()}.${ext}`;
+        await supabaseClient.storage
+          .from(STORAGE_BUCKET)
+          .upload(filePath, selectedFile);
+        const { data } = supabaseClient.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(filePath);
+        fotoUrl = data.publicUrl;
+      }
+
+      await supabaseClient.from("Laporan_Temuan").insert({
+        NIM_Penemu: nim,
+        Nama_Barang: namaBarang.value.trim(),
+        Ciri_Khusus: rincianBarang.value.trim(),
+        Lokasi_Penemuan: lokasiKejadian.value.trim(),
+        Tanggal_Penemuan: tanggalKejadian.value,
+        Foto_Barang: fotoUrl,
+      });
+
       showSuccessModal(() => {
         form.reset();
         resetPhoto();
@@ -369,10 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } catch (err) {
       console.error(err);
-      setStatus(
-        err.message || "Terjadi kesalahan, silakan coba lagi.",
-        "error",
-      );
+      setStatus("Terjadi kesalahan, silakan coba lagi.", "error");
     } finally {
       submitBtn.disabled = false;
       submitBtn.querySelector(".submit-btn-text").textContent = "Laporkan";

@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detail Barang Temuan - U-Find</title>
+    <title>Detail Barang - U-Find</title>
     <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
     <link rel="stylesheet" href="../css/DetailBarangTemuan.css" />
-    <!-- Menggunakan FontAwesome untuk Icon -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -14,99 +13,59 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
-      <!-- Navbar (disamakan dengan halaman lain) -->
       <header class="navbar">
         <div class="nav-left">
-          <a href="Dashboard.html">
-            <img
+          <a href="Dashboard.html"
+            ><img
               src="../assets/img/logo_unikom.png"
               alt="Logo UNIKOM"
               class="nav-logo"
-            />
-          </a>
+          /></a>
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
-          <span class="username">Pengguna</span>
-          <a href="Profile.html" style="color: white; text-decoration: none">
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-          </a>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username" id="usernameLabel">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item"
+                ><i class="fa-regular fa-user"></i> Profil Saya</a
+              >
+              <div class="dropdown-divider"></div>
+              <a
+                href="../index.html"
+                class="dropdown-item dropdown-item-danger"
+                id="logoutBtn"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
-      <!-- Main Container (Kotak Putih) -->
       <main class="main-container">
-        <!-- Watermark Background -->
         <div class="watermark"></div>
-
-        <!-- Top Controls -->
         <div class="top-controls">
-          <a href="PencarianBarangTemuan.html" class="back-btn">
-            <i class="fa-solid fa-arrow-left-long"></i>
-          </a>
+          <a href="PencarianBarangTemuan.html" class="back-btn"
+            ><i class="fa-solid fa-arrow-left-long"></i
+          ></a>
         </div>
 
-        <!-- Detail Content -->
-        <div class="detail-content">
-          <!-- Kolom Foto -->
-          <div class="photo-card">
-            <p class="photo-label">Gambar Barang</p>
-            <div class="photo-frame">
-              <i
-                class="fa-solid fa-glasses placeholder-icon-lg"
-                aria-hidden="true"
-              ></i>
-            </div>
-          </div>
-
-          <!-- Kolom Info -->
-          <div class="info-card">
-            <p class="info-title">SEDANG DICARI!!</p>
-            <table>
-              <tr>
-                <td class="label">ID</td>
-                <td class="colon">:</td>
-                <td class="value">LT-003</td>
-              </tr>
-              <tr>
-                <td class="label">Nama Barang</td>
-                <td class="colon">:</td>
-                <td class="value">Kacamata</td>
-              </tr>
-              <tr>
-                <td class="label">Lokasi</td>
-                <td class="colon">:</td>
-                <td class="value">Depan Gedung Miracle</td>
-              </tr>
-              <tr>
-                <td class="label">Tanggal</td>
-                <td class="colon">:</td>
-                <td class="value">30/06/2026</td>
-              </tr>
-              <tr>
-                <td class="label">Ciri khusus</td>
-                <td class="colon">:</td>
-                <td class="value">Warna hitam, merk CHANEL</td>
-              </tr>
-            </table>
+        <div class="detail-content" id="detailContainer">
+          <!-- Loading State -->
+          <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i> Memuat detail barang...
           </div>
         </div>
-
-        <!-- Pertanyaan Klaim -->
-        <div class="claim-question">
-          <p class="claim-question-title">Apakah ini Barang Milik Anda?</p>
-          <p class="claim-question-text">
-            Jika ya, silakan ajukan klaim untuk mengambil barang ini di pos
-            Satpam
-          </p>
-        </div>
-        <a href="AjukanKepemilikanBarang.html" class="claim-btn"
-          >Ajukan Klaim Kepemilikan</a
-        >
       </main>
     </div>
 
-    <script src="../js/DetailBarangTemuan.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/DetailBarangTemuan.js"></script>
   </body>
 </html>
