@@ -1,155 +1,150 @@
-// ==========================================
-// 1. TOGGLE ICON MATA UNTUK SETIAP FIELD PASSWORD
-// ==========================================
-document.querySelectorAll(".toggle-password").forEach((icon) => {
-  icon.addEventListener("click", function () {
-    const targetId = this.getAttribute("data-target");
-    const input = document.getElementById(targetId);
-    if (!input) return;
+document.addEventListener("DOMContentLoaded", async () => {
+  // ---------- 1. Toggle ikon mata password ----------
+  document.querySelectorAll(".toggle-password").forEach((icon) => {
+    icon.addEventListener("click", function () {
+      const input = document.getElementById(this.getAttribute("data-target"));
+      if (!input) return;
+      if (input.type === "password") {
+        input.type = "text";
+        this.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        this.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    });
+  });
 
-    if (input.type === "password") {
-      input.type = "text";
-      this.classList.remove("fa-eye");
-      this.classList.add("fa-eye-slash");
+  // ---------- 2. Elemen form ----------
+  const form = document.getElementById("confirmPasswordForm");
+  const newPasswordInput = document.getElementById("new_password");
+  const confirmPasswordInput = document.getElementById("confirm_password");
+  const submitBtn = document.getElementById("submitBtn");
+
+  // ---------- 3. Modal helpers ----------
+  function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("open");
+  }
+
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("open");
+  }
+
+  // Event Listener Tombol Modal
+  document
+    .getElementById("incompleteOkBtn")
+    ?.addEventListener("click", () => closeModal("incompleteModal"));
+  document
+    .getElementById("shortOkBtn")
+    ?.addEventListener("click", () => closeModal("shortModal"));
+  document
+    .getElementById("invalidLinkOkBtn")
+    ?.addEventListener("click", () => closeModal("invalidLinkModal"));
+  document.getElementById("successOkBtn")?.addEventListener("click", () => {
+    closeModal("successModal");
+    window.location.href = "../index.html"; // Kembali ke login setelah sukses
+  });
+
+  // ---------- 4. Verifikasi Sesi Recovery ----------
+  function setFormEnabled(enabled) {
+    if (newPasswordInput) newPasswordInput.disabled = !enabled;
+    if (confirmPasswordInput) confirmPasswordInput.disabled = !enabled;
+    if (submitBtn) submitBtn.disabled = !enabled;
+  }
+
+  // Kunci form secara default
+  setFormEnabled(false);
+
+  // Cek apakah supabaseClient ada di global scope
+  if (typeof supabaseClient === "undefined") {
+    document.getElementById("invalidLinkText").textContent =
+      "Koneksi ke server belum siap. Silakan muat ulang halaman.";
+    openModal("invalidLinkModal");
+    return;
+  }
+
+  try {
+    // Ketika link reset diklik, Supabase otomatis membuat sesi dari token di URL
+    const {
+      data: { session },
+      error,
+    } = await supabaseClient.auth.getSession();
+
+    // Kita juga cek URL secara manual untuk memastikan ini alur recovery
+    const hash = window.location.hash;
+    const isRecovery = hash.includes("type=recovery");
+
+    if (session || isRecovery) {
+      // Valid! Buka gembok inputan
+      setFormEnabled(true);
     } else {
-      input.type = "password";
-      this.classList.remove("fa-eye-slash");
-      this.classList.add("fa-eye");
+      // Tidak ada token valid di URL atau sesi
+      document.getElementById("invalidLinkText").textContent =
+        "Link reset password tidak valid, sudah kadaluarsa, atau sudah pernah digunakan.";
+      openModal("invalidLinkModal");
     }
-  });
-});
+  } catch (err) {
+    console.error("Error cek sesi:", err);
+  }
 
-// ==========================================
-// 2. VALIDASI SESI RECOVERY
-// ==========================================
-const form = document.querySelector("form");
-const newPasswordInput = document.getElementById("new_password");
-const confirmPasswordInput = document.getElementById("confirm_password");
-const submitBtn = form ? form.querySelector(".btn-primary") : null;
-const actionButtons = document.querySelector(".action-buttons");
+  // ---------- 5. Submit Update Password ----------
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-// pesan info/error, dibuat dinamis
-const message = document.createElement("p");
-message.id = "form-message";
-message.style.fontSize = "0.78rem";
-message.style.fontWeight = "600";
-message.style.marginTop = "-8px";
-message.style.marginBottom = "14px";
-message.style.lineHeight = "1.4";
-message.style.display = "none";
-if (form && actionButtons) {
-  form.insertBefore(message, actionButtons);
-}
+      const newPassword = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
 
-function showMessage(text, isError = true) {
-  message.textContent = text;
-  message.style.color = isError ? "#d1453b" : "#1c8a4b";
-  message.style.display = text ? "block" : "none";
-}
-
-let hasValidRecoverySession = false;
-
-function lockForm(reasonText) {
-  hasValidRecoverySession = false;
-  if (newPasswordInput) newPasswordInput.disabled = true;
-  if (confirmPasswordInput) confirmPasswordInput.disabled = true;
-  if (submitBtn) submitBtn.setAttribute("aria-disabled", "true");
-  showMessage(reasonText, true);
-}
-
-if (supabaseClient) {
-  // Event ini terpicu otomatis kalau URL mengandung token recovery yang valid
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === "PASSWORD_RECOVERY" && session) {
-      hasValidRecoverySession = true;
-      showMessage("");
-    }
-  });
-
-  // Fallback: kalau setelah beberapa saat tidak ada sesi recovery sama sekali,
-  // berarti link sudah kadaluarsa / rusak / dibuka tanpa lewat email.
-  setTimeout(async () => {
-    if (hasValidRecoverySession) return;
-    const { data } = await supabaseClient.auth.getSession();
-    if (!data.session) {
-      lockForm(
-        "Link reset password tidak valid atau sudah kadaluarsa. Silakan minta link baru lewat halaman Lupa Password.",
-      );
-    }
-  }, 1500);
-} else {
-  lockForm("Koneksi ke Supabase belum terkonfigurasi.");
-}
-
-// ==========================================
-// 3. SUBMIT: UPDATE PASSWORD
-// ==========================================
-if (form) {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!hasValidRecoverySession) {
-      showMessage(
-        "Sesi reset password belum valid. Silakan buka ulang link dari email kamu.",
-      );
-      return;
-    }
-
-    const newPassword = newPasswordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-
-    if (!newPassword || !confirmPassword) {
-      showMessage("Mohon isi kedua field password.");
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      showMessage("Password minimal 6 karakter.");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      showMessage("Konfirmasi password tidak sama dengan password baru.");
-      return;
-    }
-
-    const originalLabel = submitBtn ? submitBtn.textContent : "";
-    if (submitBtn) {
-      submitBtn.textContent = "Menyimpan...";
-      submitBtn.style.pointerEvents = "none";
-    }
-
-    try {
-      const { error } = await supabaseClient.auth.updateUser({
-        password: newPassword,
-      });
-
-      if (error) {
-        console.error(error);
-        showMessage("Gagal mengubah password: " + error.message);
+      // Validasi kosong
+      if (newPassword.trim() === "" || confirmPassword.trim() === "") {
+        openModal("incompleteModal");
         return;
       }
 
-      // logout dari sesi recovery supaya user login ulang dengan password baru
-      await supabaseClient.auth.signOut();
-
-      showMessage(
-        "Password berhasil diubah! Mengarahkan ke halaman login...",
-        false,
-      );
-      form.reset();
-
-      setTimeout(() => {
-        window.location.href = "../index.html";
-      }, 1800);
-    } catch (err) {
-      console.error(err);
-      showMessage("Terjadi kesalahan tak terduga. Coba lagi nanti.");
-    } finally {
-      if (submitBtn) {
-        submitBtn.textContent = originalLabel;
-        submitBtn.style.pointerEvents = "auto";
+      // Validasi kecocokan
+      if (newPassword !== confirmPassword) {
+        openModal("incompleteModal");
+        return;
       }
-    }
-  });
-}
+
+      // Validasi panjang
+      if (newPassword.length < 6) {
+        openModal("shortModal");
+        return;
+      }
+
+      // Lolos validasi, proses ubah password
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = "Menyimpan...";
+
+      try {
+        const { error } = await supabaseClient.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        // Kunci form kembali agar tidak di-submit dua kali
+        setFormEnabled(false);
+        form.reset();
+
+        // Logout dari sesi recovery agar pengguna harus login normal menggunakan password baru
+        await supabaseClient.auth.signOut();
+
+        openModal("successModal");
+      } catch (err) {
+        console.error("Gagal update password:", err);
+        document.getElementById("invalidLinkText").textContent =
+          "Gagal mengubah password: " + err.message;
+        openModal("invalidLinkModal");
+      } finally {
+        submitBtn.textContent = originalLabel;
+        submitBtn.disabled = false;
+      }
+    });
+  }
+});

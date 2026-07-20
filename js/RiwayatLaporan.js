@@ -14,14 +14,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editForm = document.getElementById("editForm");
   const closeEditModalBtn = document.getElementById("closeEditModal");
   const cancelEditBtn = document.getElementById("cancelEditBtn");
-  const saveEditBtn = document.getElementById("saveEditBtn");
 
-  // Modal Konfirmasi Hapus
+  // Modal Konfirmasi Hapus & Berhasil
   const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+  const deleteSuccessModal = document.getElementById("deleteSuccessModal");
+
+  // Elemen Teks dan Tombol Modal Hapus (Penting untuk dinamis)
+  const confirmDeleteText = document.getElementById("confirmDeleteText");
   const btnConfirmYes = document.getElementById("btnConfirmYes");
   const btnConfirmNo = document.getElementById("btnConfirmNo");
-  let pendingDeleteParams = null;
+  const btnSuccessOk = document.getElementById("btnSuccessOk");
 
+  let pendingDeleteParams = null;
   let userNIM = "";
 
   const STATUS_CONFIG = {
@@ -41,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Selesai: { label: "Selesai", className: "status-found" },
   };
 
-  // --- 1. INISIALISASI ---
+  // --- 1. INISIALISASI USER ---
   async function initUser() {
     const {
       data: { session },
@@ -88,12 +92,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
         const statusBadge = `<span class="status ${st.className}">${st.label}</span>`;
 
-        // TOMBOL AKSI
         let actionButtons = "-";
         if (
-          item.status === "Menunggu Validasi" ||
-          item.status === "Sedang Dicari" ||
-          item.status === "Tersedia dipos"
+          ["Menunggu Validasi", "Sedang Dicari", "Tersedia dipos"].includes(
+            item.status,
+          )
         ) {
           const itemJson = encodeURIComponent(JSON.stringify(item));
           actionButtons = `
@@ -125,10 +128,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("");
   }
 
-  // --- 4. FETCH DATA ---
+  // --- 4. FETCH DATA DARI SUPABASE ---
   async function loadData() {
     try {
-      // Hilang
+      // Fetch Laporan Kehilangan
       const { data: h } = await supabaseClient
         .from("Laporan_Hilang")
         .select("*")
@@ -152,7 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           })),
         );
 
-      // Temuan
+      // Fetch Laporan Temuan
       const { data: t } = await supabaseClient
         .from("Laporan_Temuan")
         .select("*")
@@ -180,9 +183,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // --- 5. HAPUS DATA ---
+  // --- 5. LOGIKA HAPUS (POP UP DINAMIS) ---
   window.deleteReport = (table, pkColumn, id) => {
     pendingDeleteParams = { table, pkColumn, id };
+
+    // UBAH TEKS & TOMBOL BERDASARKAN TABEL
+    if (table === "Laporan_Temuan") {
+      confirmDeleteText.innerHTML =
+        "Apakah anda yakin ingin<br>menghapus Laporan Temuan?";
+      btnConfirmYes.textContent = "Ya";
+      btnConfirmNo.textContent = "Tidak";
+    } else {
+      confirmDeleteText.innerHTML = "Apakah barang sudah ditemukan?";
+      btnConfirmYes.textContent = "Sudah";
+      btnConfirmNo.textContent = "Belum";
+    }
+
     deleteConfirmModal.classList.remove("hidden");
   };
 
@@ -195,23 +211,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!pendingDeleteParams) return;
     const { table, pkColumn, id } = pendingDeleteParams;
 
+    const originalText = btnConfirmYes.textContent;
     btnConfirmYes.textContent = "Memproses...";
     btnConfirmYes.disabled = true;
 
+    // Proses Hapus ke Supabase
     const { error } = await supabaseClient
       .from(table)
       .delete()
       .eq(pkColumn, id);
 
-    btnConfirmYes.textContent = "Sudah";
+    btnConfirmYes.textContent = originalText;
     btnConfirmYes.disabled = false;
     deleteConfirmModal.classList.add("hidden");
 
     if (error) {
       alert("Gagal menghapus: " + error.message);
     } else {
-      await loadData(); // Data akan otomatis hilang dari tabel
+      // Munculkan pop up berhasil
+      deleteSuccessModal.classList.remove("hidden");
     }
+  });
+
+  // Tombol "Ya" pada pop-up Berhasil
+  btnSuccessOk.addEventListener("click", async () => {
+    deleteSuccessModal.classList.add("hidden");
+    await loadData(); // Refresh tabel setelah hapus
   });
 
   // --- 6. EDIT DATA (MODAL) ---
@@ -225,7 +250,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("editCiri").value = item.ciri;
     document.getElementById("editLokasi").value = item.lokasi;
     document.getElementById("editTanggal").value = item.tanggal;
-
     editModal.classList.remove("hidden");
   };
 
@@ -268,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // HELPER
+  // HELPER FUNCTIONS
   function escapeHtml(text) {
     return String(text).replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
@@ -277,5 +301,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `${String(d.getHours()).padStart(2, "0")}.${String(d.getMinutes()).padStart(2, "0")} WIB<br>${d.toLocaleDateString("id-ID")}`;
   }
 
+  // START APP
   if (await initUser()) loadData();
 });

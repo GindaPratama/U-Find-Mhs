@@ -1,22 +1,3 @@
-// Profile.js
-// Ambil data profil (Nama, NIM, No HP, Email) dari tabel Mahasiswa
-// berdasarkan user yang sedang login, plus dropdown & logout
-// (sama seperti Dashboard.js supaya perilakunya konsisten).
-
-// ==================== KONFIGURASI SUPABASE ====================
-const SUPABASE_URL = "https://fctpmyobagajyhgnptbj.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_YVSLcfVELiN_hbLy_VdFZQ_QAIcBJ2V";
-
-let supabaseClient = null;
-try {
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-  );
-} catch (err) {
-  console.error("Supabase belum terhubung dengan sempurna:", err);
-}
-
 // ==========================================
 // 1. DROPDOWN PROFIL
 // ==========================================
@@ -48,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const namaTopEl = document.getElementById("profileNamaTop");
 
   if (!supabaseClient) {
-    console.error("supabaseClient null, cek SUPABASE_URL & SUPABASE_ANON_KEY.");
     if (namaTopEl) namaTopEl.textContent = "Gagal memuat";
     return;
   }
@@ -58,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } = await supabaseClient.auth.getSession();
 
   if (!session) {
-    // Belum login / sesi habis -> lempar balik ke halaman login
     window.location.href = "../index.html";
     return;
   }
@@ -69,16 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .eq("user_id", session.user.id)
     .maybeSingle();
 
-  if (error) {
-    console.error("Gagal mengambil data profil:", error);
-    if (namaTopEl) namaTopEl.textContent = "Gagal memuat data";
-    return;
-  }
-
-  if (!mhsData) {
-    console.error(
-      "Data mahasiswa tidak ditemukan untuk user_id ini. Cek apakah baris di tabel Mahasiswa punya user_id yang sama dengan auth.uid(), dan cek RLS policy SELECT untuk baris milik sendiri.",
-    );
+  if (error || !mhsData) {
     if (namaTopEl) namaTopEl.textContent = "Data tidak ditemukan";
     return;
   }
@@ -100,19 +70,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ==========================================
-// 3. LOGOUT
+// 3. LOGIKA POP-UP & LOGOUT
 // ==========================================
-const logoutButtons = document.querySelectorAll(
-  ".dropdown-item-danger, #btnKeluar",
-);
+const logoutButtons = document.querySelectorAll("#navBtnKeluar, #btnKeluar");
+const confirmLogoutModal = document.getElementById("confirmLogoutModal");
+const confirmYesBtn = document.getElementById("confirmYesBtn");
+const confirmNoBtn = document.getElementById("confirmNoBtn");
 
+// Tampilkan modal ketika tombol keluar diklik
 logoutButtons.forEach((btn) => {
-  btn.addEventListener("click", async (e) => {
+  btn.addEventListener("click", (e) => {
     e.preventDefault();
-    if (supabaseClient) {
-      await supabaseClient.auth.signOut();
+    if (confirmLogoutModal) {
+      confirmLogoutModal.classList.add("open");
     }
-    sessionStorage.removeItem("loggedInNim");
-    window.location.href = "../index.html";
   });
 });
+
+// Tutup modal ketika klik "Tidak"
+if (confirmNoBtn) {
+  confirmNoBtn.addEventListener("click", () => {
+    confirmLogoutModal.classList.remove("open");
+  });
+}
+
+// Proses logout ketika klik "Ya"
+if (confirmYesBtn) {
+  confirmYesBtn.addEventListener("click", async () => {
+    confirmYesBtn.textContent = "Proses...";
+    confirmYesBtn.disabled = true;
+
+    try {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+      sessionStorage.removeItem("loggedInNim");
+      window.location.href = "../index.html";
+    } catch (err) {
+      console.error("Gagal logout:", err);
+      confirmYesBtn.textContent = "Ya";
+      confirmYesBtn.disabled = false;
+    }
+  });
+}

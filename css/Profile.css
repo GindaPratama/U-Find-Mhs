@@ -328,6 +328,132 @@ body {
   box-shadow: 0 14px 26px -8px rgba(47, 111, 209, 0.65);
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 14, 36, 0.55);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box-confirm {
+  background: #ffffff; /* var(--card) dari registrasi */
+  width: 100%;
+  max-width: 380px;
+  border-radius: 20px; /* Diubah jadi 20px seperti registrasi */
+  padding: 40px 32px 32px;
+  text-align: center;
+  box-shadow: 0 24px 60px -12px rgba(6, 14, 36, 0.35);
+  animation: modal-pop 0.25s ease;
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Icon Outline Lingkaran */
+.modal-icon-outline {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 2.5px solid #16213e; /* var(--ink) dari registrasi */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-icon-question i {
+  font-size: 1.3rem;
+  color: #16213e; /* var(--ink) dari registrasi */
+}
+
+/* Typography Modal */
+.modal-box-confirm h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0b1a3d; /* var(--navy-900) dari registrasi */
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.modal-box-confirm p {
+  font-size: 0.9rem;
+  color: #5b6479; /* var(--ink-soft) dari registrasi */
+  line-height: 1.6;
+  margin-bottom: 26px;
+  font-weight: 500;
+}
+
+/* Tombol Modal */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-actions .modal-btn-dark {
+  flex: 1;
+  /* Menggunakan warna btn-primary dari Registrasi.css */
+  background: linear-gradient(135deg, #0b1a3d, #2f6fd1);
+  color: #fff;
+  border: none;
+  padding: 11px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -8px rgba(47, 111, 209, 0.55);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modal-actions .modal-btn-dark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px -8px rgba(47, 111, 209, 0.65);
+}
+
+.modal-actions #confirmNoBtn {
+  background: transparent;
+  color: #0b1a3d;
+  border: 1.5px solid #e2e7f1;
+  box-shadow: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.modal-actions #confirmNoBtn:hover {
+  background-color: #f0f4fc;
+  border-color: #2f6fd1;
+  color: #2f6fd1;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .modal-box-confirm {
+    padding: 32px 24px 26px;
+  }
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .profile-card {

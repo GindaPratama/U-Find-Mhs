@@ -53,6 +53,35 @@ function showSuccessModal(title, message, redirectAfterClose = true) {
   modalOkBtn.addEventListener("click", handleClose);
 }
 
+// ==========================================
+// 2b. LOGIKA MODAL PERINGATAN (pengganti alert bawaan)
+// ==========================================
+const warningModal = document.getElementById("warningModal");
+const warningMessage = document.getElementById("warningMessage");
+const warningOkBtn = document.getElementById("warningOkBtn");
+
+/**
+ * Tampilkan modal peringatan, dipakai untuk validasi form / error
+ * yang sebelumnya memakai alert() bawaan browser.
+ */
+function showWarningModal(message) {
+  if (!warningModal) {
+    // Fallback kalau modal tidak ditemukan di HTML
+    alert(message);
+    return;
+  }
+
+  warningMessage.textContent = message;
+  warningModal.classList.add("open");
+
+  const handleClose = () => {
+    warningModal.classList.remove("open");
+    warningOkBtn.removeEventListener("click", handleClose);
+  };
+
+  warningOkBtn.addEventListener("click", handleClose);
+}
+
 const registerForm = document.getElementById("registerForm");
 const submitBtn = registerForm
   ? registerForm.querySelector(".btn-primary")
@@ -63,8 +92,8 @@ if (registerForm) {
     event.preventDefault();
 
     if (!supabaseClient) {
-      alert(
-        "Koneksi ke database belum siap. Periksa SUPABASE_ANON_KEY di Registrasi.js.",
+      showWarningModal(
+        "Koneksi ke database belum siap",
       );
       return;
     }
@@ -76,12 +105,12 @@ if (registerForm) {
     const noHpVal = document.getElementById("nohp").value.trim();
 
     if (!nimVal || !namaVal || !emailVal || !passwordVal || !noHpVal) {
-      alert("Mohon lengkapi semua field terlebih dahulu.");
+      showWarningModal("Pastikan semua bagian telah diisi sebelum mengirim");
       return;
     }
 
     if (passwordVal.length < 6) {
-      alert("Password minimal 6 karakter.");
+      showWarningModal("Password minimal 6 karakter.");
       return;
     }
 
@@ -116,23 +145,23 @@ if (registerForm) {
           signUpError.message &&
           signUpError.message.toLowerCase().includes("nim")
         ) {
-          alert(
-            "NIM ini sudah terdaftar. Silakan login atau gunakan NIM lain.",
+          showWarningModal(
+            "NIM ini sudah terdaftar. Silakan login atau gunakan NIM lain",
           );
         } else if (
           signUpError.message &&
           signUpError.message.toLowerCase().includes("already registered")
         ) {
-          alert("Email ini sudah terdaftar. Silakan login.");
+          showWarningModal("Email ini sudah terdaftar. Silakan login");
         } else {
-          alert("Pendaftaran gagal: " + signUpError.message);
+          showWarningModal("Pendaftaran gagal");
         }
         return;
       }
 
       if (!signUpData.user) {
-        alert(
-          "Pendaftaran diproses, tapi tidak mendapat data user. Coba lagi.",
+        showWarningModal(
+          "Pendaftaran diproses, tapi tidak mendapat data user. Coba lagi",
         );
         return;
       }
@@ -157,7 +186,7 @@ if (registerForm) {
       }
     } catch (err) {
       console.error("Terjadi kesalahan tak terduga:", err);
-      alert("Terjadi kesalahan tak terduga. Coba lagi nanti.");
+      showWarningModal("Terjadi kesalahan tak terduga. Coba lagi nanti");
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

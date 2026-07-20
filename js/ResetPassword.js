@@ -20,6 +20,21 @@ document.addEventListener("DOMContentLoaded", () => {
     message.style.display = text ? "block" : "none";
   }
 
+  // ---------- Modal Peringatan (khusus kasus email belum diisi) ----------
+  const warningModal = document.getElementById("warningModal");
+  const warningOkBtn = document.getElementById("warningOkBtn");
+
+  function showWarningModal() {
+    if (!warningModal) return;
+    warningModal.classList.add("open");
+  }
+
+  if (warningOkBtn) {
+    warningOkBtn.addEventListener("click", () => {
+      warningModal.classList.remove("open");
+    });
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     showMessage("");
@@ -27,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = emailInput.value.trim();
 
     if (!email) {
-      showMessage("Email wajib diisi.");
+      showWarningModal();
       return;
     }
 

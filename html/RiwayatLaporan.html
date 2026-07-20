@@ -139,7 +139,6 @@
           <input type="hidden" id="editTable" />
           <input type="hidden" id="editPkColumn" />
           <input type="hidden" id="editRawId" />
-          <input type="hidden" id="editOldFoto" />
 
           <div class="input-group">
             <label>ID Laporan (Tidak bisa diubah)</label>
@@ -166,17 +165,7 @@
             <label id="labelTanggal">Tanggal</label>
             <input type="date" id="editTanggal" required />
           </div>
-          <div class="input-group">
-            <label>Ubah Foto Barang (Opsional)</label>
-            <input
-              type="file"
-              id="editFoto"
-              accept="image/png, image/jpeg, image/webp"
-            />
-            <span class="hint-text"
-              >*Biarkan kosong jika tidak ingin mengubah foto.</span
-            >
-          </div>
+
           <div class="form-actions">
             <button type="button" class="btn-cancel" id="cancelEditBtn">
               Batal
@@ -189,20 +178,39 @@
       </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus (Ditemukan) -->
+    <!-- Modal Konfirmasi Hapus -->
     <div id="deleteConfirmModal" class="modal-overlay hidden">
       <div class="confirm-box">
         <div class="confirm-icon">
           <i class="fa-solid fa-question"></i>
         </div>
         <h2 class="confirm-title">Konfirmasi</h2>
-        <p class="confirm-text">Apakah barang sudah ditemukan?</p>
+        <p class="confirm-text" id="confirmDeleteText">
+          Apakah barang sudah ditemukan?
+        </p>
         <div class="confirm-actions">
           <button type="button" class="btn-confirm-yes" id="btnConfirmYes">
             Sudah
           </button>
           <button type="button" class="btn-confirm-no" id="btnConfirmNo">
             Belum
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Berhasil Hapus -->
+    <div id="deleteSuccessModal" class="modal-overlay hidden">
+      <div class="confirm-box">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h2 class="confirm-title">Berhasil</h2>
+        <p class="confirm-text">Laporan berhasil dihapus</p>
+        <div class="confirm-actions">
+          <!-- Menggunakan class btn-confirm-yes agar stylenya konsisten -->
+          <button type="button" class="btn-confirm-yes" id="btnSuccessOk">
+            Ya
           </button>
         </div>
       </div>

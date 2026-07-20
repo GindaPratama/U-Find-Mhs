@@ -23,7 +23,8 @@
         <div class="login-card">
           <div class="user-icon"></div>
 
-          <form action="html/Dashboard.html" method="GET">
+          <!-- Form ditambah novalidate agar validasi bawaan browser mati -->
+          <form id="loginForm" novalidate>
             <div class="input-group">
               <label for="nim">NIM</label>
               <input
@@ -62,7 +63,7 @@
       </div>
     </div>
 
-    <!-- Modal Peringatan (NIM/Password salah, dll) -->
+    <!-- Modal Peringatan (NIM/Password salah, Data Kosong, dll) -->
     <div class="modal-overlay" id="warningModal">
       <div class="modal-box modal-box-warning">
         <div class="modal-icon-outline">
@@ -77,7 +78,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/Login.js"></script>
     <script src="js/SupabaseClient.js"></script>
+    <script src="js/Login.js"></script>
   </body>
 </html>

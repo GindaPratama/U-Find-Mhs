@@ -87,8 +87,27 @@
       </main>
     </div>
 
+    <!-- Modal Konfirmasi Keluar -->
+    <div class="modal-overlay" id="confirmLogoutModal">
+      <div class="modal-box modal-box-confirm">
+        <div class="modal-icon-outline modal-icon-question">
+          <i class="fa-solid fa-question"></i>
+        </div>
+        <h2>Konfirmasi</h2>
+        <p>Apakah anda yakin<br />ingin keluar?</p>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn-dark" id="confirmYesBtn">
+            Ya
+          </button>
+          <button type="button" class="modal-btn-dark" id="confirmNoBtn">
+            Tidak
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/Profile.js"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/Profile.js"></script>
   </body>
 </html>

@@ -297,6 +297,19 @@ body {
   object-fit: contain;
 }
 
+.warning-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 2.5px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
 .modal-box h2 {
   font-family: "Poppins", sans-serif;
   font-size: 1.15rem;

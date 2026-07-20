@@ -28,7 +28,7 @@
         <div class="register-card">
           <div class="user-icon"></div>
           <!-- REVISI: Menggunakan ID agar bisa ditangkap oleh JavaScript -->
-          <form id="registerForm">
+          <form id="registerForm" novalidate>
             <div class="input-group">
               <label for="nim">NIM</label>
               <input
@@ -116,6 +116,23 @@
       </div>
     </div>
 
+    <!-- Modal Peringatan (pengganti alert bawaan browser untuk validasi/error) -->
+    <div class="modal-overlay" id="warningModal">
+      <div class="modal-box">
+        <div class="warning-icon">
+          <i class="fa-solid fa-exclamation" aria-hidden="true"></i>
+        </div>
+        <h2 id="warningTitle">Peringatan</h2>
+        <p id="warningMessage">
+          Pastikan semua bagian telah diisi sebelum mengirim
+        </p>
+        <button type="button" class="btn-primary modal-btn" id="warningOkBtn">
+          Ok
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/Registrasi.js"></script>
     <script src="../js/SupabaseClient.js"></script>
   </body>
