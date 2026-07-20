@@ -207,17 +207,19 @@ body {
   color: var(--danger);
 }
 
-/* --- MAIN CONTAINER (full-bleed, konsisten dengan halaman lain) --- */
+/* --- MAIN CONTAINER --- */
 .main-container {
   flex: 1;
   width: 100%;
   background-color: #ffffff;
-  padding: 36px 48px 48px;
+  padding: 20px 48px 24px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Watermark logo transparan di tengah */
+/* Watermark logo di tengah tanpa kotak putih */
 .watermark {
   position: absolute;
   top: 50%;
@@ -232,6 +234,7 @@ body {
   opacity: 0.05;
   z-index: 0;
   pointer-events: none;
+  mix-blend-mode: multiply; /* Ini keajaiban yang menghilangkan kotak putihnya */
 }
 
 /* --- TOP CONTROLS (Back & Search) --- */
@@ -239,7 +242,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   position: relative;
   z-index: 1;
 }
@@ -317,7 +320,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   position: relative;
   z-index: 1;
 }
@@ -361,13 +364,14 @@ body {
 .card-grid {
   display: flex;
   justify-content: center;
-  gap: 22px;
   flex-wrap: wrap;
+  align-content: flex-start; /* KUNCI 1: Menjaga card tetap di atas walau wadah membesar */
+  flex-grow: 1; /* KUNCI 2: Memaksa wadah mengambil SELURUH sisa ruang, mendorong pagination ke bawah */
+  gap: 24px;
   position: relative;
   z-index: 1;
-  margin-bottom: 36px;
-  min-height: 260px;
-  align-content: flex-start;
+  margin-bottom: 24px;
+  width: 100%;
 }
 
 /* --- STYLE CARD --- */
@@ -375,6 +379,8 @@ body {
   background-color: #f8faff;
   border: 1px solid var(--border);
   width: 280px;
+  min-height: 365px; /* KUNCI 3: Tinggi seragam! Card 1 baris & 2 baris akan punya tinggi akhir yang persis sama */
+  flex: 0 0 auto;
   border-radius: 16px;
   padding: 16px;
   display: flex;
@@ -396,18 +402,21 @@ body {
   background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: 10px;
-  height: 130px;
+  height: 150px; /* Diperbesar agar gambar lebih jelas di laptop 1366x768 */
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 14px;
   overflow: hidden;
+  padding: 10px; /* Memberi jarak aman agar gambar tidak mentok ke garis */
 }
 
-.card-img-container img {
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: cover;
+/* KUNCI GAMBAR TIDAK TERPOTONG */
+.card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Contain memastikan seluruh bagian gambar terlihat */
+  border-radius: 6px;
 }
 
 .placeholder-icon {
@@ -483,6 +492,7 @@ body {
   text-align: center;
   padding: 60px 20px;
   color: var(--ink-soft);
+  grid-column: 1 / -1; /* Membuat state kosong mengambil seluruh lebar grid */
 }
 
 .empty-state i {
@@ -501,64 +511,67 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   position: relative;
   z-index: 1;
-  margin-top: 12px;
+  margin-top: auto;
+  padding-top: 24px;
 }
 
 .page-num,
 .page-arrow {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
-  font-weight: 700;
-  font-size: 0.82rem;
+  border: none;
+  font-weight: 800;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
-  color: var(--ink);
+  background-color: #e2efff;
+  color: #000;
   font-family: "Manrope", sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    background-color 0.2s ease;
 }
 
 .page-num:hover,
 .page-arrow:hover {
-  border-color: var(--blue-accent);
-  color: var(--blue-accent);
+  background-color: #cbe3ff;
+  transform: translateY(-2px);
 }
 
 .page-num.active {
-  background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 16px -6px rgba(47, 111, 209, 0.55);
+  background-color: #6caaff;
+  border: 2px solid #007bff;
+  color: #000;
 }
 
 .page-arrow {
-  background-color: #f3f6fb;
+  background-color: #e2efff;
+}
+
+.page-arrow i {
+  font-size: 1.1rem;
 }
 
 .page-arrow:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
-  color: var(--ink-soft);
-  border-color: var(--border);
+  box-shadow: none;
 }
 
 .page-arrow:disabled:hover {
-  border-color: var(--border);
-  color: var(--ink-soft);
+  transform: none;
+  background-color: #e2efff;
 }
 
-/* --- RESPONSIVE --- */
+/* --- RESPONSIVE MEDIA QUERIES --- */
+/* Untuk HP (Lebar kecil) */
 @media (max-width: 768px) {
   .main-container {
     padding: 24px 18px 32px;
@@ -575,6 +588,11 @@ body {
   .toggle-btn {
     padding: 9px 18px;
     font-size: 0.78rem;
+  }
+  .card-grid {
+    flex-direction: column; /* Menyusun card dari atas ke bawah di HP */
+    align-items: center; /* Memusatkan card di layar HP */
+    gap: 16px;
   }
   .card {
     width: 100%;

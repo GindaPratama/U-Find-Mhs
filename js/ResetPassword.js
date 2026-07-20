@@ -1,30 +1,9 @@
-// ResetPassword.js
-// Kirim link reset password lewat Supabase Auth (bukan cek manual ke tabel Mahasiswa),
-// karena akun dikelola lewat Supabase Auth (lihat Registrasi.js -> auth.signUp).
-
-// ==================== KONFIGURASI SUPABASE ====================
-// Samakan persis dengan yang dipakai di Registrasi.js / Login.js
-const SUPABASE_URL = "https://fctpmyobagajyhgnptbj.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_YVSLcfVELiN_hbLy_VdFZQ_QAIcBJ2V";
-
-let supabaseClient = null;
-
-try {
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-  );
-} catch (err) {
-  console.error("Supabase belum terhubung dengan sempurna:", err);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
   const emailInput = document.getElementById("email");
   const sendBtn = document.getElementById("sendBtn");
   const actionButtons = document.querySelector(".action-buttons");
 
-  // elemen pesan info/error, dibuat dinamis
   const message = document.createElement("p");
   message.id = "form-message";
   message.style.fontSize = "0.78rem";

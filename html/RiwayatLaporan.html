@@ -13,7 +13,7 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
-      <!-- Navbar (disamakan dengan Dashboard) -->
+      <!-- Navbar -->
       <header class="navbar">
         <div class="nav-left">
           <a href="Dashboard.html">
@@ -32,7 +32,6 @@
               <i class="fa-solid fa-circle-user profile-icon"></i>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </button>
-
             <div class="profile-dropdown" id="profileDropdown">
               <a href="Profile.html" class="dropdown-item">
                 <i class="fa-regular fa-user"></i>
@@ -65,27 +64,27 @@
           <!-- Laporan Kehilangan -->
           <section class="riwayat-section">
             <div class="section-title">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Laporan Kehilangan
+              <i class="fa-solid fa-magnifying-glass"></i> Laporan Kehilangan
             </div>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th class="col-no">No</th>
-                    <th>Waktu</th>
+                    <th class="col-no">ID</th>
+                    <th>Waktu Dibuat</th>
                     <th>Nama Barang</th>
-                    <th>Gambar Barang</th>
+                    <th>Gambar</th>
                     <th>Ciri Barang</th>
                     <th>Lokasi Kejadian</th>
+                    <th>Tanggal Kejadian</th>
                     <th>Status</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="kehilanganTableBody">
                   <tr class="state-row">
-                    <td colspan="7">
-                      <i class="fa-solid fa-spinner fa-spin"></i>
-                      Memuat data laporan kehilangan...
+                    <td colspan="9">
+                      <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
                     </td>
                   </tr>
                 </tbody>
@@ -96,27 +95,27 @@
           <!-- Laporan Temuan -->
           <section class="riwayat-section">
             <div class="section-title">
-              <i class="fa-solid fa-box-open"></i>
-              Laporan Temuan
+              <i class="fa-solid fa-box-open"></i> Laporan Temuan
             </div>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th class="col-no">No</th>
-                    <th>Waktu</th>
+                    <th class="col-no">ID</th>
+                    <th>Waktu Dibuat</th>
                     <th>Nama Barang</th>
-                    <th>Gambar Barang</th>
+                    <th>Gambar</th>
                     <th>Ciri Barang</th>
-                    <th>Lokasi Kejadian</th>
+                    <th>Lokasi Penemuan</th>
+                    <th>Tanggal Penemuan</th>
                     <th>Status</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="temuanTableBody">
                   <tr class="state-row">
-                    <td colspan="7">
-                      <i class="fa-solid fa-spinner fa-spin"></i>
-                      Memuat data laporan temuan...
+                    <td colspan="9">
+                      <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
                     </td>
                   </tr>
                 </tbody>
@@ -127,29 +126,77 @@
       </main>
     </div>
 
-    <!-- Supabase Client -->
+    <!-- Modal Edit Laporan -->
+    <div id="editModal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Edit Laporan</h2>
+          <button class="close-modal" id="closeEditModal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <form id="editForm">
+          <input type="hidden" id="editTable" />
+          <input type="hidden" id="editPkColumn" />
+          <input type="hidden" id="editRawId" />
+          <input type="hidden" id="editOldFoto" />
+
+          <div class="input-group">
+            <label>ID Laporan (Tidak bisa diubah)</label>
+            <input
+              type="text"
+              id="editDisplayId"
+              disabled
+              class="disabled-input"
+            />
+          </div>
+
+          <div class="input-group">
+            <label>Nama Barang</label>
+            <input type="text" id="editNama" required />
+          </div>
+
+          <div class="input-group">
+            <label>Ciri Khusus</label>
+            <textarea id="editCiri" rows="3" required></textarea>
+          </div>
+
+          <div class="input-group">
+            <label id="labelLokasi">Lokasi</label>
+            <input type="text" id="editLokasi" required />
+          </div>
+
+          <div class="input-group">
+            <label id="labelTanggal">Tanggal</label>
+            <input type="date" id="editTanggal" required />
+          </div>
+
+          <div class="input-group">
+            <label>Ubah Foto Barang (Opsional)</label>
+            <input
+              type="file"
+              id="editFoto"
+              accept="image/png, image/jpeg, image/webp"
+            />
+            <span class="hint-text"
+              >*Biarkan kosong jika tidak ingin mengubah foto.</span
+            >
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" id="cancelEditBtn">
+              Batal
+            </button>
+            <button type="submit" class="btn-save" id="saveEditBtn">
+              Simpan Perubahan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/SupabaseClient.js"></script>
     <script src="../js/RiwayatLaporan.js"></script>
-
-    <script>
-      const profileTrigger = document.getElementById("profileTrigger");
-      const profileDropdown = document.getElementById("profileDropdown");
-
-      profileTrigger.addEventListener("click", (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle("open");
-        profileTrigger.classList.toggle("open");
-      });
-
-      document.addEventListener("click", (e) => {
-        if (
-          !profileDropdown.contains(e.target) &&
-          !profileTrigger.contains(e.target)
-        ) {
-          profileDropdown.classList.remove("open");
-          profileTrigger.classList.remove("open");
-        }
-      });
-    </script>
   </body>
 </html>

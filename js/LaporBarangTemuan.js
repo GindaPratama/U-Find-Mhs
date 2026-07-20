@@ -1,18 +1,72 @@
-/**
- * LaporBarangTemuan.js
- * Logic untuk halaman "Lapor Barang Temuan" - U-Find
- * - Upload & preview foto barang secara lokal (tanpa upload ke server)
- * - Drag & drop file
- * - Validasi tipe & ukuran file
- * - Validasi form sebelum submit
- * - Simulasi pengiriman laporan
- */
-
 document.addEventListener("DOMContentLoaded", () => {
   // ---------- Konfigurasi ----------
   const MAX_FILE_SIZE_MB = 5;
   const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
   const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+  const STORAGE_BUCKET = "bukti-barang-temuan";
+  const REDIRECT_AFTER_SUCCESS = "Dashboard.html";
+
+  // ---------- Dropdown navbar   ----------
+  (function initNavbarDropdown() {
+    const trigger = document.getElementById("profileTrigger");
+    const dropdown = document.getElementById("profileDropdown");
+    if (!trigger || !dropdown) return;
+
+    const closeDropdown = () => {
+      trigger.classList.remove("open");
+      dropdown.classList.remove("open");
+    };
+
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isOpen = dropdown.classList.toggle("open");
+      trigger.classList.toggle("open", isOpen);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!dropdown.contains(event.target) && !trigger.contains(event.target)) {
+        closeDropdown();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeDropdown();
+    });
+  })();
+
+  // ---------- Modal Sukses ----------
+  function ensureSuccessModal() {
+    let overlay = document.getElementById("successOverlay");
+    if (overlay) return overlay;
+
+    overlay = document.createElement("div");
+    overlay.id = "successOverlay";
+    overlay.className = "success-overlay";
+    overlay.innerHTML = `
+      <div class="success-modal">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h2 class="success-title">Berhasil</h2>
+        <p class="success-text">Berhasil Melaporkan</p>
+        <button type="button" class="success-ok-btn" id="successOkBtn">Ok</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function showSuccessModal(onOk) {
+    const overlay = ensureSuccessModal();
+    const okBtn = overlay.querySelector("#successOkBtn");
+
+    const handleOk = () => {
+      overlay.classList.remove("show");
+      okBtn.removeEventListener("click", handleOk);
+      if (typeof onOk === "function") onOk();
+    };
+
+    okBtn.addEventListener("click", handleOk);
+    requestAnimationFrame(() => overlay.classList.add("show"));
+  }
 
   // ---------- Ambil elemen ----------
   const form = document.getElementById("laporForm");
@@ -38,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedFile = null;
   let objectUrl = null;
 
-  // Tanggal kehilangan tidak boleh di masa depan
   tanggalKejadian.max = new Date().toISOString().split("T")[0];
 
   // ---------- Util ----------
@@ -104,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleFile(file) {
     if (!file) return;
 
-    // Validasi tipe file
     if (!ALLOWED_TYPES.includes(file.type)) {
       uploadDropzone.classList.add("invalid");
       showFieldError(
@@ -114,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validasi ukuran file
     if (file.size > MAX_FILE_SIZE_BYTES) {
       uploadDropzone.classList.add("invalid");
       showFieldError(
@@ -140,29 +191,24 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadPreview.classList.remove("hidden");
   }
 
-  // Klik tombol "Pilih Foto Barang" -> buka file picker
   uploadTriggerBtn.addEventListener("click", openFilePicker);
 
-  // Klik tombol "Ganti" -> buka file picker lagi
   changePhotoBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     openFilePicker();
   });
 
-  // Klik tombol "Hapus" -> reset foto
   removePhotoBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     resetPhoto();
   });
 
-  // File dipilih lewat file picker
   fotoInput.addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
     handleFile(file);
   });
 
-  // Drag & drop
-  ["dragenter", "dragover"].forEach((eventName) => {
+  ["dragenter", "dragover"].forEach(() => {
     uploadDropzone.addEventListener("dragenter", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -231,8 +277,73 @@ document.addEventListener("DOMContentLoaded", () => {
     return isValid;
   }
 
+  // ---------- Ambil NIM mahasiswa yang sedang login ----------
+  async function getNimMahasiswaLogin() {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("Sesi login tidak ditemukan. Silakan login ulang.");
+    }
+
+    const { data: mhs, error: mhsError } = await supabaseClient
+      .from("Mahasiswa")
+      .select("NIM")
+      .eq("user_id", user.id)
+      .single();
+
+    if (mhsError || !mhs) {
+      throw new Error("Data mahasiswa tidak ditemukan untuk akun ini.");
+    }
+
+    return mhs.NIM;
+  }
+
+  // ---------- Upload foto ke Supabase Storage ----------
+  async function uploadFotoBarang(nim, file) {
+    if (!file) return null;
+
+    const ext = file.name.split(".").pop();
+    const filePath = `${nim}/${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabaseClient.storage
+      .from(STORAGE_BUCKET)
+      .upload(filePath, file, { cacheControl: "3600", upsert: false });
+
+    if (uploadError) {
+      throw new Error(`Gagal mengupload foto: ${uploadError.message}`);
+    }
+
+    const { data: publicUrlData } = supabaseClient.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl;
+  }
+
+  // ---------- Insert laporan ke tabel Laporan_Temuan ----------
+  async function insertLaporanTemuan(nim, fotoUrl) {
+    const { error: insertError } = await supabaseClient
+      .from("Laporan_Temuan")
+      .insert({
+        NIM_Penemu: nim,
+        Nama_Barang: namaBarang.value.trim(),
+        Ciri_Khusus: rincianBarang.value.trim(),
+        Lokasi_Penemuan: lokasiKejadian.value.trim(),
+        Tanggal_Penemuan: tanggalKejadian.value,
+        Foto_Barang: fotoUrl,
+        // status tidak perlu dikirim - default "Menunggu Validasi" dari DB
+      });
+
+    if (insertError) {
+      throw new Error(`Gagal menyimpan laporan: ${insertError.message}`);
+    }
+  }
+
   // ---------- Submit Form ----------
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     setStatus("", "");
 
@@ -241,45 +352,33 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const payload = {
-      namaBarang: namaBarang.value.trim(),
-      rincianBarang: rincianBarang.value.trim(),
-      lokasiKejadian: lokasiKejadian.value.trim(),
-      tanggalKejadian: tanggalKejadian.value,
-      foto: selectedFile
-        ? {
-            name: selectedFile.name,
-            size: selectedFile.size,
-            type: selectedFile.type,
-          }
-        : null,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Nonaktifkan tombol submit selama "mengirim"
     submitBtn.disabled = true;
     submitBtn.querySelector(".submit-btn-text").textContent = "Mengirim...";
 
-    // Simulasi proses pengiriman ke server.
-    // Ganti bagian ini dengan pemanggilan API/backend U-Find yang sesungguhnya,
-    // contoh: fetch('/api/laporan-temuan', { method: 'POST', body: formData })
-    setTimeout(() => {
-      console.log("Laporan Barang Temuan:", payload);
+    try {
+      const nim = await getNimMahasiswaLogin();
+      const fotoUrl = await uploadFotoBarang(nim, selectedFile);
+      await insertLaporanTemuan(nim, fotoUrl);
 
+      // Tampilkan popup sukses. Reset form & redirect BARU terjadi
+      // setelah user klik tombol "Ok" di popup.
+      showSuccessModal(() => {
+        form.reset();
+        resetPhoto();
+        window.location.href = REDIRECT_AFTER_SUCCESS;
+      });
+    } catch (err) {
+      console.error(err);
       setStatus(
-        "Laporan berhasil dikirim! Terima kasih sudah membantu sesama mahasiswa.",
-        "success",
+        err.message || "Terjadi kesalahan, silakan coba lagi.",
+        "error",
       );
-
+    } finally {
       submitBtn.disabled = false;
       submitBtn.querySelector(".submit-btn-text").textContent = "Laporkan";
-
-      form.reset();
-      resetPhoto();
-    }, 900);
+    }
   });
 
-  // Hapus pesan error tiap kali user mulai mengetik ulang
   [namaBarang, rincianBarang, lokasiKejadian, tanggalKejadian].forEach(
     (field) => {
       field.addEventListener("input", () => clearFieldError(field.id));

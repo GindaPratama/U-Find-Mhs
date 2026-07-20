@@ -1,24 +1,3 @@
-// ConfirmPassword.js
-// Halaman ini dibuka lewat link recovery dari email (dikirim oleh
-// resetPasswordForEmail di ResetPassword.js). Supabase-js otomatis
-// membaca token recovery dari URL dan memicu event PASSWORD_RECOVERY.
-
-// ==================== KONFIGURASI SUPABASE ====================
-// Samakan persis dengan Registrasi.js / ResetPassword.js
-const SUPABASE_URL = "https://fctpmyobagajyhgnptbj.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_YVSLcfVELiN_hbLy_VdFZQ_QAIcBJ2V";
-
-let supabaseClient = null;
-
-try {
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-  );
-} catch (err) {
-  console.error("Supabase belum terhubung dengan sempurna:", err);
-}
-
 // ==========================================
 // 1. TOGGLE ICON MATA UNTUK SETIAP FIELD PASSWORD
 // ==========================================

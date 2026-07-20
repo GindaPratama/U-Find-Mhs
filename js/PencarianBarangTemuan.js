@@ -1,66 +1,102 @@
-/**
- * PencarianBarangTemuan.js
- * Logic khusus halaman Pencarian Barang Temuan — berdiri sendiri, tidak
- * bergantung ke file lain. Merender kartu, search filter, dan pagination.
- *
- * --- UNTUK DIHUBUNGKAN KE SUPABASE ---
- * Ganti isi getAllItems() jadi query ke tabel "barang_temuan", contoh:
- *
- *   const { data, error } = await supabase
- *     .from('barang_temuan')
- *     .select('*')
- *     .order('tanggal', { ascending: false });
- *
- *   return error ? [] : data;
- *
- * Kalau nanti search juga mau dilakukan di server (bukan di browser),
- * applySearch() bisa diganti untuk memanggil ulang getAllItems() dengan
- * filter `.ilike('nama', `%${keyword}%`)` dsb., lalu render() dipanggil
- * dengan hasilnya.
- */
-(function () {
-  const ITEMS_PER_PAGE = 6;
+document.addEventListener("DOMContentLoaded", async () => {
+  const ITEMS_PER_PAGE = 3;
 
   const cardGrid = document.getElementById("cardGrid");
   const pagination = document.getElementById("pagination");
   const searchInput = document.getElementById("searchInput");
+  const usernameEl = document.querySelector(".username");
+
+  // ==========================================
+  // 1. CEK SESSION & UBAH NAMA PENGGUNA JADI NIM
+  // ==========================================
+  if (typeof supabaseClient !== "undefined" && supabaseClient) {
+    const {
+      data: { session },
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+      const { data: mhsData, error: mhsError } = await supabaseClient
+        .from("Mahasiswa")
+        .select("NIM")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (mhsData && !mhsError && usernameEl) {
+        usernameEl.textContent = mhsData.NIM;
+      }
+    }
+  } else {
+    console.error("SupabaseClient belum ter-load dengan benar!");
+  }
+
+  // ==========================================
+  // 2. DROPDOWN PROFIL & LOGOUT
+  // ==========================================
+  const profileTrigger = document.getElementById("profileTrigger");
+  const profileDropdown = document.getElementById("profileDropdown");
+  const logoutLink = document.querySelector(".dropdown-item-danger");
+
+  if (profileTrigger && profileDropdown) {
+    profileTrigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("open");
+      profileTrigger.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        !profileDropdown.contains(e.target) &&
+        !profileTrigger.contains(e.target)
+      ) {
+        profileDropdown.classList.remove("open");
+        profileTrigger.classList.remove("open");
+      }
+    });
+  }
+
+  if (logoutLink) {
+    logoutLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+      window.location.href = "../index.html";
+    });
+  }
 
   if (!cardGrid) return;
 
-  // Data sementara — nanti akan digantikan oleh tabel "barang_temuan" di Supabase.
-  const SAMPLE_DATA = [
-    {
-      id: "LT-001",
-      nama: "Dompet",
-      icon: "fa-wallet",
-      lokasi: "Ruangan 5306",
-      tanggal: "23/06/2026",
-    },
-    {
-      id: "LT-002",
-      nama: "SmartWatch",
-      icon: "fa-clock",
-      lokasi: "Musholla Perpustakaan",
-      tanggal: "21/06/2026",
-    },
-    {
-      id: "LT-003",
-      nama: "Kacamata",
-      icon: "fa-glasses",
-      lokasi: "Depan Gedung Miracle",
-      tanggal: "30/06/2026",
-    },
-  ];
-
+  // ==========================================
+  // 3. LOGIC PENGAMBILAN DATA
+  // ==========================================
   async function getAllItems() {
-    // ==== GANTI BLOK DI BAWAH INI DENGAN QUERY SUPABASE ====
-    // const { data, error } = await supabase
-    //   .from('barang_temuan')
-    //   .select('*')
-    //   .order('tanggal', { ascending: false });
-    // return error ? [] : data;
-    // ========================================================
-    return SAMPLE_DATA;
+    try {
+      const { data, error } = await supabaseClient
+        .from("Laporan_Temuan")
+        .select("*")
+        .order("Tanggal_Penemuan", { ascending: false });
+
+      if (error) {
+        console.error("Gagal mengambil data dari Supabase:", error);
+        return [];
+      }
+
+      return data.map((item) => {
+        let customId = "LT-" + String(item.Id_Temuan).padStart(3, "0");
+
+        return {
+          id: customId,
+          nama: item.Nama_Barang || "-",
+          lokasi: item.Lokasi_Penemuan || "-",
+          tanggal: item.Tanggal_Penemuan || "-",
+          foto: item.Foto_Barang || null, // Mengambil URL foto dari database
+          icon: "fa-box-open",
+        };
+      });
+    } catch (err) {
+      console.error("Terjadi kesalahan sistem:", err);
+      return [];
+    }
   }
 
   let allItems = [];
@@ -68,12 +104,18 @@
   let currentPage = 1;
 
   function renderCard(item) {
+    // REVISI: Hapus inline style, tambahkan class "card-photo"
+    const imageHTML = item.foto
+      ? `<img src="${item.foto}" alt="${item.nama}" class="card-photo" />`
+      : `<i class="fa-solid ${item.icon} placeholder-icon" aria-hidden="true"></i>`;
+
     return `
       <div class="card">
         <div class="card-img-container">
-          <i class="fa-solid ${item.icon} placeholder-icon" aria-hidden="true"></i>
+          ${imageHTML}
         </div>
         <div class="card-info">
+          <!-- (Kode table di bawahnya tetap sama) -->
           <table>
             <tr>
               <td class="label">ID</td>
@@ -200,18 +242,17 @@
     searchInput.addEventListener("input", (e) => applySearch(e.target.value));
   }
 
-  async function init() {
-    cardGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-        <p>Memuat data barang temuan...</p>
-      </div>
-    `;
+  // ==========================================
+  // 4. INISIALISASI HALAMAN
+  // ==========================================
+  cardGrid.innerHTML = `
+    <div class="empty-state">
+      <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+      <p>Memuat data barang temuan...</p>
+    </div>
+  `;
 
-    allItems = await getAllItems();
-    filteredItems = allItems.slice();
-    render();
-  }
-
-  init();
-})();
+  allItems = await getAllItems();
+  filteredItems = allItems.slice();
+  render();
+});
