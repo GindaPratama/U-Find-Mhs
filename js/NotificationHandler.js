@@ -32,12 +32,15 @@ async function initNotifications() {
 
     // --- Fungsi untuk membuat pesan notifikasi ---
     function createNotificationMessage(klaim) {
-        const namaBarang = klaim.Laporan_Temuan?.Nama_Barang || "barang";
+        // REVISI: Handle kasus jika Laporan_Temuan null (misal sudah dihapus)
+        const namaBarang = klaim.Laporan_Temuan ? klaim.Laporan_Temuan.Nama_Barang : "sebuah barang";
+
         if (klaim.status_klaim === "Disetujui") {
             return `Klaim Anda untuk <strong>${namaBarang}</strong> telah disetujui. Silahkan ambil barang di pos satpam.`;
         }
         if (klaim.status_klaim === "Ditolak") {
-            const alasan = klaim.catatan_status || "Tidak ada alasan yang diberikan.";
+            // REVISI: Pastikan catatan_status dibaca dengan benar dan berikan fallback yang jelas.
+            const alasan = klaim.catatan_status ? klaim.catatan_status.trim() : "Tidak ada alasan yang diberikan.";
             return `Klaim Anda untuk <strong>${namaBarang}</strong> ditolak. Alasan: ${alasan}`;
         }
         return null; // Abaikan status lain seperti 'Menunggu Persetujuan'
@@ -88,13 +91,17 @@ async function initNotifications() {
             .from("Klaim_Barang")
             .select("*, Laporan_Temuan(Nama_Barang)")
             .eq("NIM_Pengklaim", userNIM)
-            .in("status_klaim", ["Disetujui", "Ditolak"])
+            .or("status_klaim.eq.Disetujui,status_klaim.eq.Ditolak") // Gunakan .or() untuk kejelasan
             .order("created_at", { ascending: false });
 
         if (error) {
             console.error("Gagal mengambil notifikasi klaim:", error);
             return;
         }
+
+        // DEBUG: Tampilkan data mentah di console untuk pengecekan
+        console.log("Notifikasi diterima dari Supabase:", data);
+
         renderNotifications(data || []);
     };
 
