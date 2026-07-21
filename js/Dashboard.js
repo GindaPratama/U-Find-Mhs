@@ -59,6 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (mhsData && usernameEl) {
     usernameEl.textContent = mhsData.NIM;
   }
+
+  // Panggil inisialisasi notifikasi
+  if (typeof initNotifications === "function") initNotifications();
 });
 
 // ==========================================

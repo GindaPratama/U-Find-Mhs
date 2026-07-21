@@ -255,5 +255,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   allItems = await getAllItems();
   filteredItems = allItems.slice();
+
+  // Panggil inisialisasi notifikasi setelah data utama dimuat
+  if (typeof initNotifications === "function") initNotifications();
+
   render();
 });
