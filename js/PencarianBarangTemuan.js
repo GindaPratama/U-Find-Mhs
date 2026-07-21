@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { data, error } = await supabaseClient
         .from("Laporan_Temuan")
         .select("*")
+        .eq("status", "Tersedia dipos") // Hanya ambil barang yang tersedia di pos
         .order("Tanggal_Penemuan", { ascending: false });
 
       if (error) {
@@ -229,11 +230,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     filteredItems = !q
       ? allItems.slice()
       : allItems.filter(
-          (item) =>
-            item.nama.toLowerCase().includes(q) ||
-            item.lokasi.toLowerCase().includes(q) ||
-            item.id.toLowerCase().includes(q),
-        );
+        (item) =>
+          item.nama.toLowerCase().includes(q) ||
+          item.lokasi.toLowerCase().includes(q) ||
+          item.id.toLowerCase().includes(q),
+      );
     currentPage = 1;
     render();
   }
