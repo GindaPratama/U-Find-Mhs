@@ -258,6 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         Lokasi_Kejadian: lokasiKejadian.value.trim(),
         Tanggal_Kehilangan: tanggalKejadian.value,
         Foto_Barang: fotoUrl,
+        status: "Menunggu Validasi", // Tambahkan status awal
       });
 
       showSuccessModal(() => {
