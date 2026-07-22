@@ -44,10 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.addEventListener("click", (e) => {
-      if (
-        !profileDropdown.contains(e.target) &&
-        !profileTrigger.contains(e.target)
-      ) {
+      if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
         profileDropdown.classList.remove("open");
         profileTrigger.classList.remove("open");
       }
@@ -74,8 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { data, error } = await supabaseClient
         .from("Laporan_Hilang")
         .select("*")
-        .eq("status", "Sedang Dicari") // Hanya tampilkan laporan yang sudah divalidasi
-        .order("Tanggal_Kehilangan", { ascending: false });
+        .eq("status", "Sedang Dicari")
+        .order("created_at", { ascending: false }); // FIX: Memastikan sorting aman dari Error Database
 
       if (error) {
         console.error("Gagal mengambil data dari Supabase:", error);
@@ -83,14 +80,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       return data.map((item) => {
-        // Manipulasi ID menjadi LH-00X
         let customId = "LH-" + String(item.Id_Laporan).padStart(3, "0");
+
+        // FIX: Tanggal_Kejadian (sesuai field DB)
+        let tglMurni = item.Tanggal_Kejadian || item.created_at || "-";
+        if (tglMurni !== "-") tglMurni = tglMurni.split("T")[0];
 
         return {
           id: customId,
           nama: item.Nama_Barang || "-",
           lokasi: item.Lokasi_Kejadian || "-",
-          tanggal: item.Tanggal_Kehilangan || "-",
+          tanggal: tglMurni,
           foto: item.Foto_Barang || null,
           icon: "fa-box-open",
         };
@@ -117,26 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         <div class="card-info">
           <table>
-            <tr>
-              <td class="label">ID</td>
-              <td class="colon">:</td>
-              <td class="value">${item.id}</td>
-            </tr>
-            <tr>
-              <td class="label">Nama Barang</td>
-              <td class="colon">:</td>
-              <td class="value">${item.nama}</td>
-            </tr>
-            <tr>
-              <td class="label">Lokasi</td>
-              <td class="colon">:</td>
-              <td class="value">${item.lokasi}</td>
-            </tr>
-            <tr>
-              <td class="label">Tanggal</td>
-              <td class="colon">:</td>
-              <td class="value">${item.tanggal}</td>
-            </tr>
+            <tr><td class="label">ID</td><td class="colon">:</td><td class="value">${item.id}</td></tr>
+            <tr><td class="label">Nama Barang</td><td class="colon">:</td><td class="value">${item.nama}</td></tr>
+            <tr><td class="label">Lokasi</td><td class="colon">:</td><td class="value">${item.lokasi}</td></tr>
+            <tr><td class="label">Tanggal</td><td class="colon">:</td><td class="value">${item.tanggal}</td></tr>
           </table>
         </div>
         <a href="DetailBarangHilang.html?id=${encodeURIComponent(item.id)}" class="detail-btn">Cek Detail</a>
@@ -185,31 +169,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    const prevBtn = document.getElementById("prevPage");
-    const nextBtn = document.getElementById("nextPage");
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
-        if (currentPage > 1) {
-          currentPage -= 1;
-          render();
-        }
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        if (currentPage < totalPages) {
-          currentPage += 1;
-          render();
-        }
-      });
-    }
+    document.getElementById("prevPage")?.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        render();
+      }
+    });
+
+    document.getElementById("nextPage")?.addEventListener("click", () => {
+      if (currentPage < totalPages) {
+        currentPage += 1;
+        render();
+      }
+    });
   }
 
   function render() {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(filteredItems.length / ITEMS_PER_PAGE),
-    );
+    const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
     if (currentPage > totalPages) currentPage = totalPages;
 
     if (filteredItems.length === 0) {
@@ -229,11 +205,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     filteredItems = !q
       ? allItems.slice()
       : allItems.filter(
-        (item) =>
-          item.nama.toLowerCase().includes(q) ||
-          item.lokasi.toLowerCase().includes(q) ||
-          item.id.toLowerCase().includes(q),
-      );
+          (item) =>
+            item.nama.toLowerCase().includes(q) ||
+            item.lokasi.toLowerCase().includes(q) ||
+            item.id.toLowerCase().includes(q)
+        );
     currentPage = 1;
     render();
   }
@@ -249,11 +225,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     </div>
   `;
 
+  // Tarik data utama
   allItems = await getAllItems();
   filteredItems = allItems.slice();
 
-  // Panggil inisialisasi notifikasi setelah data utama dimuat
-  if (typeof initNotifications === "function") initNotifications();
+  // ==========================================
+  // 4. INISIALISASI NOTIFIKASI
+  // ==========================================
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
 
   render();
 });

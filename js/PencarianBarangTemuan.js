@@ -44,10 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.addEventListener("click", (e) => {
-      if (
-        !profileDropdown.contains(e.target) &&
-        !profileTrigger.contains(e.target)
-      ) {
+      if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
         profileDropdown.classList.remove("open");
         profileTrigger.classList.remove("open");
       }
@@ -67,15 +64,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!cardGrid) return;
 
   // ==========================================
-  // 3. LOGIC PENGAMBILAN DATA
+  // 3. LOGIC PENGAMBILAN DATA (Laporan_Temuan)
   // ==========================================
   async function getAllItems() {
     try {
       const { data, error } = await supabaseClient
         .from("Laporan_Temuan")
         .select("*")
-        .eq("status", "Tersedia dipos") // Hanya ambil barang yang tersedia di pos
-        .order("Tanggal_Penemuan", { ascending: false });
+        .eq("status", "Tersedia dipos")
+        .order("created_at", { ascending: false }); // FIX: Memastikan sorting aman
 
       if (error) {
         console.error("Gagal mengambil data dari Supabase:", error);
@@ -85,12 +82,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       return data.map((item) => {
         let customId = "LT-" + String(item.Id_Temuan).padStart(3, "0");
 
+        // FIX: Tanggal_Penemuan (sesuai field DB)
+        let tglMurni = item.Tanggal_Penemuan || item.created_at || "-";
+        if (tglMurni !== "-") tglMurni = tglMurni.split("T")[0];
+
         return {
           id: customId,
           nama: item.Nama_Barang || "-",
           lokasi: item.Lokasi_Penemuan || "-",
-          tanggal: item.Tanggal_Penemuan || "-",
-          foto: item.Foto_Barang || null, // Mengambil URL foto dari database
+          tanggal: tglMurni,
+          foto: item.Foto_Barang || null,
           icon: "fa-box-open",
         };
       });
@@ -105,7 +106,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentPage = 1;
 
   function renderCard(item) {
-    // REVISI: Hapus inline style, tambahkan class "card-photo"
     const imageHTML = item.foto
       ? `<img src="${item.foto}" alt="${item.nama}" class="card-photo" />`
       : `<i class="fa-solid ${item.icon} placeholder-icon" aria-hidden="true"></i>`;
@@ -116,28 +116,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${imageHTML}
         </div>
         <div class="card-info">
-          <!-- (Kode table di bawahnya tetap sama) -->
           <table>
-            <tr>
-              <td class="label">ID</td>
-              <td class="colon">:</td>
-              <td class="value">${item.id}</td>
-            </tr>
-            <tr>
-              <td class="label">Nama Barang</td>
-              <td class="colon">:</td>
-              <td class="value">${item.nama}</td>
-            </tr>
-            <tr>
-              <td class="label">Lokasi</td>
-              <td class="colon">:</td>
-              <td class="value">${item.lokasi}</td>
-            </tr>
-            <tr>
-              <td class="label">Tanggal</td>
-              <td class="colon">:</td>
-              <td class="value">${item.tanggal}</td>
-            </tr>
+            <tr><td class="label">ID</td><td class="colon">:</td><td class="value">${item.id}</td></tr>
+            <tr><td class="label">Nama Barang</td><td class="colon">:</td><td class="value">${item.nama}</td></tr>
+            <tr><td class="label">Lokasi</td><td class="colon">:</td><td class="value">${item.lokasi}</td></tr>
+            <tr><td class="label">Tanggal</td><td class="colon">:</td><td class="value">${item.tanggal}</td></tr>
           </table>
         </div>
         <a href="DetailBarangTemuan.html?id=${encodeURIComponent(item.id)}" class="detail-btn">Cek Detail</a>
@@ -186,31 +169,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    const prevBtn = document.getElementById("prevPage");
-    const nextBtn = document.getElementById("nextPage");
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
-        if (currentPage > 1) {
-          currentPage -= 1;
-          render();
-        }
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        if (currentPage < totalPages) {
-          currentPage += 1;
-          render();
-        }
-      });
-    }
+    document.getElementById("prevPage")?.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        render();
+      }
+    });
+
+    document.getElementById("nextPage")?.addEventListener("click", () => {
+      if (currentPage < totalPages) {
+        currentPage += 1;
+        render();
+      }
+    });
   }
 
   function render() {
-    const totalPages = Math.max(
-      1,
-      Math.ceil(filteredItems.length / ITEMS_PER_PAGE),
-    );
+    const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
     if (currentPage > totalPages) currentPage = totalPages;
 
     if (filteredItems.length === 0) {
@@ -230,11 +205,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     filteredItems = !q
       ? allItems.slice()
       : allItems.filter(
-        (item) =>
-          item.nama.toLowerCase().includes(q) ||
-          item.lokasi.toLowerCase().includes(q) ||
-          item.id.toLowerCase().includes(q),
-      );
+          (item) =>
+            item.nama.toLowerCase().includes(q) ||
+            item.lokasi.toLowerCase().includes(q) ||
+            item.id.toLowerCase().includes(q)
+        );
     currentPage = 1;
     render();
   }
@@ -243,9 +218,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchInput.addEventListener("input", (e) => applySearch(e.target.value));
   }
 
-  // ==========================================
-  // 4. INISIALISASI HALAMAN
-  // ==========================================
   cardGrid.innerHTML = `
     <div class="empty-state">
       <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
@@ -256,8 +228,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   allItems = await getAllItems();
   filteredItems = allItems.slice();
 
-  // Panggil inisialisasi notifikasi setelah data utama dimuat
-  if (typeof initNotifications === "function") initNotifications();
+  // ==========================================
+  // 4. INISIALISASI NOTIFIKASI
+  // ==========================================
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
 
   render();
 });

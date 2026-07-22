@@ -1,170 +1,252 @@
 /**
  * NotificationHandler.js
- * Mengelola notifikasi status klaim dari tabel Klaim_Barang.
+ * Mengelola notifikasi status laporan dan klaim mahasiswa secara Realtime.
  */
 
 async function initNotifications() {
-    if (typeof supabaseClient === "undefined") {
-        console.error("Supabase client is not available for notifications.");
-        return;
+  if (typeof supabaseClient === "undefined") {
+    console.error("Supabase client is not available for notifications.");
+    return;
+  }
+
+  const trigger = document.getElementById("notificationTrigger");
+  const dropdown = document.getElementById("notificationDropdown");
+  const badge = document.getElementById("notificationBadge");
+
+  if (!trigger || !dropdown || !badge) return;
+
+  // --- Ambil NIM User ---
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+  if (!session) return;
+
+  const { data: mhs } = await supabaseClient
+    .from("Mahasiswa")
+    .select("NIM")
+    .eq("user_id", session.user.id)
+    .single();
+  if (!mhs) return;
+  const userNIM = mhs.NIM;
+
+  // --- Gunakan LocalStorage untuk tracking notifikasi yang sudah dibaca ---
+  // (Cara ini jauh lebih aman karena kita mengambil dari 3 tabel yang berbeda)
+  const getReadNotifs = () => JSON.parse(localStorage.getItem(`read_notifs_${userNIM}`) || "[]");
+  const markAsRead = (id) => {
+    const reads = getReadNotifs();
+    if (!reads.includes(id)) {
+      reads.push(id);
+      localStorage.setItem(`read_notifs_${userNIM}`, JSON.stringify(reads));
     }
+  };
 
-    const trigger = document.getElementById("notificationTrigger");
-    const dropdown = document.getElementById("notificationDropdown");
-    const badge = document.getElementById("notificationBadge");
+  // --- Fetch Data Notifikasi dari 3 Tabel Sekaligus ---
+  const fetchNotifications = async () => {
+    const [resHilang, resTemuan, resKlaim] = await Promise.all([
+      supabaseClient
+        .from("Laporan_Hilang")
+        .select("Id_Laporan, Nama_Barang, status, Catatan_Status, created_at")
+        .eq("NIM_Pelapor", userNIM)
+        .in("status", ["Laporan Ditolak", "Sedang Dicari", "Selesai"]),
 
-    if (!trigger || !dropdown || !badge) {
-        console.warn("Elemen notifikasi tidak ditemukan di halaman ini.");
-        return;
-    }
+      supabaseClient
+        .from("Laporan_Temuan")
+        .select("Id_Temuan, Nama_Barang, status, Catatan_Status, created_at")
+        .eq("NIM_Penemu", userNIM)
+        .in("status", ["Laporan Ditolak", "Tersedia dipos", "Selesai"]),
 
-    // --- Ambil NIM User ---
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) return;
+      supabaseClient
+        .from("Klaim_Barang")
+        .select("Id_Klaim, status, Catatan_Status, created_at, Laporan_Temuan(Nama_Barang)")
+        .eq("NIM_Pengklaim", userNIM)
+        .in("status", ["Ditolak", "Selesai"]),
+    ]);
 
-    const { data: mhs } = await supabaseClient
-        .from("Mahasiswa")
-        .select("NIM")
-        .eq("user_id", session.user.id)
-        .single();
-    if (!mhs) return;
-    const userNIM = mhs.NIM;
+    let notifications = [];
 
-    // --- Fungsi untuk membuat pesan notifikasi ---
-    function createNotificationMessage(klaim) {
-        // REVISI: Handle kasus jika Laporan_Temuan null (misal sudah dihapus)
-        const namaBarang = klaim.Laporan_Temuan ? klaim.Laporan_Temuan.Nama_Barang : "sebuah barang";
-
-        if (klaim.status_klaim === "Disetujui") {
-            return `Klaim Anda untuk <strong>${namaBarang}</strong> telah disetujui. Silahkan ambil barang di pos satpam.`;
+    // 1. Data Laporan Hilang
+    if (resHilang.data) {
+      resHilang.data.forEach((item) => {
+        let msg = "";
+        let isError = false;
+        if (item.status === "Laporan Ditolak") {
+          msg = `Laporan Kehilangan <strong>${item.Nama_Barang}</strong> DITOLAK. Alasan: ${item.Catatan_Status || "-"}`;
+          isError = true;
+        } else if (item.status === "Sedang Dicari") {
+          msg = `Laporan Kehilangan <strong>${item.Nama_Barang}</strong> DISETUJUI dan Sedang Dicari.`;
+        } else if (item.status === "Selesai") {
+          msg = `Laporan Kehilangan <strong>${item.Nama_Barang}</strong> telah Selesai/Ditemukan.`;
         }
-        if (klaim.status_klaim === "Ditolak") {
-            // REVISI: Pastikan catatan_status dibaca dengan benar dan berikan fallback yang jelas.
-            const alasan = klaim.catatan_status ? klaim.catatan_status.trim() : "Tidak ada alasan yang diberikan.";
-            return `Klaim Anda untuk <strong>${namaBarang}</strong> ditolak. Alasan: ${alasan}`;
-        }
-        return null; // Abaikan status lain seperti 'Menunggu Persetujuan'
+
+        // ID gabungan agar unik per status per laporan
+        if (msg)
+          notifications.push({
+            id: `LH-${item.Id_Laporan}-${item.status}`,
+            message: msg,
+            created_at: item.created_at,
+            isError,
+            rawTime: new Date(item.created_at).getTime(),
+          });
+      });
     }
 
-    // --- Render UI ---
-    const renderNotifications = (klaimList) => {
-        const notifications = klaimList
-            .map(k => ({ ...k, message: createNotificationMessage(k) }))
-            .filter(k => k.message !== null);
+    // 2. Data Laporan Temuan
+    if (resTemuan.data) {
+      resTemuan.data.forEach((item) => {
+        let msg = "";
+        let isError = false;
+        if (item.status === "Laporan Ditolak") {
+          msg = `Laporan Temuan <strong>${item.Nama_Barang}</strong> DITOLAK. Alasan: ${item.Catatan_Status || "-"}`;
+          isError = true;
+        } else if (item.status === "Tersedia dipos") {
+          msg = `Laporan Temuan <strong>${item.Nama_Barang}</strong> DISETUJUI. Barang Tersedia di Pos Satpam.`;
+        } else if (item.status === "Selesai") {
+          msg = `Laporan Temuan <strong>${item.Nama_Barang}</strong> telah selesai dikembalikan ke pemilik.`;
+        }
+        if (msg)
+          notifications.push({
+            id: `LT-${item.Id_Temuan}-${item.status}`,
+            message: msg,
+            created_at: item.created_at,
+            isError,
+            rawTime: new Date(item.created_at).getTime(),
+          });
+      });
+    }
 
-        const unreadCount = notifications.filter(n => !n.is_read).length;
+    // 3. Data Klaim Barang
+    if (resKlaim.data) {
+      resKlaim.data.forEach((item) => {
+        let msg = "";
+        let isError = false;
+        const namaBarang = item.Laporan_Temuan ? item.Laporan_Temuan.Nama_Barang : "sebuah barang";
+        if (item.status === "Ditolak") {
+          msg = `Pengajuan Klaim <strong>${namaBarang}</strong> DITOLAK. Alasan: ${item.Catatan_Status || "-"}`;
+          isError = true;
+        } else if (item.status === "Selesai") {
+          msg = `Pengajuan Klaim <strong>${namaBarang}</strong> DISETUJUI. Silahkan ambil barang di Pos Satpam.`;
+        }
+        if (msg)
+          notifications.push({
+            id: `KB-${item.Id_Klaim}-${item.status}`,
+            message: msg,
+            created_at: item.created_at,
+            isError,
+            rawTime: new Date(item.created_at).getTime(),
+          });
+      });
+    }
 
-        badge.textContent = unreadCount;
-        badge.style.display = unreadCount > 0 ? "flex" : "none";
+    // Urutkan dari notifikasi terbaru ke paling lama
+    notifications.sort((a, b) => b.rawTime - a.rawTime);
 
-        let content = `
-      <div class="notification-header">
-        <h3>Notifikasi</h3>
-        ${unreadCount > 0 ? '<button id="markAllAsReadBtn">Tandai semua dibaca</button>' : ''}
-      </div>
-      <div class="notification-list" id="notificationList">
-    `;
+    // Tandai mana yang sudah dibaca
+    const readIds = getReadNotifs();
+    notifications = notifications.map((n) => ({ ...n, is_read: readIds.includes(n.id) }));
 
-        if (notifications.length === 0) {
-            content += '<div class="notification-empty">Tidak ada notifikasi baru.</div>';
-        } else {
-            notifications.forEach(n => {
-                const iconClass = n.status_klaim === 'Disetujui' ? 'fa-circle-check' : 'fa-circle-xmark';
-                content += `
-          <div class="notification-item ${n.is_read ? 'read' : ''}" data-id="${n.Id_Klaim}">
-            <div class="notification-icon"><i class="fa-solid ${iconClass}"></i></div>
-            <div class="notification-content">
-              <p class="notification-text">${n.message}</p>
-              <span class="notification-time">${new Date(n.created_at).toLocaleString('id-ID')}</span>
+    // Update Lonceng (Badge)
+    const unreadCount = notifications.filter((n) => !n.is_read).length;
+    badge.textContent = unreadCount;
+    badge.style.display = unreadCount > 0 ? "flex" : "none";
+
+    // Render UI
+    let content = `
+            <div class="notification-header">
+                <h3>Notifikasi</h3>
+                ${unreadCount > 0 ? '<button id="markAllAsReadBtn">Tandai semua dibaca</button>' : ""}
             </div>
-          </div>
+            <div class="notification-list" id="notificationList">
         `;
-            });
-        }
-        content += '</div>';
-        dropdown.innerHTML = content;
-    };
 
-    // --- Fetch Data ---
-    const fetchNotifications = async () => {
-        const { data, error } = await supabaseClient
-            .from("Klaim_Barang")
-            .select("*, Laporan_Temuan(Nama_Barang)")
-            .eq("NIM_Pengklaim", userNIM)
-            .or("status_klaim.eq.Disetujui,status_klaim.eq.Ditolak") // Gunakan .or() untuk kejelasan
-            .order("created_at", { ascending: false });
+    if (notifications.length === 0) {
+      content += '<div class="notification-empty">Tidak ada notifikasi baru.</div>';
+    } else {
+      notifications.forEach((n) => {
+        // UI: Merah untuk penolakan, Hijau untuk persetujuan
+        const iconClass = n.isError ? "fa-circle-xmark" : "fa-circle-check";
+        const iconColor = n.isError ? "#ef4444" : "#22c55e";
 
-        if (error) {
-            console.error("Gagal mengambil notifikasi klaim:", error);
-            return;
-        }
+        content += `
+                    <div class="notification-item ${n.is_read ? "read" : ""}" data-id="${n.id}">
+                        <div class="notification-icon"><i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i></div>
+                        <div class="notification-content">
+                            <p class="notification-text">${n.message}</p>
+                            <span class="notification-time">${new Date(n.created_at).toLocaleString("id-ID")}</span>
+                        </div>
+                    </div>
+                `;
+      });
+    }
+    content += "</div>";
+    dropdown.innerHTML = content;
+  };
 
-        // DEBUG: Tampilkan data mentah di console untuk pengecekan
-        console.log("Notifikasi diterima dari Supabase:", data);
+  // --- Event Listeners UI Notifikasi ---
+  trigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle("open");
+  });
 
-        renderNotifications(data || []);
-    };
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && !trigger.contains(e.target)) {
+      dropdown.classList.remove("open");
+    }
+  });
 
-    // --- Event Listeners ---
-    trigger.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle("open");
-    });
+  dropdown.addEventListener("click", (e) => {
+    // Jika tombol tandai semua dibaca diklik
+    if (e.target.id === "markAllAsReadBtn") {
+      const unreadItems = dropdown.querySelectorAll(".notification-item:not(.read)");
+      unreadItems.forEach((item) => markAsRead(item.dataset.id));
+      fetchNotifications();
+    }
 
-    document.addEventListener("click", (e) => {
-        if (!dropdown.contains(e.target) && !trigger.contains(e.target)) {
-            dropdown.classList.remove("open");
-        }
-    });
+    // Jika notifikasi individual diklik
+    const item = e.target.closest(".notification-item:not(.read)");
+    if (item) {
+      markAsRead(item.dataset.id);
+      item.classList.add("read");
+      const currentCount = parseInt(badge.textContent || "0", 10);
+      const newCount = Math.max(0, currentCount - 1);
+      badge.textContent = newCount;
+      badge.style.display = newCount > 0 ? "flex" : "none";
+    }
+  });
 
-    dropdown.addEventListener("click", async (e) => {
-        if (e.target.id === "markAllAsReadBtn") {
-            const { error } = await supabaseClient
-                .from("Klaim_Barang")
-                .update({ is_read: true })
-                .eq("NIM_Pengklaim", userNIM)
-                .eq("is_read", false);
+  // --- Inisialisasi & Realtime Supabase (Pantau 3 Tabel) ---
+  await fetchNotifications();
 
-            if (!error) fetchNotifications();
-        }
-
-        const item = e.target.closest(".notification-item:not(.read)");
-        if (item) {
-            const klaimId = item.dataset.id;
-            const { error } = await supabaseClient
-                .from("Klaim_Barang")
-                .update({ is_read: true })
-                .eq("Id_Klaim", klaimId);
-
-            if (!error) {
-                item.classList.add("read");
-                const currentCount = parseInt(badge.textContent || "0", 10);
-                const newCount = Math.max(0, currentCount - 1);
-                badge.textContent = newCount;
-                badge.style.display = newCount > 0 ? "flex" : "none";
-            }
-        }
-    });
-
-    // --- Inisialisasi & Realtime ---
-    await fetchNotifications();
-
-    supabaseClient
-        .channel(`klaim_status:${userNIM}`)
-        .on(
-            "postgres_changes",
-            {
-                event: "UPDATE",
-                schema: "public",
-                table: "Klaim_Barang",
-                filter: `NIM_Pengklaim=eq.${userNIM}`,
-            },
-            (payload) => {
-                // Hanya refresh jika status berubah menjadi Disetujui atau Ditolak
-                if (["Disetujui", "Ditolak"].includes(payload.new.status_klaim)) {
-                    fetchNotifications();
-                }
-            }
-        )
-        .subscribe();
+  supabaseClient
+    .channel(`notif_channel_${userNIM}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "Laporan_Hilang",
+        filter: `NIM_Pelapor=eq.${userNIM}`,
+      },
+      fetchNotifications
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "Laporan_Temuan",
+        filter: `NIM_Penemu=eq.${userNIM}`,
+      },
+      fetchNotifications
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "Klaim_Barang",
+        filter: `NIM_Pengklaim=eq.${userNIM}`,
+      },
+      fetchNotifications
+    )
+    .subscribe();
 }
