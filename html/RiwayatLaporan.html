@@ -6,6 +6,7 @@
     <title>Riwayat Laporan - U-Find</title>
     <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
     <link rel="stylesheet" href="../css/RiwayatLaporan.css" />
+    <link rel="stylesheet" href="../css/NotificationHandler.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -17,11 +18,7 @@
       <header class="navbar">
         <div class="nav-left">
           <a href="Dashboard.html">
-            <img
-              src="../assets/img/logo_unikom.png"
-              alt="Logo UNIKOM"
-              class="nav-logo"
-            />
+            <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
           </a>
           <span class="nav-title">U-Find</span>
         </div>
@@ -38,11 +35,7 @@
                 <span>Profil Saya</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a
-                href="../index.html"
-                class="dropdown-item dropdown-item-danger"
-                id="logoutBtn"
-              >
+              <a href="../index.html" class="dropdown-item dropdown-item-danger" id="logoutBtn">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Keluar</span>
               </a>
@@ -83,9 +76,7 @@
                 </thead>
                 <tbody id="kehilanganTableBody">
                   <tr class="state-row">
-                    <td colspan="9">
-                      <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
-                    </td>
+                    <td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td>
                   </tr>
                 </tbody>
               </table>
@@ -94,9 +85,7 @@
 
           <!-- Laporan Temuan -->
           <section class="riwayat-section">
-            <div class="section-title">
-              <i class="fa-solid fa-box-open"></i> Laporan Temuan
-            </div>
+            <div class="section-title"><i class="fa-solid fa-box-open"></i> Laporan Temuan</div>
             <div class="table-wrapper">
               <table>
                 <thead>
@@ -114,9 +103,7 @@
                 </thead>
                 <tbody id="temuanTableBody">
                   <tr class="state-row">
-                    <td colspan="9">
-                      <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
-                    </td>
+                    <td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td>
                   </tr>
                 </tbody>
               </table>
@@ -142,12 +129,7 @@
 
           <div class="input-group">
             <label>ID Laporan (Tidak bisa diubah)</label>
-            <input
-              type="text"
-              id="editDisplayId"
-              disabled
-              class="disabled-input"
-            />
+            <input type="text" id="editDisplayId" disabled class="disabled-input" />
           </div>
           <div class="input-group">
             <label>Nama Barang</label>
@@ -167,12 +149,8 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-cancel" id="cancelEditBtn">
-              Batal
-            </button>
-            <button type="submit" class="btn-save" id="saveEditBtn">
-              Simpan Perubahan
-            </button>
+            <button type="button" class="btn-cancel" id="cancelEditBtn">Batal</button>
+            <button type="submit" class="btn-save" id="saveEditBtn">Simpan Perubahan</button>
           </div>
         </form>
       </div>
@@ -185,16 +163,10 @@
           <i class="fa-solid fa-question"></i>
         </div>
         <h2 class="confirm-title">Konfirmasi</h2>
-        <p class="confirm-text" id="confirmDeleteText">
-          Apakah barang sudah ditemukan?
-        </p>
+        <p class="confirm-text" id="confirmDeleteText">Apakah barang sudah ditemukan?</p>
         <div class="confirm-actions">
-          <button type="button" class="btn-confirm-yes" id="btnConfirmYes">
-            Sudah
-          </button>
-          <button type="button" class="btn-confirm-no" id="btnConfirmNo">
-            Belum
-          </button>
+          <button type="button" class="btn-confirm-yes" id="btnConfirmYes">Sudah</button>
+          <button type="button" class="btn-confirm-no" id="btnConfirmNo">Belum</button>
         </div>
       </div>
     </div>
@@ -209,9 +181,7 @@
         <p class="confirm-text">Laporan berhasil dihapus</p>
         <div class="confirm-actions">
           <!-- Menggunakan class btn-confirm-yes agar stylenya konsisten -->
-          <button type="button" class="btn-confirm-yes" id="btnSuccessOk">
-            Ya
-          </button>
+          <button type="button" class="btn-confirm-yes" id="btnSuccessOk">Ya</button>
         </div>
       </div>
     </div>
