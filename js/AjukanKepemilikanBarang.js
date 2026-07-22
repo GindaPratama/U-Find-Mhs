@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeDropdown();
     });
+
+    if (typeof initNotifications === "function") {
+      initNotifications();
+    }
   })();
 
   // ---------- Modal Sukses ----------
@@ -113,8 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         placeholderText.textContent = fileInput.files[0].name;
         uploadDropzone.classList.add("has-file");
       } else {
-        placeholderText.textContent =
-          "Masukan Foto Bukti Kepemilikan Barang atau KTM Anda";
+        placeholderText.textContent = "Masukan Foto Bukti Kepemilikan Barang atau KTM Anda";
         uploadDropzone.classList.remove("has-file");
       }
     });
@@ -151,18 +154,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const {
         data: { publicUrl },
-      } = supabaseClient.storage
-        .from("bukti-kepemilikan")
-        .getPublicUrl(filePath);
+      } = supabaseClient.storage.from("bukti-kepemilikan").getPublicUrl(filePath);
 
       // Insert ke Klaim_Barang
-      const { error: dbError } = await supabaseClient
-        .from("Klaim_Barang")
-        .insert({
-          Id_Temuan: idTemuan,
-          NIM_Pengambil: currentNim,
-          Bukti_Kepemilikan: publicUrl,
-        });
+      const { error: dbError } = await supabaseClient.from("Klaim_Barang").insert({
+        Id_Temuan: idTemuan,
+        NIM_Pengambil: currentNim,
+        Bukti_Kepemilikan: publicUrl,
+      });
 
       if (dbError) {
         console.error("Database Error:", dbError);

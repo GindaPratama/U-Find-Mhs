@@ -17,32 +17,31 @@
       <header class="navbar">
         <div class="nav-left">
           <a href="../index.html">
-            <img
-              src="../assets/img/logo_unikom.png"
-              alt="Logo UNIKOM"
-              class="nav-logo"
-            />
+            <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
           </a>
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
+          <div class="notification-menu">
+            <button type="button" class="notification-trigger" id="notificationTrigger">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown"></div>
+          </div>
           <div class="profile-menu">
             <button type="button" class="profile-trigger" id="profileTrigger">
               <span class="username">Pengguna</span>
               <i class="fa-solid fa-circle-user profile-icon"></i>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </button>
-
             <div class="profile-dropdown" id="profileDropdown">
               <a href="Profile.html" class="dropdown-item">
                 <i class="fa-regular fa-user"></i>
                 <span>Profil Saya</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a
-                href="../index.html"
-                class="dropdown-item dropdown-item-danger"
-              >
+              <a href="../index.html" class="dropdown-item dropdown-item-danger">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Keluar</span>
               </a>
@@ -60,7 +59,6 @@
               <p class="role-top">Mahasiswa</p>
             </div>
           </div>
-
           <div class="profile-info">
             <div class="info-group">
               <label>Nama</label>
@@ -79,7 +77,6 @@
               <p id="profileEmail">-</p>
             </div>
           </div>
-
           <div class="action-buttons">
             <a href="../index.html" class="btn-keluar" id="btnKeluar">Keluar</a>
             <a href="Dashboard.html" class="btn-kembali">Kembali</a>
@@ -88,7 +85,6 @@
       </main>
     </div>
 
-    <!-- Modal Konfirmasi Keluar -->
     <div class="modal-overlay" id="confirmLogoutModal">
       <div class="modal-box modal-box-confirm">
         <div class="modal-icon-outline modal-icon-question">
@@ -97,18 +93,15 @@
         <h2>Konfirmasi</h2>
         <p>Apakah anda yakin<br />ingin keluar?</p>
         <div class="modal-actions">
-          <button type="button" class="modal-btn-dark" id="confirmYesBtn">
-            Ya
-          </button>
-          <button type="button" class="modal-btn-dark" id="confirmNoBtn">
-            Tidak
-          </button>
+          <button type="button" class="modal-btn-dark" id="confirmYesBtn">Ya</button>
+          <button type="button" class="modal-btn-dark" id="confirmNoBtn">Tidak</button>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/NotificationHandler.js"></script>
     <script src="../js/Profile.js"></script>
   </body>
 </html>

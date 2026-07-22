@@ -29,6 +29,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("SupabaseClient belum ter-load dengan benar!");
   }
 
+  // Notifikasi
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
+
   // ==========================================
   // 2. DROPDOWN PROFIL & LOGOUT
   // ==========================================
@@ -227,13 +232,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   allItems = await getAllItems();
   filteredItems = allItems.slice();
-
-  // ==========================================
-  // 4. INISIALISASI NOTIFIKASI
-  // ==========================================
-  if (typeof initNotifications === "function") {
-    initNotifications();
-  }
-
   render();
 });

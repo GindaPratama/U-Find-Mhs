@@ -1,94 +1,84 @@
 <!doctype html>
 <html lang="id">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistem Informasi Barang Temuan - U-Find</title>
-  <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
-  <link rel="stylesheet" href="../css/PencarianBarangTemuan.css" />
-  <link rel="stylesheet" href="../css/Profile.css" />
-  <link rel="stylesheet" href="../css/NotificationHandler.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
-
-<body>
-  <div class="dashboard-wrapper">
-    <header class="navbar">
-      <div class="nav-left">
-        <a href="Dashboard.html">
-          <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
-        </a>
-        <span class="nav-title">U-Find</span>
-      </div>
-      <div class="nav-right">
-        <!-- FITUR BARU: Notifikasi -->
-        <div class="notification-menu">
-          <button type="button" class="notification-trigger" id="notificationTrigger">
-            <i class="fa-solid fa-bell"></i>
-            <span class="notification-badge" id="notificationBadge"></span>
-          </button>
-          <div class="notification-dropdown" id="notificationDropdown">
-            <!-- Konten notifikasi akan di-render oleh JS -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Informasi Barang Temuan - U-Find</title>
+    <link rel="icon" href="../assets/img/favicon.ico?v=2" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/PencarianBarangTemuan.css" />
+    <link rel="stylesheet" href="../css/Profile.css" />
+    <link rel="stylesheet" href="../css/NotificationHandler.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-wrapper">
+      <header class="navbar">
+        <div class="nav-left">
+          <a href="Dashboard.html">
+            <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
+          </a>
+          <span class="nav-title">U-Find</span>
+        </div>
+        <div class="nav-right">
+          <div class="notification-menu">
+            <button type="button" class="notification-trigger" id="notificationTrigger">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown"></div>
+          </div>
+          <div class="profile-menu">
+            <button type="button" class="profile-trigger" id="profileTrigger">
+              <span class="username">Pengguna</span>
+              <i class="fa-solid fa-circle-user profile-icon"></i>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Profil Saya</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="../index.html" class="dropdown-item dropdown-item-danger">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+              </a>
+            </div>
           </div>
         </div>
-        <div class="profile-menu">
-          <button type="button" class="profile-trigger" id="profileTrigger">
-            <span class="username">Pengguna</span>
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-            <i class="fa-solid fa-chevron-down chevron-icon"></i>
-          </button>
+      </header>
 
-          <div class="profile-dropdown" id="profileDropdown">
-            <a href="Profile.html" class="dropdown-item">
-              <i class="fa-regular fa-user"></i>
-              <span>Profil Saya</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="../index.html" class="dropdown-item dropdown-item-danger">
-              <i class="fa-solid fa-right-from-bracket"></i>
-              <span>Keluar</span>
-            </a>
+      <main class="main-container">
+        <div class="watermark"></div>
+        <div class="top-controls">
+          <a href="Dashboard.html" class="back-btn" aria-label="Kembali">
+            <i class="fa-solid fa-arrow-left-long"></i>
+          </a>
+          <div class="search-wrapper">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Cari Barang Temuan berdasarkan nama atau lokasi"
+              class="search-input"
+            />
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
           </div>
         </div>
-      </div>
-    </header>
-
-    <!-- Main Container (Kotak Putih, full-bleed) -->
-    <main class="main-container">
-      <!-- Watermark Background -->
-      <div class="watermark"></div>
-
-      <!-- Top Controls -->
-      <div class="top-controls">
-        <a href="Dashboard.html" class="back-btn" aria-label="Kembali">
-          <i class="fa-solid fa-arrow-left-long"></i>
-        </a>
-        <div class="search-wrapper">
-          <input type="text" id="searchInput" placeholder="Cari Barang Temuan berdasarkan nama atau lokasi"
-            class="search-input" />
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <div class="toggle-buttons">
+          <a href="PencarianBarangTemuan.html" class="toggle-btn active">Barang Temuan</a>
+          <a href="PencarianBarangHilang.html" class="toggle-btn inactive">Barang Hilang</a>
         </div>
-      </div>
+        <div class="card-grid" id="cardGrid"></div>
+        <div class="pagination" id="pagination"></div>
+      </main>
+    </div>
 
-      <!-- Toggle Buttons -->
-      <div class="toggle-buttons">
-        <a href="PencarianBarangTemuan.html" class="toggle-btn active">Barang Temuan</a>
-        <a href="PencarianBarangHilang.html" class="toggle-btn inactive">Barang Hilang</a>
-      </div>
-
-      <!-- Card Grid (di-render oleh JS) -->
-      <div class="card-grid" id="cardGrid"></div>
-
-      <!-- Pagination (di-render oleh JS, otomatis sembunyi jika cuma 1 halaman) -->
-      <div class="pagination" id="pagination"></div>
-    </main>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/SupabaseClient.js"></script>
-  <script src="../js/NotificationHandler.js"></script>
-  <script src="../js/PencarianBarangTemuan.js"></script>
-</body>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/NotificationHandler.js"></script>
+    <script src="../js/PencarianBarangTemuan.js"></script>
+  </body>
 </html>

@@ -17,14 +17,18 @@
       <header class="navbar">
         <div class="nav-left">
           <a href="Dashboard.html"
-            ><img
-              src="../assets/img/logo_unikom.png"
-              alt="Logo UNIKOM"
-              class="nav-logo"
+            ><img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo"
           /></a>
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
+          <div class="notification-menu">
+            <button type="button" class="notification-trigger" id="notificationTrigger">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown"></div>
+          </div>
           <div class="profile-menu">
             <button type="button" class="profile-trigger" id="profileTrigger">
               <span class="username" id="usernameLabel">Pengguna</span>
@@ -36,11 +40,7 @@
                 ><i class="fa-regular fa-user"></i> Profil Saya</a
               >
               <div class="dropdown-divider"></div>
-              <a
-                href="../index.html"
-                class="dropdown-item dropdown-item-danger"
-                id="logoutBtn"
-              >
+              <a href="../index.html" class="dropdown-item dropdown-item-danger" id="logoutBtn">
                 <i class="fa-solid fa-right-from-bracket"></i> Keluar
               </a>
             </div>
@@ -55,9 +55,7 @@
             ><i class="fa-solid fa-arrow-left-long"></i
           ></a>
         </div>
-
         <div class="detail-content" id="detailContainer">
-          <!-- Loading State -->
           <div class="loading-state">
             <i class="fa-solid fa-spinner fa-spin"></i> Memuat detail barang...
           </div>
@@ -67,6 +65,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/NotificationHandler.js"></script>
     <script src="../js/DetailBarangTemuan.js"></script>
   </body>
 </html>

@@ -14,36 +14,34 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
-      <!-- Navbar (Sama seperti halaman lain) -->
       <header class="navbar">
         <div class="nav-left">
           <a href="../index.html">
-            <img
-              src="../assets/img/logo_unikom.png"
-              alt="Logo UNIKOM"
-              class="nav-logo"
-            />
+            <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
           </a>
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
+          <div class="notification-menu">
+            <button type="button" class="notification-trigger" id="notificationTrigger">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown"></div>
+          </div>
           <div class="profile-menu">
             <button type="button" class="profile-trigger" id="profileTrigger">
               <span class="username">Pengguna</span>
               <i class="fa-solid fa-circle-user profile-icon"></i>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </button>
-
             <div class="profile-dropdown" id="profileDropdown">
               <a href="Profile.html" class="dropdown-item">
                 <i class="fa-regular fa-user"></i>
                 <span>Profil Saya</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a
-                href="../index.html"
-                class="dropdown-item dropdown-item-danger"
-              >
+              <a href="../index.html" class="dropdown-item dropdown-item-danger">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Keluar</span>
               </a>
@@ -52,7 +50,6 @@
         </div>
       </header>
 
-      <!-- Main Content -->
       <main class="main-content">
         <div class="form-container">
           <div class="form-header">
@@ -60,8 +57,8 @@
               <span class="form-eyebrow">Lapor Kehilangan</span>
               <h1>Semoga cepat ketemu ya</h1>
               <p>
-                Isi detail barangmu selengkap mungkin supaya lebih mudah
-                dikenali kalau ada yang menemukannya.
+                Isi detail barangmu selengkap mungkin supaya lebih mudah dikenali kalau ada yang
+                menemukannya.
               </p>
             </div>
             <a href="Dashboard.html" class="close-btn" aria-label="Tutup">
@@ -83,7 +80,6 @@
                   />
                   <span class="error-text" data-error-for="namaBarang"></span>
                 </div>
-
                 <div class="input-group">
                   <label for="ciriBarang">Ciri Barang</label>
                   <textarea
@@ -95,7 +91,6 @@
                   ></textarea>
                   <span class="error-text" data-error-for="ciriBarang"></span>
                 </div>
-
                 <div class="input-group">
                   <label for="lokasiKejadian">Lokasi Kejadian</label>
                   <input
@@ -105,30 +100,16 @@
                     placeholder="cth. Kantin Gedung Rektorat Lantai 1"
                     required
                   />
-                  <span
-                    class="error-text"
-                    data-error-for="lokasiKejadian"
-                  ></span>
+                  <span class="error-text" data-error-for="lokasiKejadian"></span>
                 </div>
-
                 <div class="input-group">
                   <label for="tanggalKejadian">Tanggal Kehilangan</label>
-                  <input
-                    type="date"
-                    id="tanggalKejadian"
-                    name="tanggalKejadian"
-                    required
-                  />
-                  <span
-                    class="error-text"
-                    data-error-for="tanggalKejadian"
-                  ></span>
+                  <input type="date" id="tanggalKejadian" name="tanggalKejadian" required />
+                  <span class="error-text" data-error-for="tanggalKejadian"></span>
                 </div>
               </div>
-
               <div class="form-side">
                 <label class="upload-label">Foto Barang</label>
-
                 <div class="upload-dropzone" id="uploadDropzone">
                   <input
                     type="file"
@@ -137,44 +118,26 @@
                     accept="image/png, image/jpeg, image/webp"
                     hidden
                   />
-
                   <div class="upload-empty" id="uploadEmpty">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <p class="upload-title">Seret foto ke sini</p>
                     <p class="upload-subtitle">atau</p>
-                    <button
-                      type="button"
-                      class="upload-btn"
-                      id="uploadTriggerBtn"
-                    >
+                    <button type="button" class="upload-btn" id="uploadTriggerBtn">
                       Pilih Foto Barang
                     </button>
                     <p class="upload-hint">PNG, JPG, atau WEBP · Maks 5MB</p>
                   </div>
-
                   <div class="upload-preview hidden" id="uploadPreview">
                     <img id="previewImage" src="" alt="Pratinjau foto barang" />
                     <div class="preview-info">
-                      <span class="preview-filename" id="previewFilename"
-                        >-</span
-                      >
-                      <span class="preview-filesize" id="previewFilesize"
-                        >-</span
-                      >
+                      <span class="preview-filename" id="previewFilename">-</span>
+                      <span class="preview-filesize" id="previewFilesize">-</span>
                     </div>
                     <div class="preview-actions">
-                      <button
-                        type="button"
-                        class="preview-change"
-                        id="changePhotoBtn"
-                      >
+                      <button type="button" class="preview-change" id="changePhotoBtn">
                         <i class="fa-solid fa-rotate"></i> Ganti
                       </button>
-                      <button
-                        type="button"
-                        class="preview-remove"
-                        id="removePhotoBtn"
-                      >
+                      <button type="button" class="preview-remove" id="removePhotoBtn">
                         <i class="fa-solid fa-trash"></i> Hapus
                       </button>
                     </div>
@@ -183,7 +146,6 @@
                 <span class="error-text" data-error-for="fotoBarang"></span>
               </div>
             </div>
-
             <div class="form-footer">
               <div class="form-status" id="formStatus"></div>
               <div class="form-actions">
@@ -198,8 +160,10 @@
         </div>
       </main>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/LaporKehilanganBarang.js"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/NotificationHandler.js"></script>
+    <script src="../js/LaporKehilanganBarang.js"></script>
   </body>
 </html>

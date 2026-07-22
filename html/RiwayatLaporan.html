@@ -14,7 +14,6 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
-      <!-- Navbar -->
       <header class="navbar">
         <div class="nav-left">
           <a href="Dashboard.html">
@@ -23,6 +22,13 @@
           <span class="nav-title">U-Find</span>
         </div>
         <div class="nav-right">
+          <div class="notification-menu">
+            <button type="button" class="notification-trigger" id="notificationTrigger">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown"></div>
+          </div>
           <div class="profile-menu">
             <button type="button" class="profile-trigger" id="profileTrigger">
               <span class="username" id="usernameLabel">Pengguna</span>
@@ -46,7 +52,6 @@
 
       <main class="main-content">
         <div class="main-container">
-          <!-- Header Halaman -->
           <div class="page-header">
             <a href="Dashboard.html" class="back-btn">
               <i class="fa-solid fa-arrow-left-long"></i>
@@ -54,7 +59,6 @@
             <h1>Riwayat Laporan Anda</h1>
           </div>
 
-          <!-- Laporan Kehilangan -->
           <section class="riwayat-section">
             <div class="section-title">
               <i class="fa-solid fa-magnifying-glass"></i> Laporan Kehilangan
@@ -83,7 +87,6 @@
             </div>
           </section>
 
-          <!-- Laporan Temuan -->
           <section class="riwayat-section">
             <div class="section-title"><i class="fa-solid fa-box-open"></i> Laporan Temuan</div>
             <div class="table-wrapper">
@@ -113,20 +116,16 @@
       </main>
     </div>
 
-    <!-- Modal Edit Laporan -->
     <div id="editModal" class="modal-overlay hidden">
       <div class="modal-box">
         <div class="modal-header">
           <h2>Edit Laporan</h2>
-          <button class="close-modal" id="closeEditModal">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
+          <button class="close-modal" id="closeEditModal"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form id="editForm">
           <input type="hidden" id="editTable" />
           <input type="hidden" id="editPkColumn" />
           <input type="hidden" id="editRawId" />
-
           <div class="input-group">
             <label>ID Laporan (Tidak bisa diubah)</label>
             <input type="text" id="editDisplayId" disabled class="disabled-input" />
@@ -147,7 +146,6 @@
             <label id="labelTanggal">Tanggal</label>
             <input type="date" id="editTanggal" required />
           </div>
-
           <div class="form-actions">
             <button type="button" class="btn-cancel" id="cancelEditBtn">Batal</button>
             <button type="submit" class="btn-save" id="saveEditBtn">Simpan Perubahan</button>
@@ -156,12 +154,9 @@
       </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
     <div id="deleteConfirmModal" class="modal-overlay hidden">
       <div class="confirm-box">
-        <div class="confirm-icon">
-          <i class="fa-solid fa-question"></i>
-        </div>
+        <div class="confirm-icon"><i class="fa-solid fa-question"></i></div>
         <h2 class="confirm-title">Konfirmasi</h2>
         <p class="confirm-text" id="confirmDeleteText">Apakah barang sudah ditemukan?</p>
         <div class="confirm-actions">
@@ -171,16 +166,12 @@
       </div>
     </div>
 
-    <!-- Modal Berhasil Hapus -->
     <div id="deleteSuccessModal" class="modal-overlay hidden">
       <div class="confirm-box">
-        <div class="confirm-icon">
-          <i class="fa-solid fa-check"></i>
-        </div>
+        <div class="confirm-icon"><i class="fa-solid fa-check"></i></div>
         <h2 class="confirm-title">Berhasil</h2>
         <p class="confirm-text">Laporan berhasil dihapus</p>
         <div class="confirm-actions">
-          <!-- Menggunakan class btn-confirm-yes agar stylenya konsisten -->
           <button type="button" class="btn-confirm-yes" id="btnSuccessOk">Ya</button>
         </div>
       </div>
@@ -188,6 +179,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/SupabaseClient.js"></script>
+    <script src="../js/NotificationHandler.js"></script>
     <script src="../js/RiwayatLaporan.js"></script>
   </body>
 </html>

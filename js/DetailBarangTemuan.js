@@ -1,5 +1,35 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1. Setup Navbar NIM & Logout
+  // ==========================================
+  // 1. SETUP DROPDOWN PROFIL
+  // ==========================================
+  const profileTrigger = document.getElementById("profileTrigger");
+  const profileDropdown = document.getElementById("profileDropdown");
+
+  if (profileTrigger && profileDropdown) {
+    profileTrigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("open");
+      profileTrigger.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
+        profileDropdown.classList.remove("open");
+        profileTrigger.classList.remove("open");
+      }
+    });
+  }
+
+  // ==========================================
+  // 2. INISIALISASI NOTIFIKASI
+  // ==========================================
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
+
+  // ==========================================
+  // 3. SETUP NAVBAR NIM & LOGOUT
+  // ==========================================
   const usernameLabel = document.getElementById("usernameLabel");
   const logoutBtn = document.getElementById("logoutBtn");
 
@@ -14,23 +44,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         .eq("user_id", session.user.id)
         .maybeSingle()
         .then(({ data: mhs }) => {
-          if (mhs) usernameLabel.textContent = mhs.NIM;
+          if (mhs && usernameLabel) usernameLabel.textContent = mhs.NIM;
         });
     }
   }
 
-  logoutBtn?.addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
+  logoutBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (typeof supabaseClient !== "undefined") {
+      await supabaseClient.auth.signOut();
+    }
     window.location.href = "../index.html";
   });
 
-  // 2. Logic Ambil Detail Barang
+  // ==========================================
+  // 4. LOGIC AMBIL DETAIL BARANG
+  // ==========================================
   const container = document.getElementById("detailContainer");
   const params = new URLSearchParams(window.location.search);
   const idString = params.get("id"); // Format: LT-00X
 
   if (!idString) {
-    container.innerHTML = "<p>ID barang tidak ditemukan.</p>";
+    if (container) container.innerHTML = "<p>ID barang tidak ditemukan.</p>";
     return;
   }
 
@@ -48,10 +83,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     renderDetail(data, idString);
   } catch (err) {
-    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-circle"></i><p>Barang tidak ditemukan.</p></div>`;
+    if (container) {
+      container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-circle"></i><p>Barang tidak ditemukan.</p></div>`;
+    }
   }
 
   function renderDetail(item, displayId) {
+    if (!container) return;
+
     container.innerHTML = `
       <div class="photo-card">
         <p class="photo-label">Gambar Barang</p>

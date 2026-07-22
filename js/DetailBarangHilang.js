@@ -19,6 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Notifikasi
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
+
   logoutBtn?.addEventListener("click", async () => {
     await supabaseClient.auth.signOut();
     window.location.href = "../index.html";

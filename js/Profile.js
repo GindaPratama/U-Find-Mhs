@@ -12,10 +12,7 @@ if (profileTrigger && profileDropdown) {
   });
 
   document.addEventListener("click", (e) => {
-    if (
-      !profileDropdown.contains(e.target) &&
-      !profileTrigger.contains(e.target)
-    ) {
+    if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
       profileDropdown.classList.remove("open");
       profileTrigger.classList.remove("open");
     }
@@ -68,6 +65,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   setText("profileNoHp", mhsData.No_Hp);
   setText("profileEmail", mhsData.Email);
 });
+
+// Notifikas
+if (typeof initNotifications === "function") {
+  initNotifications();
+}
 
 // ==========================================
 // 3. LOGIKA POP-UP & LOGOUT

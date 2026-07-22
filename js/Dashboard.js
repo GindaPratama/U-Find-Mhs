@@ -1,11 +1,3 @@
-// Dashboard.js
-// Tampilkan NIM asli user yang login (bukan teks statis "Pengguna"),
-// urus dropdown profil, dan logout dari Supabase Auth.
-
-
-// ==========================================
-// 1. DROPDOWN PROFIL (UI, tetap sama seperti sebelumnya)
-// ==========================================
 const profileTrigger = document.getElementById("profileTrigger");
 const profileDropdown = document.getElementById("profileDropdown");
 
@@ -17,10 +9,7 @@ if (profileTrigger && profileDropdown) {
   });
 
   document.addEventListener("click", (e) => {
-    if (
-      !profileDropdown.contains(e.target) &&
-      !profileTrigger.contains(e.target)
-    ) {
+    if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
       profileDropdown.classList.remove("open");
       profileTrigger.classList.remove("open");
     }
@@ -40,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } = await supabaseClient.auth.getSession();
 
   if (!session) {
-    // Belum login / sesi habis -> lempar balik ke halaman login
     window.location.href = "../index.html";
     return;
   }
@@ -60,8 +48,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     usernameEl.textContent = mhsData.NIM;
   }
 
-  // Panggil inisialisasi notifikasi
-  if (typeof initNotifications === "function") initNotifications();
+  // Notifikasi
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
 });
 
 // ==========================================

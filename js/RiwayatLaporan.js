@@ -4,6 +4,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // ==========================================
+  // SETUP DROPDOWN PROFIL
+  // ==========================================
+  const profileTrigger = document.getElementById("profileTrigger");
+  const profileDropdown = document.getElementById("profileDropdown");
+
+  if (profileTrigger && profileDropdown) {
+    profileTrigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("open");
+      profileTrigger.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
+        profileDropdown.classList.remove("open");
+        profileTrigger.classList.remove("open");
+      }
+    });
+  }
+
+  // ==========================================
+  // INISIALISASI NOTIFIKASI
+  // ==========================================
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
+
   // --- ELEMEN DOM ---
   const usernameLabel = document.getElementById("usernameLabel");
   const kehilanganBody = document.getElementById("kehilanganTableBody");
@@ -29,19 +57,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let userNIM = "";
 
   const STATUS_CONFIG = {
-    "Menunggu Validasi": {
-      label: "Menunggu Validasi",
-      className: "status-pending",
-    },
+    "Menunggu Validasi": { label: "Menunggu Validasi", className: "status-pending" },
     "Sedang Dicari": { label: "Sedang Dicari", className: "status-searching" },
-    "Tersedia dipos": {
-      label: "Tersedia di pos",
-      className: "status-searching",
-    },
-    "Laporan Ditolak": {
-      label: "Laporan Ditolak",
-      className: "status-rejected",
-    },
+    "Tersedia dipos": { label: "Tersedia di pos", className: "status-searching" },
+    "Laporan Ditolak": { label: "Laporan Ditolak", className: "status-rejected" },
     Selesai: { label: "Selesai", className: "status-found" },
   };
 
@@ -93,11 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const statusBadge = `<span class="status ${st.className}">${st.label}</span>`;
 
         let actionButtons = "-";
-        if (
-          ["Menunggu Validasi", "Sedang Dicari", "Tersedia dipos"].includes(
-            item.status,
-          )
-        ) {
+        if (["Menunggu Validasi", "Sedang Dicari", "Tersedia dipos"].includes(item.status)) {
           const itemJson = encodeURIComponent(JSON.stringify(item));
           actionButtons = `
           <div class="action-buttons">
@@ -152,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             lokasi: r.Lokasi_Kejadian,
             tanggal: r.Tanggal_Kehilangan,
             status: r.status,
-          })),
+          }))
         );
 
       // Fetch Laporan Temuan
@@ -176,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             lokasi: r.Lokasi_Penemuan,
             tanggal: r.Tanggal_Penemuan,
             status: r.status,
-          })),
+          }))
         );
     } catch (e) {
       console.error(e);
@@ -187,10 +202,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.deleteReport = (table, pkColumn, id) => {
     pendingDeleteParams = { table, pkColumn, id };
 
-    // UBAH TEKS & TOMBOL BERDASARKAN TABEL
     if (table === "Laporan_Temuan") {
-      confirmDeleteText.innerHTML =
-        "Apakah anda yakin ingin<br>menghapus Laporan Temuan?";
+      confirmDeleteText.innerHTML = "Apakah anda yakin ingin<br>menghapus Laporan Temuan?";
       btnConfirmYes.textContent = "Ya";
       btnConfirmNo.textContent = "Tidak";
     } else {
@@ -215,11 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnConfirmYes.textContent = "Memproses...";
     btnConfirmYes.disabled = true;
 
-    // Proses Hapus ke Supabase
-    const { error } = await supabaseClient
-      .from(table)
-      .delete()
-      .eq(pkColumn, id);
+    const { error } = await supabaseClient.from(table).delete().eq(pkColumn, id);
 
     btnConfirmYes.textContent = originalText;
     btnConfirmYes.disabled = false;
@@ -228,15 +237,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (error) {
       alert("Gagal menghapus: " + error.message);
     } else {
-      // Munculkan pop up berhasil
       deleteSuccessModal.classList.remove("hidden");
     }
   });
 
-  // Tombol "Ya" pada pop-up Berhasil
   btnSuccessOk.addEventListener("click", async () => {
     deleteSuccessModal.classList.add("hidden");
-    await loadData(); // Refresh tabel setelah hapus
+    await loadData();
   });
 
   // --- 6. EDIT DATA (MODAL) ---
@@ -253,12 +260,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     editModal.classList.remove("hidden");
   };
 
-  closeEditModalBtn.addEventListener("click", () =>
-    editModal.classList.add("hidden"),
-  );
-  cancelEditBtn.addEventListener("click", () =>
-    editModal.classList.add("hidden"),
-  );
+  closeEditModalBtn.addEventListener("click", () => editModal.classList.add("hidden"));
+  cancelEditBtn.addEventListener("click", () => editModal.classList.add("hidden"));
 
   editForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -272,18 +275,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     if (table === "Laporan_Hilang") {
       updateData.Lokasi_Kejadian = document.getElementById("editLokasi").value;
-      updateData.Tanggal_Kehilangan =
-        document.getElementById("editTanggal").value;
+      updateData.Tanggal_Kehilangan = document.getElementById("editTanggal").value;
     } else {
       updateData.Lokasi_Penemuan = document.getElementById("editLokasi").value;
-      updateData.Tanggal_Penemuan =
-        document.getElementById("editTanggal").value;
+      updateData.Tanggal_Penemuan = document.getElementById("editTanggal").value;
     }
 
-    const { error } = await supabaseClient
-      .from(table)
-      .update(updateData)
-      .eq(pk, id);
+    const { error } = await supabaseClient.from(table).update(updateData).eq(pk, id);
     if (!error) {
       editModal.classList.add("hidden");
       loadData();

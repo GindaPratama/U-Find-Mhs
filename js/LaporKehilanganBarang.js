@@ -14,7 +14,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (mhsData) usernameEl.textContent = mhsData.NIM;
     }
   }
-  // --- END UPDATE ---
+
+  // Notifikasi
+  if (typeof initNotifications === "function") {
+    initNotifications();
+  }
 
   // ---------- Konfigurasi ----------
   const MAX_FILE_SIZE_MB = 5;
@@ -139,12 +143,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function clearAllErrors() {
-    document
-      .querySelectorAll(".error-text")
-      .forEach((el) => el.classList.remove("show"));
-    document
-      .querySelectorAll(".invalid")
-      .forEach((el) => el.classList.remove("invalid"));
+    document.querySelectorAll(".error-text").forEach((el) => el.classList.remove("show"));
+    document.querySelectorAll(".invalid").forEach((el) => el.classList.remove("invalid"));
     uploadDropzone.classList.remove("invalid");
   }
 
@@ -242,12 +242,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (selectedFile) {
         const ext = selectedFile.name.split(".").pop();
         const filePath = `${nim}/${Date.now()}.${ext}`;
-        await supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .upload(filePath, selectedFile);
-        const { data } = supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(filePath);
+        await supabaseClient.storage.from(STORAGE_BUCKET).upload(filePath, selectedFile);
+        const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
         fotoUrl = data.publicUrl;
       }
 
