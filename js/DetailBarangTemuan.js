@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // ==========================================
-  // 1. SETUP DROPDOWN PROFIL
-  // ==========================================
+  // 1. Setup Dropdown Profil
   const profileTrigger = document.getElementById("profileTrigger");
   const profileDropdown = document.getElementById("profileDropdown");
 
@@ -20,16 +18,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // ==========================================
-  // 2. INISIALISASI NOTIFIKASI
-  // ==========================================
+  // 2. Inisialisasi Notifikasi
   if (typeof initNotifications === "function") {
     initNotifications();
   }
 
-  // ==========================================
-  // 3. SETUP NAVBAR NIM & LOGOUT
-  // ==========================================
+  // 3. Setup Navbar NIM & Logout
   const usernameLabel = document.getElementById("usernameLabel");
   const logoutBtn = document.getElementById("logoutBtn");
 
@@ -57,19 +51,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "../index.html";
   });
 
-  // ==========================================
-  // 4. LOGIC AMBIL DETAIL BARANG
-  // ==========================================
+  // 4. Logic Ambil Detail Barang
   const container = document.getElementById("detailContainer");
   const params = new URLSearchParams(window.location.search);
-  const idString = params.get("id"); // Format: LT-00X
+  const idString = params.get("id");
 
   if (!idString) {
     if (container) container.innerHTML = "<p>ID barang tidak ditemukan.</p>";
     return;
   }
 
-  // Parse ID (contoh: LT-005 -> 5)
   const numericId = parseInt(idString.split("-")[1], 10);
 
   try {
@@ -81,14 +72,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (error || !data) throw new Error("Data tidak ditemukan");
 
-    renderDetail(data, idString);
+    // Mengambil Nama Mahasiswa Penemu
+    let namaPenemu = "-";
+    if (data.NIM_Penemu) {
+      const { data: mhs } = await supabaseClient
+        .from("Mahasiswa")
+        .select("Nama_Lengkap")
+        .eq("NIM", data.NIM_Penemu)
+        .maybeSingle();
+      if (mhs) namaPenemu = mhs.Nama_Lengkap;
+    }
+
+    renderDetail(data, idString, namaPenemu);
   } catch (err) {
     if (container) {
       container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-circle"></i><p>Barang tidak ditemukan.</p></div>`;
     }
   }
 
-  function renderDetail(item, displayId) {
+  function renderDetail(item, displayId, namaPenemu) {
     if (!container) return;
 
     container.innerHTML = `
@@ -107,14 +109,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         <table>
           <tr><td class="label">ID</td><td class="colon">:</td><td class="value">${displayId}</td></tr>
           <tr><td class="label">Nama Barang</td><td class="colon">:</td><td class="value">${item.Nama_Barang}</td></tr>
+          <tr><td class="label">NIM Penemu</td><td class="colon">:</td><td class="value">${item.NIM_Penemu || "-"}</td></tr>
+          <tr><td class="label">Nama</td><td class="colon">:</td><td class="value">${namaPenemu}</td></tr>
+          <tr><td colspan="3" style="height: 12px;"></td></tr> <!-- Spacer -->
           <tr><td class="label">Lokasi</td><td class="colon">:</td><td class="value">${item.Lokasi_Penemuan}</td></tr>
           <tr><td class="label">Tanggal</td><td class="colon">:</td><td class="value">${item.Tanggal_Penemuan}</td></tr>
           <tr><td class="label">Ciri Khusus</td><td class="colon">:</td><td class="value">${item.Ciri_Khusus}</td></tr>
+          <tr><td class="label">Status</td><td class="colon">:</td><td class="value"><span style="color: var(--gold); font-weight: 800; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 8px;">${item.status}</span></td></tr>
         </table>
       </div>
     `;
 
-    // Tambahkan tombol klaim di bawah
     const claimSection = document.createElement("div");
     claimSection.innerHTML = `
       <div class="claim-question">

@@ -45,7 +45,6 @@ body {
   min-height: 100vh;
 }
 
-/* NAVBAR (identik dengan PencarianBarangTemuan) */
 .navbar {
   background: linear-gradient(
     100deg,
@@ -85,7 +84,6 @@ body {
   gap: 14px;
 }
 
-/* PROFILE DROPDOWN */
 .profile-menu {
   position: relative;
 }
@@ -178,7 +176,6 @@ body {
   text-align: center;
   font-size: 0.9rem;
   color: var(--ink-soft);
-  transition: color 0.15s ease;
 }
 
 .dropdown-item:hover {
@@ -205,7 +202,6 @@ body {
   color: #c53030;
 }
 
-/* MAIN CONTAINER (full-bleed, konsisten dengan Pencarian) */
 .main-container {
   flex: 1;
   width: 100%;
@@ -231,7 +227,6 @@ body {
   pointer-events: none;
 }
 
-/* TOP CONTROLS (Tombol Kembali) */
 .top-controls {
   position: relative;
   margin-bottom: 24px;
@@ -263,7 +258,6 @@ body {
   color: var(--blue-accent);
 }
 
-/* DETAIL CONTENT (Foto + Info) */
 .detail-content {
   display: flex;
   gap: 24px;
@@ -273,14 +267,13 @@ body {
   flex-wrap: wrap;
 }
 
-/* Kolom Foto */
 .photo-card {
   background-color: #f8faff;
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px;
-  width: 260px;
-  flex-shrink: 0;
+  flex: 1.4; /* Prioritas Lebar pada Gambar */
+  min-width: 320px;
 }
 
 .photo-label {
@@ -296,7 +289,7 @@ body {
   background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: 10px;
-  height: 180px;
+  height: 280px; /* Diperbesar agar sesuai lebar */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -315,12 +308,11 @@ body {
   opacity: 0.55;
 }
 
-/* Kolom Info */
 .info-card {
   background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   border-radius: 16px;
   padding: 22px 26px;
-  flex: 1;
+  flex: 1; /* Lebar lebih kecil dari foto */
   min-width: 280px;
   color: #ffffff;
   box-shadow: 0 14px 26px -10px rgba(11, 26, 61, 0.4);
@@ -358,24 +350,21 @@ body {
 }
 
 .label {
-  width: 30%;
+  width: 32%;
   font-weight: 600;
   color: #c7d4ef;
 }
-
 .colon {
   width: 5%;
   font-weight: 600;
   color: #c7d4ef;
 }
-
 .value {
-  width: 65%;
+  width: 63%;
   font-weight: 700;
   color: #ffffff;
 }
 
-/* Pertanyaan Klaim */
 .claim-question {
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -392,13 +381,11 @@ body {
   margin-bottom: 4px;
   color: var(--ink);
 }
-
 .claim-question-text {
   font-size: 0.88rem;
   color: var(--ink-soft);
 }
 
-/* Tombol Klaim */
 .claim-btn {
   background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   color: white;
@@ -425,14 +412,10 @@ body {
   box-shadow: 0 18px 30px -10px rgba(47, 111, 209, 0.65);
 }
 
-/* RESPONSIF */
 @media (max-width: 768px) {
   .main-container {
     padding: 24px 18px 32px;
   }
-}
-
-@media (max-width: 600px) {
   .detail-content {
     flex-direction: column;
   }
