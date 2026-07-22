@@ -590,13 +590,14 @@ body {
     font-size: 0.78rem;
   }
   .card-grid {
-    flex-direction: column; /* Menyusun card dari atas ke bawah di HP */
-    align-items: center; /* Memusatkan card di layar HP */
+    grid-template-columns: 1fr; /* Memaksa kartu jadi 1 baris penuh */
     gap: 16px;
+    padding: 0; /* Menghilangkan padding berlebih di kiri/kanan */
   }
+
   .card {
     width: 100%;
-    max-width: 340px;
+    margin: 0 auto; /* Memastikan kartu presisi di tengah */
   }
   .username {
     display: none;

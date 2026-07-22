@@ -323,23 +323,6 @@ body {
   overflow-x: auto; /* Ini yang bikin bisa di scroll horizontal */
 }
 
-/* CUSTOM SCROLLBAR UNTUK KOTAK BIRU DI MOBILE */
-.info-card::-webkit-scrollbar {
-  height: 8px; /* Tinggi scrollbar */
-}
-.info-card::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  margin: 10px 0;
-}
-.info-card::-webkit-scrollbar-thumb {
-  background: var(--gold); /* Warna emas U-Find */
-  border-radius: 10px;
-}
-.info-card::-webkit-scrollbar-thumb:hover {
-  background: #c28827;
-}
-
 /* TABEL DI DALAM KOTAK BIRU */
 .info-card table {
   width: 100%;
@@ -435,5 +418,8 @@ body {
   .info-card {
     width: 100%; /* Info full width di HP */
     padding: 18px 20px; /* Sedikit perkecil padding di HP */
+  }
+  .username {
+    display: none;
   }
 }
