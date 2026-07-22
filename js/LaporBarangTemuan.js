@@ -249,12 +249,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (selectedFile) {
         const ext = selectedFile.name.split(".").pop();
         const filePath = `${nim}/${Date.now()}.${ext}`;
-        await supabaseClient.storage.from(STORAGE_BUCKET).upload(filePath, selectedFile);
+        const { error: uploadError } = await supabaseClient.storage
+          .from(STORAGE_BUCKET)
+          .upload(filePath, selectedFile);
+        if (uploadError) {
+          throw new Error("Gagal mengupload foto: " + uploadError.message);
+        }
         const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
         fotoUrl = data.publicUrl;
       }
 
-      await supabaseClient.from("Laporan_Temuan").insert({
+      const { error: insertError } = await supabaseClient.from("Laporan_Temuan").insert({
         NIM_Penemu: nim,
         Nama_Barang: namaBarang.value.trim(),
         Ciri_Khusus: rincianBarang.value.trim(),
@@ -263,6 +268,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         Foto_Barang: fotoUrl,
         status: "Menunggu Validasi", // Tambahkan status awal
       });
+
+      if (insertError) {
+        console.error("Gagal menyimpan laporan temuan:", insertError);
+        throw new Error("Gagal menyimpan laporan: " + insertError.message);
+      }
 
       showSuccessModal(() => {
         form.reset();
