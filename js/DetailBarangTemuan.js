@@ -72,25 +72,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (error || !data) throw new Error("Data tidak ditemukan");
 
-    // Mengambil Nama Mahasiswa Penemu
-    let namaPenemu = "-";
-    if (data.NIM_Penemu) {
-      const { data: mhs } = await supabaseClient
-        .from("Mahasiswa")
-        .select("Nama_Lengkap")
-        .eq("NIM", data.NIM_Penemu)
-        .maybeSingle();
-      if (mhs) namaPenemu = mhs.Nama_Lengkap;
-    }
-
-    renderDetail(data, idString, namaPenemu);
+    renderDetail(data, idString);
   } catch (err) {
     if (container) {
       container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-circle"></i><p>Barang tidak ditemukan.</p></div>`;
     }
   }
 
-  function renderDetail(item, displayId, namaPenemu) {
+  function renderDetail(item, displayId) {
     if (!container) return;
 
     container.innerHTML = `
@@ -105,13 +94,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       </div>
       <div class="info-card">
-        <p class="info-title">SEDANG DICARI!!</p>
         <table>
           <tr><td class="label">ID</td><td class="colon">:</td><td class="value">${displayId}</td></tr>
           <tr><td class="label">Nama Barang</td><td class="colon">:</td><td class="value">${item.Nama_Barang}</td></tr>
-          <tr><td class="label">NIM Penemu</td><td class="colon">:</td><td class="value">${item.NIM_Penemu || "-"}</td></tr>
-          <tr><td class="label">Nama</td><td class="colon">:</td><td class="value">${namaPenemu}</td></tr>
-          <tr><td colspan="3" style="height: 12px;"></td></tr> <!-- Spacer -->
           <tr><td class="label">Lokasi</td><td class="colon">:</td><td class="value">${item.Lokasi_Penemuan}</td></tr>
           <tr><td class="label">Tanggal</td><td class="colon">:</td><td class="value">${item.Tanggal_Penemuan}</td></tr>
           <tr><td class="label">Ciri Khusus</td><td class="colon">:</td><td class="value">${item.Ciri_Khusus}</td></tr>
