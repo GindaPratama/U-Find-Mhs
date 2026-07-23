@@ -9,7 +9,6 @@
   --ink: #16213e;
   --ink-soft: #5b6479;
   --border: #e2e7f1;
-  /* Background diubah menjadi putih bersih */
   --page-bg: #ffffff;
   --danger: #c53030;
   --danger-bg: #fdeeee;
@@ -48,7 +47,6 @@ body {
   min-height: 100vh;
 }
 
-/* --- NAVBAR (identik dengan Dashboard.css) --- */
 .navbar {
   background: linear-gradient(
     100deg,
@@ -88,7 +86,6 @@ body {
   gap: 14px;
 }
 
-/* --- PROFILE DROPDOWN --- */
 .profile-menu {
   position: relative;
 }
@@ -208,7 +205,6 @@ body {
   color: var(--danger);
 }
 
-/* --- KONTEN UTAMA (kotak putih di-tengah, tidak full-bleed) --- */
 .main-content {
   flex: 1;
   display: flex;
@@ -222,14 +218,12 @@ body {
   max-width: 760px;
   margin: 0 auto;
   border-radius: 16px;
-  /* Dihapus outline dan shadow */
   border: none;
   box-shadow: none;
   padding: 40px 44px;
   height: fit-content;
 }
 
-/* --- HEADER FORM --- */
 .form-header {
   margin-bottom: 30px;
   padding-bottom: 24px;
@@ -243,7 +237,6 @@ body {
   text-align: center;
 }
 
-/* --- GRUP INPUT --- */
 .input-group {
   margin-bottom: 24px;
 }
@@ -257,7 +250,6 @@ body {
   letter-spacing: 0.2px;
 }
 
-/* --- AREA UPLOAD (DROPZONE) --- */
 .upload-area {
   background-color: #f8faff;
   border: 1.5px dashed var(--border);
@@ -302,7 +294,7 @@ body {
   order: -1;
 }
 
-/* --- DROPDOWN LAPORAN KEHILANGAN --- */
+/* FIX: Tampilan Dropdown Select Estetik */
 .input-group select {
   width: 100%;
   padding: 14px 16px;
@@ -318,6 +310,13 @@ body {
     border-color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
 }
 
 .input-group select:focus {
@@ -326,7 +325,13 @@ body {
   box-shadow: 0 0 0 4px rgba(47, 111, 209, 0.12);
 }
 
-/* --- TOMBOL AKSI --- */
+.input-group select:disabled {
+  background-color: #eef4ff;
+  color: var(--ink-soft);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .action-buttons {
   display: flex;
   justify-content: space-between;
@@ -380,7 +385,6 @@ body {
   transform: none;
 }
 
-/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .main-content {
     padding: 20px 12px;
@@ -407,7 +411,6 @@ body {
   }
 }
 
-/* --- MODAL SUKSES (muncul setelah klaim berhasil dikirim) --- */
 .success-overlay {
   position: fixed;
   inset: 0;
@@ -479,10 +482,23 @@ body {
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
-  font-family: "Manrope", sans-serif;
   transition: background-color 0.2s ease;
 }
 
 .success-ok-btn:hover {
   background: var(--navy-900);
+}
+
+/* --- ICON ERROR MODAL --- */
+.error-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2.5px solid var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  font-size: 1.3rem;
+  color: var(--danger);
 }

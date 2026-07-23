@@ -36,9 +36,9 @@
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </button>
             <div class="profile-dropdown" id="profileDropdown">
-              <a href="Profile.html" class="dropdown-item"
-                ><i class="fa-regular fa-user"></i> Profil Saya</a
-              >
+              <a href="Profile.html" class="dropdown-item">
+                <i class="fa-regular fa-user"></i> Profil Saya
+              </a>
               <div class="dropdown-divider"></div>
               <a href="../index.html" class="dropdown-item dropdown-item-danger" id="logoutBtn">
                 <i class="fa-solid fa-right-from-bracket"></i> Keluar
@@ -62,14 +62,17 @@
                 >
                 <i class="fa-solid fa-upload upload-icon"></i>
               </label>
-              <input type="file" id="bukti_foto" accept="image/*" hidden required />
+              <input type="file" id="bukti_foto" accept="image/*" hidden />
             </div>
+
             <div class="input-group">
               <label>Apakah klaim ini berkaitan dengan Laporan Kehilangan Anda?</label>
+              <!-- Dropdown akan diisi otomatis dari JS -->
               <select id="laporanSelect" name="laporan_kehilangan">
-                <option value="">-- Pilih Laporan Kehilangan Anda --</option>
+                <option value="">Memuat data...</option>
               </select>
             </div>
+
             <div class="action-buttons">
               <button type="button" class="btn-secondary" onclick="history.back()">Kembali</button>
               <button type="submit" class="btn-primary" id="submitBtn">Kirim Pengajuan</button>
