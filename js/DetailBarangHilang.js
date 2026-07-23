@@ -23,6 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     initNotifications();
   }
 
+  function getTwoWords(fullName) {
+    if (!fullName) return "Pengguna";
+    return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
+  }
+
   // 3. Setup Navbar NIM & Logout
   const usernameLabel = document.getElementById("usernameLabel");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -34,11 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (session) {
       supabaseClient
         .from("Mahasiswa")
-        .select("NIM")
+        .select("NIM, Nama_Lengkap")
         .eq("user_id", session.user.id)
         .maybeSingle()
         .then(({ data: mhs }) => {
-          if (mhs && usernameLabel) usernameLabel.textContent = mhs.NIM;
+          if (mhs && usernameLabel) usernameLabel.textContent = getTwoWords(mhs.Nama_Lengkap);
         });
     }
   }

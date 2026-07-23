@@ -14,9 +14,10 @@
   </head>
   <body>
     <div class="dashboard-wrapper">
+      <!-- NAVBAR -->
       <header class="navbar">
         <div class="nav-left">
-          <a href="../index.html">
+          <a href="Dashboard.html">
             <img src="../assets/img/logo_unikom.png" alt="Logo UNIKOM" class="nav-logo" />
           </a>
           <span class="nav-title">U-Find</span>
@@ -31,7 +32,8 @@
           </div>
           <div class="profile-menu">
             <button type="button" class="profile-trigger" id="profileTrigger">
-              <span class="username">Pengguna</span>
+              <!-- Username ini akan diisi 2 kata nama oleh JS -->
+              <span class="username" id="navUsername">Memuat...</span>
               <i class="fa-solid fa-circle-user profile-icon"></i>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </button>
@@ -41,7 +43,7 @@
                 <span>Profil Saya</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a href="../index.html" class="dropdown-item dropdown-item-danger">
+              <a href="#" class="dropdown-item dropdown-item-danger" id="navBtnKeluar">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Keluar</span>
               </a>
@@ -50,41 +52,61 @@
         </div>
       </header>
 
+      <!-- MAIN CONTENT -->
       <main class="main-content">
         <div class="profile-card">
           <div class="profile-header">
-            <i class="fa-solid fa-circle-user"></i>
-            <div>
-              <p class="name-top" id="profileNamaTop">Memuat...</p>
-              <p class="role-top">Mahasiswa</p>
+            <i class="fa-solid fa-circle-user avatar-icon"></i>
+            <div class="profile-title">
+              <h2 id="profileNamaTop">Memuat...</h2>
+              <p>Mahasiswa</p>
             </div>
           </div>
-          <div class="profile-info">
-            <div class="info-group">
-              <label>Nama</label>
-              <p id="profileNama">-</p>
+
+          <div class="profile-grid">
+            <!-- NAMA (BISA DIEDIT) -->
+            <div class="info-card editable-card">
+              <label>NAMA</label>
+              <div class="input-wrapper">
+                <input type="text" id="inputNama" value="Memuat..." disabled />
+                <button type="button" id="btnEditNama" class="btn-edit" title="Edit Nama">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+              <div class="edit-actions hidden" id="actionEditGroup">
+                <button type="button" id="btnBatalEdit" class="btn-cancel-sm">Batal</button>
+                <button type="button" id="btnSimpanEdit" class="btn-save-sm">Simpan</button>
+              </div>
             </div>
-            <div class="info-group">
+
+            <!-- NIM -->
+            <div class="info-card">
               <label>NIM</label>
               <p id="profileNim">-</p>
             </div>
-            <div class="info-group">
-              <label>Nomer Handphone</label>
+
+            <!-- NO HP -->
+            <div class="info-card">
+              <label>NOMER HANDPHONE</label>
               <p id="profileNoHp">-</p>
             </div>
-            <div class="info-group">
-              <label>Email UNIKOM</label>
+
+            <!-- EMAIL -->
+            <div class="info-card">
+              <label>EMAIL UNIKOM</label>
               <p id="profileEmail">-</p>
             </div>
           </div>
+
           <div class="action-buttons">
-            <a href="../index.html" class="btn-keluar" id="btnKeluar">Keluar</a>
+            <button type="button" class="btn-keluar" id="btnKeluarUtama">Keluar</button>
             <a href="Dashboard.html" class="btn-kembali">Kembali</a>
           </div>
         </div>
       </main>
     </div>
 
+    <!-- MODAL LOGOUT -->
     <div class="modal-overlay" id="confirmLogoutModal">
       <div class="modal-box modal-box-confirm">
         <div class="modal-icon-outline modal-icon-question">
@@ -95,6 +117,22 @@
         <div class="modal-actions">
           <button type="button" class="modal-btn-dark" id="confirmYesBtn">Ya</button>
           <button type="button" class="modal-btn-dark" id="confirmNoBtn">Tidak</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL SUKSES UPDATE NAMA -->
+    <div class="modal-overlay" id="successUpdateModal">
+      <div class="modal-box modal-box-confirm">
+        <div class="modal-icon-outline modal-icon-success">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>Berhasil</h2>
+        <p>Nama berhasil diperbarui.</p>
+        <div class="modal-actions" style="justify-content: center">
+          <button type="button" class="modal-btn-dark" id="successOkBtn" style="max-width: 150px">
+            OK
+          </button>
         </div>
       </div>
     </div>

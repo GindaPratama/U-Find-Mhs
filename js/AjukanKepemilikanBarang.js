@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  // Pindahkan fungsi getTwoWords ke sini agar dikenali oleh seluruh kode di file ini!
+  function getTwoWords(fullName) {
+    if (!fullName) return "Pengguna";
+    return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
+  }
+
   // ---------- Dropdown navbar ----------
   (function initNavbarDropdown() {
     const trigger = document.getElementById("profileTrigger");
@@ -111,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const placeholderText = document.getElementById("placeholderText");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // 1. Ambil Session & NIM
+  // 1. Ambil Session & NIM/Nama
   const {
     data: { session },
   } = await supabaseClient.auth.getSession();
@@ -130,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const currentNim = mhs.NIM;
 
   if (usernameLabel) {
-    usernameLabel.textContent = currentNim || session.user.email || "Pengguna";
+    usernameLabel.textContent = getTwoWords(mhs.Nama_Lengkap);
   }
 
   // Tarik ID Temuan dari URL

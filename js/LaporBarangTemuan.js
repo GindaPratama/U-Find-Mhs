@@ -8,16 +8,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (session) {
       const { data: mhsData } = await supabaseClient
         .from("Mahasiswa")
-        .select("NIM")
+        .select("NIM, Nama_Lengkap")
         .eq("user_id", session.user.id)
         .maybeSingle();
-      if (mhsData) usernameEl.textContent = mhsData.NIM;
+      if (mhsData) usernameEl.textContent = getTwoWords(mhsData.Nama_Lengkap);
     }
   }
 
   // Notifikasi
   if (typeof initNotifications === "function") {
     initNotifications();
+  }
+
+  function getTwoWords(fullName) {
+    if (!fullName) return "Pengguna";
+    return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
   }
 
   // ---------- Konfigurasi ----------
@@ -240,7 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       } = await supabaseClient.auth.getUser();
       const { data: mhs } = await supabaseClient
         .from("Mahasiswa")
-        .select("NIM")
+        .select("NIM, Nama_Lengkap")
         .eq("user_id", user.id)
         .single();
       const nim = mhs.NIM;

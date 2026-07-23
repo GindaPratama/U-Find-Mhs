@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data: mhsData, error } = await supabaseClient
     .from("Mahasiswa")
-    .select("NIM")
+    .select("NIM, Nama_Lengkap")
     .eq("user_id", session.user.id)
     .maybeSingle();
 
@@ -45,12 +45,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (mhsData && usernameEl) {
-    usernameEl.textContent = mhsData.NIM;
+    usernameEl.textContent = getTwoWords(mhsData.Nama_Lengkap);
   }
 
   // Notifikasi
   if (typeof initNotifications === "function") {
     initNotifications();
+  }
+
+  function getTwoWords(fullName) {
+    if (!fullName) return "Pengguna";
+    return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
   }
 });
 

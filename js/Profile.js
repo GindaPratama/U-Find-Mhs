@@ -19,14 +19,29 @@ if (profileTrigger && profileDropdown) {
   });
 }
 
+// Inisialisasi Notifikasi
+if (typeof initNotifications === "function") {
+  initNotifications();
+}
+
 // ==========================================
-// 2. AMBIL DATA PROFIL DARI DATABASE
+// FUNGSI PEMOTONG NAMA (MAKS 2 KATA)
+// ==========================================
+function getTwoWords(fullName) {
+  if (!fullName) return "Pengguna";
+  return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
+}
+
+// ==========================================
+// 2. FETCH & TAMPILKAN DATA
 // ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
-  const namaTopEl = document.getElementById("profileNamaTop");
+  const navUsername = document.getElementById("navUsername");
+  const profileNamaTop = document.getElementById("profileNamaTop");
+  const inputNama = document.getElementById("inputNama");
 
   if (!supabaseClient) {
-    if (namaTopEl) namaTopEl.textContent = "Gagal memuat";
+    if (profileNamaTop) profileNamaTop.textContent = "Gagal memuat";
     return;
   }
 
@@ -46,66 +61,127 @@ document.addEventListener("DOMContentLoaded", async () => {
     .maybeSingle();
 
   if (error || !mhsData) {
-    if (namaTopEl) namaTopEl.textContent = "Data tidak ditemukan";
+    if (profileNamaTop) profileNamaTop.textContent = "Data tidak ditemukan";
     return;
   }
 
-  document.querySelectorAll(".username").forEach((el) => {
-    el.textContent = mhsData.NIM;
-  });
+  // Set Header Nama (2 Kata)
+  if (navUsername) navUsername.textContent = getTwoWords(mhsData.Nama_Lengkap);
+
+  // Set Info Profile
+  if (profileNamaTop) profileNamaTop.textContent = mhsData.Nama_Lengkap;
+  if (inputNama) inputNama.value = mhsData.Nama_Lengkap;
 
   const setText = (id, value) => {
     const el = document.getElementById(id);
     if (el) el.textContent = value || "-";
   };
 
-  setText("profileNamaTop", mhsData.Nama_Lengkap);
-  setText("profileNama", mhsData.Nama_Lengkap);
   setText("profileNim", mhsData.NIM);
   setText("profileNoHp", mhsData.No_Hp);
   setText("profileEmail", mhsData.Email);
+
+  // ==========================================
+  // 3. LOGIKA EDIT NAMA
+  // ==========================================
+  const btnEditNama = document.getElementById("btnEditNama");
+  const actionEditGroup = document.getElementById("actionEditGroup");
+  const btnBatalEdit = document.getElementById("btnBatalEdit");
+  const btnSimpanEdit = document.getElementById("btnSimpanEdit");
+  const successUpdateModal = document.getElementById("successUpdateModal");
+
+  // Masuk Mode Edit
+  btnEditNama?.addEventListener("click", () => {
+    inputNama.disabled = false;
+    inputNama.focus();
+    // Taruh kursor di akhir teks
+    const val = inputNama.value;
+    inputNama.value = "";
+    inputNama.value = val;
+
+    btnEditNama.classList.add("hidden");
+    actionEditGroup.classList.remove("hidden");
+  });
+
+  // Batal Edit
+  btnBatalEdit?.addEventListener("click", () => {
+    inputNama.value = mhsData.Nama_Lengkap; // Kembalikan ke nama asli
+    inputNama.disabled = true;
+    btnEditNama.classList.remove("hidden");
+    actionEditGroup.classList.add("hidden");
+  });
+
+  // Simpan Edit
+  btnSimpanEdit?.addEventListener("click", async () => {
+    const newName = inputNama.value.trim();
+    if (!newName) {
+      alert("Nama tidak boleh kosong!");
+      return;
+    }
+
+    btnSimpanEdit.textContent = "Menyimpan...";
+    btnSimpanEdit.disabled = true;
+
+    // Update ke Database
+    const { error: updateErr } = await supabaseClient
+      .from("Mahasiswa")
+      .update({ Nama_Lengkap: newName })
+      .eq("NIM", mhsData.NIM);
+
+    if (updateErr) {
+      alert("Gagal memperbarui nama: " + updateErr.message);
+    } else {
+      // Update UI
+      mhsData.Nama_Lengkap = newName;
+      navUsername.textContent = getTwoWords(newName);
+      profileNamaTop.textContent = newName;
+
+      // Tutup Mode Edit
+      inputNama.disabled = true;
+      btnEditNama.classList.remove("hidden");
+      actionEditGroup.classList.add("hidden");
+
+      // Tampilkan Pop-Up Berhasil
+      successUpdateModal.classList.add("open");
+    }
+
+    btnSimpanEdit.textContent = "Simpan";
+    btnSimpanEdit.disabled = false;
+  });
+
+  // Tutup Modal Sukses
+  document.getElementById("successOkBtn")?.addEventListener("click", () => {
+    successUpdateModal.classList.remove("open");
+  });
 });
 
-// Notifikas
-if (typeof initNotifications === "function") {
-  initNotifications();
-}
-
 // ==========================================
-// 3. LOGIKA POP-UP & LOGOUT
+// 4. LOGIKA MODAL LOGOUT
 // ==========================================
-const logoutButtons = document.querySelectorAll("#navBtnKeluar, #btnKeluar");
+const logoutButtons = document.querySelectorAll("#navBtnKeluar, #btnKeluarUtama");
 const confirmLogoutModal = document.getElementById("confirmLogoutModal");
 const confirmYesBtn = document.getElementById("confirmYesBtn");
 const confirmNoBtn = document.getElementById("confirmNoBtn");
 
-// Tampilkan modal ketika tombol keluar diklik
 logoutButtons.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
-    if (confirmLogoutModal) {
-      confirmLogoutModal.classList.add("open");
-    }
+    if (confirmLogoutModal) confirmLogoutModal.classList.add("open");
   });
 });
 
-// Tutup modal ketika klik "Tidak"
 if (confirmNoBtn) {
   confirmNoBtn.addEventListener("click", () => {
     confirmLogoutModal.classList.remove("open");
   });
 }
 
-// Proses logout ketika klik "Ya"
 if (confirmYesBtn) {
   confirmYesBtn.addEventListener("click", async () => {
     confirmYesBtn.textContent = "Proses...";
     confirmYesBtn.disabled = true;
-
     try {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+      if (supabaseClient) await supabaseClient.auth.signOut();
       sessionStorage.removeItem("loggedInNim");
       window.location.href = "../index.html";
     } catch (err) {

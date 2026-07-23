@@ -5,11 +5,10 @@
   --navy-900: #0b1a3d;
   --navy-700: #123b7a;
   --blue-accent: #2f6fd1;
-  --gold: #e3a53a;
   --ink: #16213e;
   --ink-soft: #5b6479;
   --border: #e2e7f1;
-  --page-bg: #f3f6fb;
+  --page-bg: #ffffff;
 }
 
 * {
@@ -18,201 +17,63 @@
   box-sizing: border-box;
   font-family: "Manrope", sans-serif;
 }
-
 h1,
+h2,
 .nav-title {
   font-family: "Poppins", sans-serif;
 }
-
 html,
 body {
   height: 100%;
 }
-
 body {
   background-color: var(--page-bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
 .dashboard-wrapper {
   width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-/* ============================================================
-   NAVBAR (disamakan 1:1 dengan Dashboard.css)
-   ============================================================ */
-
+/* =========================================
+   NAVBAR (KONSISTEN)
+   ========================================= */
 .navbar {
-  background: linear-gradient(100deg,
-      var(--navy-950) 0%,
-      var(--navy-900) 55%,
-      var(--navy-700) 100%);
+  background: linear-gradient(
+    100deg,
+    var(--navy-950) 0%,
+    var(--navy-900) 55%,
+    var(--navy-700) 100%
+  );
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 32px;
   color: white;
   box-shadow: 0 4px 16px rgba(6, 14, 36, 0.18);
-  width: 100%;
 }
-
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.nav-logo {
-  width: 34px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-}
-
-.nav-title {
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: 0.3px;
-}
-
+.nav-left,
 .nav-right {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-
-/* --- NOTIFICATION DROPDOWN (FITUR BARU) --- */
-.notification-menu {
-  position: relative;
+.nav-logo {
+  width: 34px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
-
-.notification-trigger {
-  position: relative;
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  color: #dfe6f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.notification-trigger:hover,
-.notification-trigger.open {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.notification-trigger i {
-  font-size: 1rem;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background-color: #e34b4b;
-  color: white;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  font-size: 0.65rem;
+.nav-title {
   font-weight: 700;
-  display: none;
-  /* JS akan mengubah ini menjadi 'flex' */
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--navy-900);
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
 }
-
-.notification-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 100%;
-  max-width: 380px;
-  background-color: #ffffff;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  box-shadow: 0 16px 36px -10px rgba(6, 14, 36, 0.28);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
-  z-index: 20;
-}
-
-.notification-dropdown.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.notification-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.notification-header h3 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.notification-header button {
-  background: none;
-  border: none;
-  color: var(--blue-accent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.notification-list {
-  max-height: 400px;
-  overflow-y: auto;
-  padding: 8px;
-}
-
-.notification-item {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 9px;
-  transition: background-color 0.15s ease;
-}
-
-.notification-item:not(.read):hover {
-  background-color: #f0f4fc;
-}
-
-.notification-item.read .notification-content {
-  opacity: 0.6;
-}
-
-.notification-empty {
-  text-align: center;
-  padding: 40px 20px;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-}
-
-/* --- PROFILE DROPDOWN --- */
 .profile-menu {
   position: relative;
 }
-
 .profile-trigger {
   display: flex;
   align-items: center;
@@ -223,38 +84,30 @@ body {
   padding: 6px 14px 6px 16px;
   cursor: pointer;
   color: #fff;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
-
 .profile-trigger:hover,
 .profile-trigger.open {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.4);
 }
-
 .username {
   font-weight: 500;
   font-size: 0.9rem;
   color: #dfe6f5;
 }
-
 .profile-icon {
   font-size: 1.9rem;
   color: #fff;
 }
-
 .chevron-icon {
   font-size: 0.7rem;
   color: #b8c3dc;
   transition: transform 0.2s ease;
 }
-
 .profile-trigger.open .chevron-icon {
   transform: rotate(180deg);
 }
-
 .profile-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -268,19 +121,14 @@ body {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    visibility 0.18s ease;
+  transition: all 0.18s ease;
   z-index: 20;
 }
-
 .profile-dropdown.open {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
-
 .dropdown-item {
   display: flex;
   align-items: center;
@@ -291,11 +139,8 @@ body {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+  transition: all 0.15s ease;
 }
-
 .dropdown-item i {
   width: 16px;
   text-align: center;
@@ -303,74 +148,39 @@ body {
   color: var(--ink-soft);
   transition: color 0.15s ease;
 }
-
 .dropdown-item:hover {
   background-color: #f0f4fc;
   color: var(--blue-accent);
 }
-
 .dropdown-item:hover i {
   color: var(--blue-accent);
 }
-
 .dropdown-divider {
   height: 1px;
   background-color: var(--border);
   margin: 6px 4px;
 }
-
 .dropdown-item-danger:hover {
   background-color: #fdeeee;
   color: #c53030;
 }
-
 .dropdown-item-danger:hover i {
   color: #c53030;
 }
 
-.notification-icon {
-  font-size: 1rem;
-  padding-top: 2px;
-}
-
-.notification-icon .fa-circle-check {
-  color: #34a853;
-}
-
-.notification-icon .fa-circle-xmark {
-  color: #d1453b;
-}
-
-.notification-text {
-  font-size: 0.85rem;
-  color: var(--ink);
-  line-height: 1.5;
-  margin-bottom: 4px;
-}
-
-.notification-time {
-  font-size: 0.7rem;
-  color: var(--ink-soft);
-}
-
-/* ============================================================
-   KONTEN UTAMA (pola sama seperti dashboard-card: full, no radius)
-   ============================================================ */
-
+/* =========================================
+   MAIN CONTENT & GRID
+   ========================================= */
 .main-content {
   flex: 1;
-  display: flex;
-  padding: 0;
-}
-
-.profile-card {
-  background-color: #ffffff;
-  width: 100%;
-  flex: 1;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
   padding: 44px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profile-card {
+  width: 100%;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
   gap: 36px;
@@ -380,262 +190,284 @@ body {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding-bottom: 32px;
+  padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
-
-.profile-header i {
-  font-size: 3.4rem;
+.avatar-icon {
+  font-size: 4.5rem;
   color: var(--blue-accent);
 }
-
-.name-top {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.3rem;
+.profile-title h2 {
+  font-size: 1.4rem;
   font-weight: 800;
-  color: var(--navy-900);
+  color: var(--navy-950);
   margin-bottom: 4px;
 }
-
-.role-top {
-  font-size: 0.85rem;
-  font-weight: 600;
+.profile-title p {
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--ink-soft);
 }
 
-.profile-info {
+.profile-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.info-group {
-  background-color: #f8faff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 22px;
+.info-card {
+  background-color: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-
-.info-group label {
+.info-card label {
   display: block;
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
   color: var(--ink-soft);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
-
-.info-group p {
-  font-size: 1rem;
-  font-weight: 600;
+.info-card p {
+  font-size: 1.05rem;
+  font-weight: 500;
   color: var(--ink);
 }
 
+/* Edit Name Card */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.input-wrapper input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink);
+  outline: none;
+  font-family: "Manrope", sans-serif;
+  width: 100%;
+}
+.input-wrapper input:focus {
+  border-bottom: 2px solid var(--blue-accent);
+}
+
+.btn-edit {
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 4px;
+}
+.btn-edit:hover {
+  color: var(--blue-accent);
+}
+.hidden {
+  display: none !important;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.btn-cancel-sm {
+  background-color: #f3f6fb;
+  color: var(--navy-900);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.btn-cancel-sm:hover {
+  background-color: #eef4fc;
+  color: var(--blue-accent);
+  border-color: var(--blue-accent);
+}
+.btn-save-sm {
+  background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.btn-save-sm:hover {
+  opacity: 0.9;
+}
+
+/* Buttons Bottom */
 .action-buttons {
-  margin-top: auto;
+  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
   gap: 16px;
-  padding-top: 12px;
 }
-
+.action-buttons button,
 .action-buttons a {
-  padding: 12px 30px;
+  padding: 12px 32px;
   border-radius: 24px;
-  text-decoration: none;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
   text-align: center;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    background-color 0.15s ease;
 }
-
 .btn-keluar {
   background-color: transparent;
   color: #c53030;
   border: 1.5px solid #f3caca;
 }
-
 .btn-keluar:hover {
   background-color: #fdeeee;
 }
-
 .btn-kembali {
   background: linear-gradient(135deg, var(--navy-900), var(--blue-accent));
   color: #ffffff;
   box-shadow: 0 10px 20px -8px rgba(47, 111, 209, 0.55);
 }
-
 .btn-kembali:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 26px -8px rgba(47, 111, 209, 0.65);
 }
 
+/* =========================================
+   MODALS (Konsisten)
+   ========================================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(6, 14, 36, 0.55);
-  backdrop-filter: blur(3px);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 100;
   padding: 20px;
 }
-
 .modal-overlay.open {
   display: flex;
 }
-
 .modal-box-confirm {
   background: #ffffff;
-  /* var(--card) dari registrasi */
   width: 100%;
   max-width: 380px;
   border-radius: 20px;
-  /* Diubah jadi 20px seperti registrasi */
   padding: 40px 32px 32px;
   text-align: center;
   box-shadow: 0 24px 60px -12px rgba(6, 14, 36, 0.35);
   animation: modal-pop 0.25s ease;
 }
-
 @keyframes modal-pop {
   from {
     opacity: 0;
     transform: scale(0.92) translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
 
-/* Icon Outline Lingkaran */
 .modal-icon-outline {
   width: 64px;
   height: 64px;
   margin: 0 auto 18px;
   border-radius: 50%;
   border: 2.5px solid #16213e;
-  /* var(--ink) dari registrasi */
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .modal-icon-question i {
   font-size: 1.3rem;
   color: #16213e;
-  /* var(--ink) dari registrasi */
+}
+.modal-icon-success {
+  border-color: var(--blue-accent);
+}
+.modal-icon-success i {
+  font-size: 1.5rem;
+  color: var(--blue-accent);
 }
 
-/* Typography Modal */
 .modal-box-confirm h2 {
-  font-family: "Poppins", sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
   color: #0b1a3d;
-  /* var(--navy-900) dari registrasi */
   margin-bottom: 10px;
-  line-height: 1.4;
 }
-
 .modal-box-confirm p {
   font-size: 0.9rem;
   color: #5b6479;
-  /* var(--ink-soft) dari registrasi */
   line-height: 1.6;
   margin-bottom: 26px;
   font-weight: 500;
 }
 
-/* Tombol Modal */
 .modal-actions {
   display: flex;
   justify-content: space-between;
   gap: 12px;
 }
-
-.modal-actions .modal-btn-dark {
+.modal-btn-dark {
   flex: 1;
-  /* Menggunakan warna btn-primary dari Registrasi.css */
   background: linear-gradient(135deg, #0b1a3d, #2f6fd1);
   color: #fff;
   border: none;
   padding: 11px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 10px 20px -8px rgba(47, 111, 209, 0.55);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: transform 0.15s;
 }
-
-.modal-actions .modal-btn-dark:hover {
+.modal-btn-dark:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 26px -8px rgba(47, 111, 209, 0.65);
 }
-
-.modal-actions #confirmNoBtn {
+#confirmNoBtn {
   background: transparent;
   color: #0b1a3d;
   border: 1.5px solid #e2e7f1;
   box-shadow: none;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
 }
-
-.modal-actions #confirmNoBtn:hover {
+#confirmNoBtn:hover {
   background-color: #f0f4fc;
   border-color: #2f6fd1;
   color: #2f6fd1;
   transform: none;
 }
 
-@media (max-width: 480px) {
-  .modal-box-confirm {
-    padding: 32px 24px 26px;
-  }
-}
-
-/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
-  .profile-card {
-    padding: 28px 20px;
+  .main-content {
+    padding: 24px 20px;
   }
-
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
   .profile-header {
     flex-direction: column;
     text-align: center;
-    gap: 14px;
   }
-
-  .profile-info {
-    grid-template-columns: 1fr;
-  }
-
-  .action-buttons {
-    justify-content: stretch;
-  }
-
-  .action-buttons a {
-    flex: 1;
-  }
-
   .username {
     display: none;
   }
-
-  .profile-trigger {
-    padding: 6px 10px;
+  .action-buttons {
+    flex-direction: column-reverse;
   }
 }

@@ -32,6 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     initNotifications();
   }
 
+  function getTwoWords(fullName) {
+    if (!fullName) return "Pengguna";
+    return fullName.trim().split(/\s+/).slice(0, 2).join(" ");
+  }
+
   // --- ELEMEN DOM ---
   const usernameLabel = document.getElementById("usernameLabel");
   const kehilanganBody = document.getElementById("kehilanganTableBody");
@@ -75,13 +80,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     const { data: mhsData, error } = await supabaseClient
       .from("Mahasiswa")
-      .select("NIM")
+      .select("NIM, Nama_Lengkap")
       .eq("user_id", session.user.id)
       .maybeSingle();
 
     if (error || !mhsData) return false;
     userNIM = mhsData.NIM;
-    if (usernameLabel) usernameLabel.textContent = userNIM;
+    if (usernameLabel) usernameLabel.textContent = getTwoWords(mhsData.Nama_Lengkap);
     return true;
   }
 
