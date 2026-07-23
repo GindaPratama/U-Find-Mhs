@@ -65,14 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     requestAnimationFrame(() => overlay.classList.add("show"));
   }
 
-  // Modal khusus untuk Error / Peringatan
   function ensureErrorModal() {
     let overlay = document.getElementById("errorOverlay");
     if (overlay) return overlay;
 
     overlay = document.createElement("div");
     overlay.id = "errorOverlay";
-    overlay.className = "success-overlay"; // Menggunakan class overlay yang sama agar animasinya konsisten
+    overlay.className = "success-overlay";
     overlay.innerHTML = `
       <div class="success-modal">
         <div class="error-icon"><i class="fa-solid fa-exclamation"></i></div>
@@ -161,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (laporan && laporan.length > 0) {
     const defaultOpt = document.createElement("option");
     defaultOpt.value = "";
-    defaultOpt.textContent = "-- Pilih Laporan Kehilangan Anda --";
+    defaultOpt.textContent = "- Tidak / Saya belum membuat laporan -";
     laporanSelect.appendChild(defaultOpt);
 
     laporan.forEach((item) => {
@@ -177,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else {
     const opt = document.createElement("option");
     opt.value = "";
-    opt.textContent = "-- Anda tidak memiliki Laporan Kehilangan yang aktif --";
+    opt.textContent = "- Tidak / Saya belum membuat laporan -";
     laporanSelect.appendChild(opt);
     laporanSelect.disabled = true;
   }
@@ -251,7 +250,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     } catch (err) {
       console.error("Full Error:", err);
-      // Munculkan custom Pop-up Peringatan/Error
       showErrorModal(err.message || "Terjadi kesalahan sistem");
     } finally {
       submitBtn.disabled = false;
